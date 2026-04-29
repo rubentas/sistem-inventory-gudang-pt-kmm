@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('laporans', function (Blueprint $table) {
+            $table->id('id_laporan');
+            $table->unsignedBigInteger('id_user')->nullable();
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('set null');
+            $table->string('jenis_laporan', 50);
+            $table->date('tanggal_awal')->nullable();
+            $table->date('tanggal_akhir')->nullable();
+            $table->date('tanggal_cetak');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void {
+        Schema::dropIfExists('laporans');
+    }
+};

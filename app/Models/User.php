@@ -1,46 +1,53 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable
-{
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+class User extends Authenticatable {
+    use Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
+    protected $primaryKey = 'id_user';
+
+    protected $fillable = [
+        'nama',
+        'username',
+        'password',
+        'email',
+        'no_telp',
+        'role',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-    /**
-     * Get the user's initials
-     */
-    public function initials(): string
-    {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
+    // Relasi: User bisa jadi penanggung jawab wilayah
+    public function wilayah() {
+        return $this->hasMany(Wilayah::class, 'id_user', 'id_user');
+    }
+
+    // Helper: cek role
+    public function isKepalaGudang(): bool {
+        return $this->role === 'kepala_gudang';
+    }
+
+    public function isAdminFakturis(): bool {
+        return $this->role === 'admin_fakturis';
+    }
+
+    public function isSales(): bool {
+        return $this->role === 'sales';
+    }
+
+    public function isPimpinan(): bool {
+        return $this->role === 'pimpinan';
     }
 }
