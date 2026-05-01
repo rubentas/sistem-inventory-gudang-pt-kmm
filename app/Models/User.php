@@ -4,6 +4,18 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id_user
+ * @property string $nama
+ * @property string $username
+ * @property string $password
+ * @property string $email
+ * @property string $no_telp
+ * @property string $role
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ */
 class User extends Authenticatable {
     use Notifiable;
 
