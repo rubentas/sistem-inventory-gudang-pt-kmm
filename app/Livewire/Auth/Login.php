@@ -3,49 +3,58 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.guest')]
 class Login extends Component {
-    public string $username = '';
-    public string $password = '';
+  public string $username = '';
+  public string $password = '';
 
-    protected array $rules = [
-        'username' => 'required|string',
-        'password' => 'required|string',
+  protected array $rules = [
+    'username' => 'required|string',
+    'password' => 'required|string',
+  ];
+
+  protected array $messages = [
+    'username.required' => 'Username wajib diisi.',
+    'password.required' => 'Password wajib diisi.',
+  ];
+
+  public function login() {
+    $this->validate();
+
+    $credentials = [
+      'username' => $this->username,
+      'password' => $this->password,
     ];
 
-    protected array $messages = [
-        'username.required' => 'Username wajib diisi.',
-        'password.required' => 'Password wajib diisi.',
-    ];
+    if (Auth::attempt($credentials)) {
+      session()->regenerate();
 
-    public function login(): void {
-        $this->validate();
+      $user = Auth::user();
+      $role = $user->role;
 
-        if (Auth::attempt(['username' => $this->username, 'password' => $this->password])) {
-            session()->regenerate();
-
-            $role = Auth::user()->role;
-
-            $redirectRoute = match ($role) {
-                'kepala_gudang'  => route('kg.dashboard'),
-                'admin_fakturis' => route('admin.dashboard'),
-                'sales'          => route('sales.dashboard'),
-                'pimpinan'       => route('pimpinan.dashboard'),
-                default          => route('login'),
-            };
-
-            $this->redirect($redirectRoute, navigate: true);
-        } else {
-            $this->addError('username', 'Username atau password salah.');
-            $this->password = '';
-        }
+      // Redirect berdasarkan role
+      if ($role === 'kepala_gudang') {
+        return redirect()->to('/kepala-gudang/dashboard');
+      } elseif ($role === 'admin_fakturis') {
+        return redirect()->to('/admin/dashboard');
+      } elseif ($role === 'sales') {
+        return redirect()->to('/sales/dashboard');
+      } elseif ($role === 'pimpinan') {
+        return redirect()->to('/pimpinan/dashboard');
+      } else {
+        return redirect()->to('/');
+      }
     }
 
-    public function render(): View {
-        /** @var View $view */
-        $view = view('livewire.auth.login');
+    // Login gagal
+    $this->addError('username', 'Username atau password salah.');
+    $this->password = '';
+  }
 
-        return $view->layout('layouts.guest');
-    }
+  public function render(): View {
+    return view('livewire.auth.login');
+  }
 }

@@ -9,7 +9,7 @@
   @livewireStyles
 </head>
 
-<body class="min-h-screen bg-linear-to-br from-blue-700 to-blue-900 flex items-center justify-center p-4">
+<body class="min-h-screen bg-gradient-to-br from-blue-700 to-blue-900 flex items-center justify-center p-4">
   {{ $slot }}
   @livewireScripts
 </body>

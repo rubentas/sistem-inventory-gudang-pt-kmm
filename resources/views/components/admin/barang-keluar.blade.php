@@ -138,7 +138,7 @@
                 </button>
               </td>
             </tr>
-            @emkspty
+          @empty
             <tr>
               <td colspan="7" class="px-4 py-8 text-center text-gray-500">Tidak ada data barang keluar</td>
             </tr>

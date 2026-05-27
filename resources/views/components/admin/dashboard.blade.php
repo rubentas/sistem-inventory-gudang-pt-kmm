@@ -4,35 +4,29 @@
     <p class="text-gray-500 text-sm">Selamat datang, {{ auth()->user()->nama }}</p>
   </div>
 
-  <!-- Statistik Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-lg shadow p-5 border-l-4 border-blue-500">
       <p class="text-gray-500 text-sm">Barang Masuk Hari Ini</p>
       <p class="text-2xl font-bold text-gray-800">{{ number_format($totalMasukHariIni) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Total jumlah barang masuk</p>
     </div>
 
     <div class="bg-white rounded-lg shadow p-5 border-l-4 border-orange-500">
       <p class="text-gray-500 text-sm">Barang Keluar Hari Ini</p>
       <p class="text-2xl font-bold text-gray-800">{{ number_format($totalKeluarHariIni) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Total jumlah barang keluar</p>
     </div>
 
     <div class="bg-white rounded-lg shadow p-5 border-l-4 border-green-500">
       <p class="text-gray-500 text-sm">Order Sales Hari Ini</p>
       <p class="text-2xl font-bold text-gray-800">{{ number_format($totalOrderHariIni) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Jumlah order masuk</p>
     </div>
 
     <div class="bg-white rounded-lg shadow p-5 border-l-4 border-purple-500">
       <p class="text-gray-500 text-sm">Total Supplier</p>
       <p class="text-2xl font-bold text-gray-800">{{ number_format($totalSupplier) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Supplier aktif</p>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Order Sales Terbaru -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-5 py-4 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-800">Order Sales Terbaru</h2>
@@ -73,7 +67,6 @@
       </div>
     </div>
 
-    <!-- Barang Masuk Terbaru -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-5 py-4 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-800">Barang Masuk Terbaru</h2>
