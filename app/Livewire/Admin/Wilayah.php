@@ -3,98 +3,121 @@ namespace App\Livewire\Admin;
 
 use App\Models\User;
 use App\Models\Wilayah as WilayahModel;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Layout('layouts.admin')]
 class Wilayah extends Component {
-    use WithPagination;
+  use WithPagination;
 
-    // Form fields
-    public $id_wilayah          = null;
-    public string $nama_wilayah = '';
-    public int $jumlah_toko     = 0;
-    public $id_user             = '';
-    public string $keterangan   = '';
+  // Filter
+  public string $search = '';
 
-    // UI state
-    public string $search = '';
-    public bool $showForm = false;
-    public bool $isEdit   = false;
+  // Form
+  public int | null $id_wilayah = null;
+  public string $nama_wilayah   = '';
+  public int $jumlah_toko       = 0;
+  public int | string $id_user  = '';
+  public string $keterangan     = '';
 
-    protected $rules = [
-        'nama_wilayah' => 'required|string|max:100',
-        'jumlah_toko'  => 'required|integer|min:0',
-        'id_user'      => 'nullable|exists:users,id_user',
-        'keterangan'   => 'nullable|string',
+  // UI state
+  public bool $isEdit = false;
+
+  protected $rules = [
+    'nama_wilayah' => 'required|string|max:100',
+    'jumlah_toko'  => 'required|integer|min:0',
+    'id_user'      => 'nullable|exists:users,id_user',
+    'keterangan'   => 'nullable|string',
+  ];
+
+  protected $messages = [
+    'nama_wilayah.required' => 'Nama wilayah wajib diisi.',
+    'jumlah_toko.required'  => 'Jumlah toko wajib diisi.',
+    'jumlah_toko.min'       => 'Jumlah toko minimal 0.',
+  ];
+
+  public function updatedSearch(): void {$this->resetPage();}
+
+  public function resetFilters(): void {$this->search = '';
+    $this->resetPage();}
+
+  public function resetForm(): void {
+    $this->reset(['id_wilayah', 'nama_wilayah', 'jumlah_toko', 'id_user', 'keterangan', 'isEdit']);
+    $this->jumlah_toko = 0;
+    $this->resetErrorBag();
+  }
+
+  public function openAddModal(): void {$this->resetForm();
+    $this->dispatch('openModal');}
+
+  public function edit(int $id): void {
+    $wilayah            = WilayahModel::findOrFail($id);
+    $this->id_wilayah   = $wilayah->id_wilayah;
+    $this->nama_wilayah = $wilayah->nama_wilayah;
+    $this->jumlah_toko  = $wilayah->jumlah_toko;
+    $this->id_user      = $wilayah->id_user ?? '';
+    $this->keterangan   = $wilayah->keterangan ?? '';
+    $this->isEdit       = true;
+    $this->resetErrorBag();
+    $this->dispatch('openModal');
+  }
+
+  public function simpan(): void {
+    $this->validate();
+
+    $data = [
+      'nama_wilayah' => $this->nama_wilayah,
+      'jumlah_toko'  => $this->jumlah_toko,
+      'id_user'      => $this->id_user ?: null,
+      'keterangan'   => $this->keterangan ?: null,
     ];
 
-    public function bukaTambah(): void {
-        $this->reset(['id_wilayah', 'nama_wilayah', 'jumlah_toko', 'id_user', 'keterangan']);
-        $this->isEdit   = false;
-        $this->showForm = true;
+    if ($this->isEdit) {
+      WilayahModel::findOrFail($this->id_wilayah)->update($data);
+      $message = 'Data wilayah berhasil diperbarui.';
+    } else {
+      WilayahModel::create($data);
+      $message = 'Data wilayah berhasil ditambahkan.';
     }
 
-    public function bukaEdit(int $id): void {
-        $wilayah            = WilayahModel::findOrFail($id);
-        $this->id_wilayah   = $wilayah->id_wilayah;
-        $this->nama_wilayah = $wilayah->nama_wilayah;
-        $this->jumlah_toko  = $wilayah->jumlah_toko;
-        $this->id_user      = $wilayah->id_user;
-        $this->keterangan   = $wilayah->keterangan ?? '';
-        $this->isEdit       = true;
-        $this->showForm     = true;
+    $this->resetForm();
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
+  }
+
+  public function update(): void {$this->simpan();}
+
+  public function hapus(int $id): void {
+    $wilayah = WilayahModel::findOrFail($id);
+    if ($wilayah->orderSales()->count() > 0 || $wilayah->barangKeluar()->count() > 0) {
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Wilayah tidak bisa dihapus karena sudah memiliki transaksi.');
+      return;
     }
+    $wilayah->delete();
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data wilayah berhasil dihapus.');
+  }
 
-    public function batal(): void {
-        $this->reset(['id_wilayah', 'nama_wilayah', 'jumlah_toko', 'id_user', 'keterangan']);
-        $this->showForm = false;
-    }
+  public function getStats(): array {
+    return [
+      'totalItems' => WilayahModel::count(),
+      'totalToko'  => WilayahModel::sum('jumlah_toko'),
+    ];
+  }
 
-    public function simpan(): void {
-        $this->validate();
+  public function render() {
+    $wilayahs = WilayahModel::with('sales')
+      ->when($this->search, function ($q) {
+        $q->where('nama_wilayah', 'like', '%' . $this->search . '%');
+      })
+      ->orderBy('nama_wilayah')
+      ->paginate(10);
 
-        $data = [
-            'nama_wilayah' => $this->nama_wilayah,
-            'jumlah_toko'  => $this->jumlah_toko,
-            'id_user'      => $this->id_user ?: null,
-            'keterangan'   => $this->keterangan ?: null,
-        ];
+    $sales = User::where('role', 'sales')->orderBy('nama')->get();
 
-        if ($this->isEdit) {
-            WilayahModel::findOrFail($this->id_wilayah)->update($data);
-            session()->flash('success', 'Data wilayah berhasil diperbarui.');
-        } else {
-            WilayahModel::create($data);
-            session()->flash('success', 'Data wilayah berhasil ditambahkan.');
-        }
-
-        $this->batal();
-    }
-
-    public function hapus(int $id): void {
-        $wilayah = WilayahModel::findOrFail($id);
-
-        // Cek apakah wilayah sudah punya transaksi order sales atau barang keluar
-        if ($wilayah->orderSales()->count() > 0 || $wilayah->barangKeluar()->count() > 0) {
-            session()->flash('error', 'Wilayah tidak bisa dihapus karena sudah memiliki transaksi.');
-            return;
-        }
-
-        $wilayah->delete();
-        session()->flash('success', 'Data wilayah berhasil dihapus.');
-    }
-
-    public function render() {
-        $wilayahs = WilayahModel::with('sales')
-            ->when($this->search, function ($q) {
-                $q->where('nama_wilayah', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('nama_wilayah')
-            ->paginate(10);
-
-        $sales = User::where('role', 'sales')->orderBy('nama')->get();
-
-        return view('components.admin.wilayah', compact('wilayahs', 'sales'))
-            ->layout('layouts.admin');
-    }
+    return view('components.admin.wilayah', [
+      'wilayahs' => $wilayahs,
+      'sales'    => $sales,
+      'stats'    => $this->getStats(),
+    ]);
+  }
 }
