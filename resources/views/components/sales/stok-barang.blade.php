@@ -1,113 +1,203 @@
-<div>
-  <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">Stok Barang</h1>
-      <p class="text-gray-500 text-sm">Lihat ketersediaan stok barang gudang</p>
-    </div>
-    <button wire:click="resetFilters"
-      class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm transition">
-      Reset Filter
-    </button>
-  </div>
+<div class="space-y-5">
 
-  <!-- Statistik Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-orange-500">
-      <p class="text-gray-500 text-sm">Total Stok</p>
-      <p class="text-2xl font-bold text-gray-800">{{ number_format($totalStok) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Seluruh barang (dalam satuan)</p>
-    </div>
-    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-red-500">
-      <p class="text-gray-500 text-sm">Stok Menipis</p>
-      <p class="text-2xl font-bold text-red-600">{{ number_format($totalMenipis) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Stok <= Minimum</p>
-    </div>
-    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-      <p class="text-gray-500 text-sm">Stok Aman</p>
-      <p class="text-2xl font-bold text-green-600">{{ number_format($totalAman) }}</p>
-      <p class="text-xs text-gray-400 mt-1">Stok > Minimum</p>
-    </div>
-  </div>
-
-  <!-- Filter -->
-  <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Cari Barang</label>
-        <input type="text" wire:model.live="search" placeholder="Cari nama atau kode barang..."
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+  {{-- HEADER --}}
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div class="h-0.5 bg-linear-to-r from-orange-500 via-amber-500 to-yellow-500"></div>
+    <div class="px-6 py-5 sm:px-8 sm:py-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center shadow-[0_4px_12px_rgba(234,88,12,0.3)]">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Stok Barang</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Lihat ketersediaan stok barang gudang</p>
+          </div>
+        </div>
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
+    </div>
+  </div>
+
+  {{-- STATS --}}
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
+      <div class="h-0.5 bg-gray-400"></div>
+      <div class="p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Stok</p>
+            <p class="text-2xl font-extrabold text-gray-900 mt-1">{{ number_format($totalStok) }}</p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Seluruh barang</p>
+      </div>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
+      <div class="h-0.5 bg-red-500"></div>
+      <div class="p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Menipis</p>
+            <p class="text-2xl font-extrabold text-red-600 mt-1">{{ number_format($totalMenipis) }}</p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-red-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Stok &le; Minimum</p>
+      </div>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
+      <div class="h-0.5 bg-emerald-500"></div>
+      <div class="p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Aman</p>
+            <p class="text-2xl font-extrabold text-emerald-600 mt-1">{{ number_format($totalAman) }}</p>
+          </div>
+          <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Stok &gt; Minimum</p>
+      </div>
+    </div>
+  </div>
+
+  {{-- SEARCH & FILTER --}}
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm">
+    <div class="p-4 sm:p-5">
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <div
+          class="flex-1 flex items-center bg-gray-50 border border-gray-200 rounded-xl focus-within:border-orange-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-orange-100 transition">
+          <div class="pl-3.5 shrink-0 text-gray-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama atau kode barang…"
+            class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
+        </div>
         <select wire:model.live="filterStatus"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+          class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none cursor-pointer">
           <option value="">Semua Status</option>
           <option value="aman">Stok Aman</option>
           <option value="menipis">Stok Menipis</option>
         </select>
       </div>
     </div>
+    @if ($filterStatus || $search)
+      <div class="px-4 sm:px-5 py-3 border-t border-gray-100 bg-gray-50/50">
+        <button wire:click="resetFilters"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 text-xs font-semibold text-red-600 transition">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Reset Filter
+        </button>
+      </div>
+    @endif
   </div>
 
-  <!-- Tabel Data -->
-  <div class="bg-white rounded-lg shadow overflow-hidden">
+  {{-- TABLE --}}
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="min-w-full">
-        <thead class="bg-orange-600 text-white">
-          <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">No</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kode Barang</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Nama Barang</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Kategori</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Satuan</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Stok Minimum</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Jumlah Stok</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+      <table class="w-full min-w-[800px]">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-100">
+            <th class="px-5 py-4 text-left w-12"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Barang</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Satuan</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok Min</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah Stok</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="divide-y divide-gray-50">
           @forelse($stoks as $index => $stok)
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-sm text-gray-600">{{ $stoks->firstItem() + $index }}</td>
-              <td class="px-4 py-3 text-sm text-gray-800">{{ $stok->barang->kode_barang ?? '-' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-800">{{ $stok->barang->nama_barang ?? '-' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ $stok->barang->kategori ?? '-' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ $stok->barang->satuan ?? 'Pcs' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ number_format($stok->stok_minimum) }}</td>
-              <td
-                class="px-4 py-3 text-sm font-semibold {{ $stok->status == 'Menipis' ? 'text-red-600' : 'text-gray-800' }}">
-                {{ number_format($stok->jumlah_stok) }}
+            <tr class="hover:bg-orange-50/30 transition">
+              <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $stoks->firstItem() + $index }}</td>
+              <td class="px-5 py-4">
+                <span
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                  {{ $stok->barang->kode_barang ?? '-' }}
+                </span>
               </td>
-              <td class="px-4 py-3 text-sm">
+              <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $stok->barang->nama_barang ?? '-' }}</td>
+              <td class="px-5 py-4">
+                <span
+                  class="px-2.5 py-1 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">{{ $stok->barang->kategori ?? '-' }}</span>
+              </td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ $stok->barang->satuan ?? 'Pcs' }}</td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ number_format($stok->stok_minimum) }}</td>
+              <td class="px-5 py-4">
+                <span class="text-sm font-bold {{ $stok->status == 'Menipis' ? 'text-red-600' : 'text-gray-900' }}">
+                  {{ number_format($stok->jumlah_stok) }}
+                </span>
+              </td>
+              <td class="px-5 py-4">
                 @if ($stok->status == 'Menipis')
-                  <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">
-                    ⚠️ Menipis
-                  </span>
+                  <span
+                    class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
+                    Menipis</span>
                 @else
-                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
-                    ✓ Aman
-                  </span>
+                  <span
+                    class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">✓
+                    Aman</span>
                 @endif
               </td>
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                <svg class="w-12 h-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-                  </path>
-                </svg>
-                Tidak ada data stok barang
+              <td colspan="8" class="px-6 py-20">
+                <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
+                  <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center">
+                    <svg class="w-9 h-9 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-gray-900 mb-1">Belum Ada Data</h3>
+                    <p class="text-sm text-gray-400">Belum ada data stok barang.</p>
+                  </div>
+                </div>
               </td>
             </tr>
           @endforelse
         </tbody>
       </table>
     </div>
-    <div class="px-4 py-3 border-t border-gray-200">
-      {{ $stoks->links() }}
-    </div>
+    @if ($stoks->hasPages())
+      <div class="px-5 py-4 border-t border-gray-100">{{ $stoks->links() }}</div>
+    @endif
   </div>
 </div>
