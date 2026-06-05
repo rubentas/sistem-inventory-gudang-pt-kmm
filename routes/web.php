@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 // HALAMAN LOGIN
 // =============================================
 Route::get('/', \App\Livewire\Auth\Login::class)->name('login');
+Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // =============================================
