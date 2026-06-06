@@ -19,6 +19,7 @@ Route::middleware(['auth', 'role:kepala_gudang'])->prefix('kepala-gudang')->name
   Route::get('/barang-masuk', \App\Livewire\KepalaGudang\LaporanBarangMasuk::class)->name('barang-masuk');
   Route::get('/stock-opname', \App\Livewire\KepalaGudang\StockOpname::class)->name('stock-opname');
   Route::get('/stok-barang', \App\Livewire\KepalaGudang\StokBarang::class)->name('stok-barang');
+  Route::get('/barang-expired', \App\Livewire\KepalaGudang\BarangExpired::class)->name('barang-expired');
 });
 
 // =============================================
@@ -33,6 +34,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/order-sales', \App\Livewire\Admin\OrderSales::class)->name('order-sales');
   Route::get('/wilayah', \App\Livewire\Admin\Wilayah::class)->name('wilayah');
   Route::get('/stok-barang', \App\Livewire\Admin\StokBarang::class)->name('stok-barang');
+  Route::get('/invoice', \App\Livewire\Admin\Invoice::class)->name('invoice');
 });
 
 // =============================================
@@ -57,6 +59,9 @@ Route::middleware(['auth', 'role:pimpinan'])->prefix('pimpinan')->name('pimpinan
   Route::get('/laporan-supplier', \App\Livewire\Pimpinan\LaporanSupplier::class)->name('lap-supplier');
   Route::get('/laporan-wilayah', \App\Livewire\Pimpinan\LaporanWilayah::class)->name('lap-wilayah');
   Route::get('/laporan-inventory', \App\Livewire\Pimpinan\LaporanInventory::class)->name('lap-inventory');
+  Route::get('/laporan-stok-kritis', \App\Livewire\Pimpinan\LaporanStokKritis::class)->name('lap-stok-kritis');
+  // Route::get('/laporan-barang-terlaris', \App\Livewire\Pimpinan\LaporanBarangTerlaris::class)->name('lap-terlaris'); // BELUM DIBUAT
+  // Route::get('/laporan-barang-expired', \App\Livewire\Pimpinan\LaporanBarangExpired::class)->name('lap-expired'); // BELUM DIBUAT
   Route::get('/manajemen-pengguna', \App\Livewire\Pimpinan\ManajemenPengguna::class)->name('pengguna');
 });
 

@@ -122,9 +122,11 @@
 
       <div class="h-full flex flex-col">
         <nav class="flex-1 overflow-y-auto sidebar-scroll p-4 space-y-2">
+
+          <!-- DASHBOARD -->
           <a href="{{ route('kg.dashboard') }}"
             class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('kg.dashboard') ? 'menu-active' : 'menu-inactive' }}">
+              {{ request()->routeIs('kg.dashboard') ? 'menu-active' : 'menu-inactive' }}">
             @if (request()->routeIs('kg.dashboard'))
               <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
             @endif
@@ -136,9 +138,57 @@
             Dashboard
           </a>
 
+          <!-- ========== PERSEDIAAN ========== -->
+          <div x-data="{
+              open: localStorage.getItem('persediaan-menu') === 'true' ||
+                  {{ request()->routeIs(['kg.stok-barang', 'kg.barang-expired']) ? 'true' : 'false' }},
+              toggle() { this.open = !this.open;
+                  localStorage.setItem('persediaan-menu', this.open); }
+          }">
+            <button @click="toggle()"
+              class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+                {{ request()->routeIs(['kg.stok-barang', 'kg.barang-expired']) ? 'menu-active' : 'menu-inactive' }}">
+              <div class="flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                  </path>
+                </svg>
+                Persediaan
+              </div>
+              <svg class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <div x-show="open" x-transition x-cloak class="mt-2 pl-4 space-y-1">
+              <a href="{{ route('kg.stok-barang') }}"
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition-all duration-300
+                  {{ request()->routeIs('kg.stok-barang') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                  </path>
+                </svg>
+                Stok Barang
+              </a>
+              <a href="{{ route('kg.barang-expired') }}"
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition-all duration-300
+                  {{ request()->routeIs('kg.barang-expired') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Barang Expired
+              </a>
+            </div>
+          </div>
+
+          <!-- Laporan Barang Masuk -->
           <a href="{{ route('kg.barang-masuk') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('kg.barang-masuk') ? 'menu-active' : 'menu-inactive' }}">
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+              {{ request()->routeIs('kg.barang-masuk') ? 'menu-active' : 'menu-inactive' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 16V4m0 0L3 8m4-4l4 4m6 12v-4m0 0l4 4m-4-4l-4 4"></path>
@@ -146,9 +196,10 @@
             Laporan Barang Masuk
           </a>
 
+          <!-- Stock Opname -->
           <a href="{{ route('kg.stock-opname') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('kg.stock-opname') ? 'menu-active' : 'menu-inactive' }}">
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+              {{ request()->routeIs('kg.stock-opname') ? 'menu-active' : 'menu-inactive' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
@@ -157,16 +208,6 @@
             Stock Opname
           </a>
 
-          <a href="{{ route('kg.stok-barang') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('kg.stok-barang') ? 'menu-active' : 'menu-inactive' }}">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-              </path>
-            </svg>
-            Stok Barang
-          </a>
         </nav>
 
         <div class="border-t border-slate-200 p-4">

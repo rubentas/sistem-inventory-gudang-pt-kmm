@@ -3,24 +3,25 @@ namespace App\Livewire\Pimpinan;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Layout('layouts.pimpinan')]
 class ManajemenPengguna extends Component {
   use WithPagination;
 
-  // Form fields
-  public $id_user         = null;
-  public string $nama     = '';
-  public string $username = '';
-  public string $password = '';
-  public string $email    = '';
-  public string $no_telp  = '';
-  public string $role     = '';
+  // Form
+  public int | null $id_user = null;
+  public string $nama        = '';
+  public string $username    = '';
+  public string $password    = '';
+  public string $email       = '';
+  public string $no_telp     = '';
+  public string $role        = '';
 
-  // UI state
+  // UI
   public string $search = '';
-  public bool $showForm = false;
   public bool $isEdit   = false;
 
   protected $rules = [
@@ -41,13 +42,19 @@ class ManajemenPengguna extends Component {
     'role.required'     => 'Role wajib dipilih.',
   ];
 
-  public function bukaTambah(): void {
-    $this->reset(['id_user', 'nama', 'username', 'password', 'email', 'no_telp', 'role']);
-    $this->isEdit   = false;
-    $this->showForm = true;
+  public function updatedSearch(): void {$this->resetPage();}
+
+  public function resetForm(): void {
+    $this->reset(['id_user', 'nama', 'username', 'password', 'email', 'no_telp', 'role', 'isEdit']);
+    $this->resetErrorBag();
   }
 
-  public function bukaEdit(int $id): void {
+  public function openAddModal(): void {
+    $this->resetForm();
+    $this->dispatch('openModal');
+  }
+
+  public function edit(int $id): void {
     $user           = User::findOrFail($id);
     $this->id_user  = $user->id_user;
     $this->nama     = $user->nama;
@@ -57,12 +64,8 @@ class ManajemenPengguna extends Component {
     $this->no_telp  = $user->no_telp ?? '';
     $this->role     = $user->role;
     $this->isEdit   = true;
-    $this->showForm = true;
-  }
-
-  public function batal(): void {
-    $this->reset(['id_user', 'nama', 'username', 'password', 'email', 'no_telp', 'role']);
-    $this->showForm = false;
+    $this->resetErrorBag();
+    $this->dispatch('openModal');
   }
 
   public function simpan(): void {
@@ -91,26 +94,28 @@ class ManajemenPengguna extends Component {
 
     if ($this->isEdit) {
       User::findOrFail($this->id_user)->update($data);
-      session()->flash('success', 'Data pengguna berhasil diperbarui.');
+      $message = 'Data pengguna berhasil diperbarui.';
     } else {
       User::create($data);
-      session()->flash('success', 'Pengguna baru berhasil ditambahkan.');
+      $message = 'Pengguna baru berhasil ditambahkan.';
     }
 
-    $this->batal();
+    $this->resetForm();
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
   }
+
+  public function update(): void {$this->simpan();}
 
   public function hapus(int $id): void {
     $user = User::findOrFail($id);
 
-    // Cegah menghapus diri sendiri
     if ($user->id_user === auth()->user()->id_user) {
-      session()->flash('error', 'Anda tidak dapat menghapus akun sendiri.');
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Anda tidak dapat menghapus akun sendiri.');
       return;
     }
 
     $user->delete();
-    session()->flash('success', 'Data pengguna berhasil dihapus.');
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data pengguna berhasil dihapus.');
   }
 
   public function render() {
@@ -121,7 +126,6 @@ class ManajemenPengguna extends Component {
       ->orderBy('role')
       ->paginate(10);
 
-    return view('components.pimpinan.manajemen-pengguna', compact('users'))
-      ->layout('layouts.pimpinan');
+    return view('components.pimpinan.manajemen-pengguna', compact('users'));
   }
 }
