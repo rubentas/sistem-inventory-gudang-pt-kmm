@@ -60,9 +60,10 @@ Route::middleware(['auth', 'role:pimpinan'])->prefix('pimpinan')->name('pimpinan
   Route::get('/laporan-wilayah', \App\Livewire\Pimpinan\LaporanWilayah::class)->name('lap-wilayah');
   Route::get('/laporan-inventory', \App\Livewire\Pimpinan\LaporanInventory::class)->name('lap-inventory');
   Route::get('/laporan-stok-kritis', \App\Livewire\Pimpinan\LaporanStokKritis::class)->name('lap-stok-kritis');
-  // Route::get('/laporan-barang-terlaris', \App\Livewire\Pimpinan\LaporanBarangTerlaris::class)->name('lap-terlaris'); // BELUM DIBUAT
-  // Route::get('/laporan-barang-expired', \App\Livewire\Pimpinan\LaporanBarangExpired::class)->name('lap-expired'); // BELUM DIBUAT
+  Route::get('/laporan-barang-terlaris', \App\Livewire\Pimpinan\LaporanBarangTerlaris::class)->name('lap-terlaris');
+  Route::get('/laporan-barang-expired', \App\Livewire\Pimpinan\LaporanBarangExpired::class)->name('lap-expired');
   Route::get('/manajemen-pengguna', \App\Livewire\Pimpinan\ManajemenPengguna::class)->name('pengguna');
+  Route::get('/laporan-omzet', \App\Livewire\Pimpinan\LaporanOmzet::class)->name('lap-omzet');
 });
 
 // =============================================

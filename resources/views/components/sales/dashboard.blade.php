@@ -2,13 +2,11 @@
 
   {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="h-0.5 bg-linear-to-r from-orange-500 via-amber-500 to-yellow-500"></div>
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center shadow-[0_4px_12px_rgba(234,88,12,0.3)]">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -37,84 +35,71 @@
 
   {{-- STATS --}}
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-gray-400"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Order</p>
-            <p class="text-2xl font-extrabold text-gray-900 mt-1">{{ $stats['total'] }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Semua order Anda</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Order</p>
+          <p class="text-2xl font-extrabold text-gray-900">{{ $stats['total'] }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Semua order Anda</p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-amber-500"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending</p>
-            <p class="text-2xl font-extrabold text-amber-600 mt-1">{{ $stats['pending'] }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Menunggu diproses</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending</p>
+          <p class="text-2xl font-extrabold text-amber-600">{{ $stats['pending'] }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Menunggu diproses</p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-blue-500"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Diproses</p>
-            <p class="text-2xl font-extrabold text-blue-600 mt-1">{{ $stats['diproses'] }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Sedang dikerjakan</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Diproses</p>
+          <p class="text-2xl font-extrabold text-blue-600">{{ $stats['diproses'] }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Sedang dikerjakan</p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-emerald-500"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Selesai</p>
-            <p class="text-2xl font-extrabold text-emerald-600 mt-1">{{ $stats['selesai'] }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Order selesai</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Selesai</p>
+          <p class="text-2xl font-extrabold text-emerald-600">{{ $stats['selesai'] }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Order selesai</p>
     </div>
   </div>
 
   {{-- ORDER TERBARU --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="h-0.5 bg-linear-to-r from-orange-500 to-amber-500"></div>
     <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center">

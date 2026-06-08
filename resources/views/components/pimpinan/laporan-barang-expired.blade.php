@@ -49,7 +49,7 @@
                 @if ($item->status_expired == 'expired')
                   <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">Expired</span>
                 @elseif($item->status_expired == 'hampir_expired')
-                  <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">⚠️ Hampir Expired</span>
+                  <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">Hampir Expired</span>
                 @else
                   <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Aman</span>
                 @endif

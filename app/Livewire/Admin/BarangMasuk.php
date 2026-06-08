@@ -223,6 +223,14 @@ class BarangMasuk extends Component {
         ->count(),
     ];
   }
+  public function updatedIdSupplier($value) {
+    if ($value && ! $this->isEdit) {
+      $supplier = Supplier::find($value);
+      if ($supplier) {
+        $this->sumber = $supplier->nama_supplier;
+      }
+    }
+  }
 
   // Render view
   public function render() {

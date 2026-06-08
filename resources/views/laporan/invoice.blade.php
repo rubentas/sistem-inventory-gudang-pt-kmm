@@ -1,102 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
   <meta charset="UTF-8">
   <title>Invoice {{ $order->no_invoice }}</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Helvetica', sans-serif;
+      font-family: 'Helvetica', 'Arial', sans-serif;
       font-size: 12px;
-      line-height: 1.5;
+      color: #1f2937;
+      padding: 30px 40px;
     }
 
     .header {
       text-align: center;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 16px;
+    }
+
+    .header .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: 0.5px;
+    }
+
+    .header .subtitle {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .invoice-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #2563eb;
       margin-bottom: 20px;
-      border-bottom: 2px solid #333;
-      padding-bottom: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    .title {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 5px;
+    .info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 0;
+      margin-bottom: 24px;
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      border: 1px solid #e5e7eb;
     }
 
-    .subtitle {
-      font-size: 14px;
-      color: #666;
+    .info-grid .info-item {
+      width: 50%;
+      font-size: 12px;
+      padding: 4px 0;
     }
 
-    .info-table {
-      width: 100%;
-      margin-bottom: 20px;
+    .info-item strong {
+      display: inline-block;
+      width: 90px;
+      color: #4b5563;
     }
 
-    .info-table td {
-      padding: 5px;
+    .info-item span {
+      color: #111827;
+      font-weight: 500;
     }
 
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-
-    .items-table th,
-    .items-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
     }
 
     .items-table th {
-      background: #f5f5f5;
-      font-weight: bold;
+      background: #2563eb;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      text-align: left;
     }
 
-    .total {
+    .items-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+
+    .items-table .text-right {
       text-align: right;
-      font-size: 14px;
-      font-weight: bold;
-      margin-top: 20px;
+    }
+
+    .total-box {
+      text-align: right;
+      font-size: 15px;
+      font-weight: 800;
+      color: #2563eb;
+      border-top: 2px solid #2563eb;
+      padding-top: 12px;
+      margin-top: 4px;
     }
 
     .footer {
-      margin-top: 30px;
+      margin-top: 36px;
       text-align: center;
       font-size: 10px;
-      color: #999;
-      border-top: 1px solid #ddd;
-      padding-top: 10px;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 12px;
+      line-height: 1.6;
     }
   </style>
 </head>
 
 <body>
+
   <div class="header">
-    <div class="title">PT. KUDA MAS MANDIRI</div>
+    <div class="title">PT. Kuda Mas Mandiri</div>
     <div class="subtitle">Tanjung Tabalong, Kalimantan Selatan</div>
-    <div class="subtitle">Telp: 0511-123456 | Email: kmm@kmm.com</div>
+    <div class="subtitle">Telp: 0511-123456 &nbsp;|&nbsp; Email: kmm@kmm.com</div>
   </div>
 
-  <h3 style="text-align: center;">INVOICE</h3>
+  <div class="invoice-title">Invoice</div>
 
-  <table class="info-table">
-    <tr>
-      <td width="50%"><strong>No. Invoice:</strong> {{ $order->no_invoice }}</td>
-      <td width="50%"><strong>Tanggal:</strong> {{ $order->tanggal_order->format('d/m/Y') }}</td>
-    </tr>
-    <tr>
-      <td><strong>Nama Toko:</strong> {{ $order->nama_toko ?? '-' }}</td>
-      <td><strong>Wilayah:</strong> {{ $order->wilayah->nama_wilayah ?? '-' }}</td>
-    </tr>
-    <tr>
-      <td><strong>Sales:</strong> {{ $order->user->nama ?? '-' }}</td>
-      <td><strong>Status:</strong> {{ ucfirst($order->status) }}</td>
-    </tr>
-  </table>
+  <div class="info-grid">
+    <div class="info-item"><strong>No. Invoice</strong><span>: {{ $order->no_invoice }}</span></div>
+    <div class="info-item"><strong>Tanggal</strong><span>: {{ $order->tanggal_order->translatedFormat('d F Y') }}</span>
+    </div>
+    <div class="info-item"><strong>Nama Toko</strong><span>: {{ $order->nama_toko ?? '-' }}</span></div>
+    <div class="info-item"><strong>Wilayah</strong><span>: {{ $order->wilayah->nama_wilayah ?? '-' }}</span></div>
+    <div class="info-item"><strong>Sales</strong><span>: {{ $order->user->nama ?? '-' }}</span></div>
+    <div class="info-item"><strong>Status</strong><span>: {{ ucfirst($order->status) }}</span></div>
+  </div>
 
   <table class="items-table">
     <thead>
@@ -106,7 +156,7 @@
         <th>Jumlah</th>
         <th>Satuan</th>
         <th>Harga Satuan</th>
-        <th>Total</th>
+        <th class="text-right">Subtotal</th>
       </tr>
     </thead>
     <tbody>
@@ -115,21 +165,21 @@
         <td>{{ $order->barang->kode_barang ?? '-' }}</td>
         <td>{{ number_format($order->jumlah) }}</td>
         <td>{{ $order->barang->satuan ?? 'pcs' }}</td>
-        <td>Rp {{ number_format($order->harga_satuan, 0, ',', '.') }}</td>
-        <td>Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
+        <td>Rp {{ number_format($order->harga_jual, 0, ',', '.') }}</td>
+        <td class="text-right">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</td>
       </tr>
     </tbody>
   </table>
 
-  @if ($order->potongan > 0)
-    <div class="total">Potongan: Rp {{ number_format($order->potongan, 0, ',', '.') }}</div>
-  @endif
-  <div class="total">TOTAL: Rp {{ number_format($order->total_harga, 0, ',', '.') }}</div>
+  <div class="total-box">
+    TOTAL: Rp {{ number_format($order->subtotal, 0, ',', '.') }}
+  </div>
 
   <div class="footer">
     Terima kasih atas kepercayaan Anda.<br>
-    Invoice ini dibuat secara otomatis oleh sistem.
+    Invoice ini dibuat secara otomatis oleh sistem Inventory PT. Kuda Mas Mandiri.
   </div>
+
 </body>
 
 </html>

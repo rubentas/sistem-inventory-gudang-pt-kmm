@@ -15,24 +15,26 @@ class DataBarang extends Component {
   public string $filterKategori = '';
 
   // Form
-  public int | null $id_barang = null;
-  public string $kode_barang   = '';
-  public string $nama_barang   = '';
-  public string $kategori      = '';
-  public string $satuan        = 'Pcs';
-  public int $stok_minimum     = 0;
-  public string $keterangan    = '';
+  public int | null $id_barang            = null;
+  public string $kode_barang              = '';
+  public string $nama_barang              = '';
+  public string $kategori                 = '';
+  public string $satuan                   = 'Pcs';
+  public int $stok_minimum                = 0;
+  public int | string $harga_jual_default = '';
+  public string $keterangan               = '';
 
   // UI state
   public bool $isEdit = false;
 
   protected $rules = [
-    'kode_barang'  => 'required|string|max:50',
-    'nama_barang'  => 'required|string|max:255',
-    'kategori'     => 'required|string|max:100',
-    'satuan'       => 'required|string|max:20',
-    'stok_minimum' => 'required|integer|min:0',
-    'keterangan'   => 'nullable|string',
+    'kode_barang'        => 'required|string|max:50',
+    'nama_barang'        => 'required|string|max:255',
+    'kategori'           => 'required|string|max:100',
+    'satuan'             => 'required|string|max:20',
+    'stok_minimum'       => 'required|integer|min:0',
+    'harga_jual_default' => 'nullable|integer|min:0',
+    'keterangan'         => 'nullable|string',
   ];
 
   protected $messages = [
@@ -57,7 +59,7 @@ class DataBarang extends Component {
   public function resetForm(): void {
     $this->reset([
       'id_barang', 'kode_barang', 'nama_barang', 'kategori',
-      'satuan', 'stok_minimum', 'keterangan', 'isEdit',
+      'satuan', 'stok_minimum', 'harga_jual_default', 'keterangan', 'isEdit',
     ]);
     $this->satuan       = 'Pcs';
     $this->stok_minimum = 0;
@@ -70,15 +72,16 @@ class DataBarang extends Component {
   }
 
   public function edit(int $id): void {
-    $barang             = Barang::findOrFail($id);
-    $this->id_barang    = $barang->id_barang;
-    $this->kode_barang  = $barang->kode_barang;
-    $this->nama_barang  = $barang->nama_barang;
-    $this->kategori     = $barang->kategori ?? '';
-    $this->satuan       = $barang->satuan;
-    $this->stok_minimum = $barang->stok_minimum;
-    $this->keterangan   = $barang->keterangan ?? '';
-    $this->isEdit       = true;
+    $barang                   = Barang::findOrFail($id);
+    $this->id_barang          = $barang->id_barang;
+    $this->kode_barang        = $barang->kode_barang;
+    $this->nama_barang        = $barang->nama_barang;
+    $this->kategori           = $barang->kategori ?? '';
+    $this->satuan             = $barang->satuan;
+    $this->stok_minimum       = $barang->stok_minimum;
+    $this->harga_jual_default = $barang->harga_jual_default ?? '';
+    $this->keterangan         = $barang->keterangan ?? '';
+    $this->isEdit             = true;
     $this->resetErrorBag();
     $this->dispatch('openModal');
   }
@@ -93,12 +96,13 @@ class DataBarang extends Component {
     $this->validate($rules);
 
     $data = [
-      'kode_barang'  => $this->kode_barang,
-      'nama_barang'  => $this->nama_barang,
-      'kategori'     => $this->kategori,
-      'satuan'       => $this->satuan,
-      'stok_minimum' => $this->stok_minimum,
-      'keterangan'   => $this->keterangan,
+      'kode_barang'        => $this->kode_barang,
+      'nama_barang'        => $this->nama_barang,
+      'kategori'           => $this->kategori,
+      'satuan'             => $this->satuan,
+      'stok_minimum'       => $this->stok_minimum,
+      'harga_jual_default' => $this->harga_jual_default ?: null,
+      'keterangan'         => $this->keterangan,
     ];
 
     if ($this->isEdit) {

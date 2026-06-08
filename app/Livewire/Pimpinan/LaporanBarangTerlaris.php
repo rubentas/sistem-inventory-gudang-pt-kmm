@@ -1,7 +1,7 @@
 <?php
 namespace App\Livewire\Pimpinan;
 
-use App\Models\BarangKeluar;
+use App\Models\OrderSales;
 use Livewire\Component;
 
 class LaporanBarangTerlaris extends Component {
@@ -14,15 +14,14 @@ class LaporanBarangTerlaris extends Component {
   }
 
   public function render() {
-    $query = BarangKeluar::with('barang')
-      ->selectRaw('id_barang, sum(jumlah) as total_terjual')
-      ->whereMonth('tanggal_keluar', $this->bulan)
-      ->whereYear('tanggal_keluar', $this->tahun)
+    $terlaris = OrderSales::with('barang')
+      ->selectRaw('id_barang, sum(jumlah) as total_terjual, sum(subtotal) as total_omzet')
+      ->whereMonth('tanggal_order', $this->bulan)
+      ->whereYear('tanggal_order', $this->tahun)
       ->groupBy('id_barang')
       ->orderByDesc('total_terjual')
-      ->limit(5);
-
-    $terlaris = $query->get();
+      ->limit(5)
+      ->get();
 
     return view('components.pimpinan.laporan-barang-terlaris', compact('terlaris'))
       ->layout('layouts.pimpinan');

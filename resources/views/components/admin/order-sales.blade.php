@@ -5,7 +5,7 @@
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
     x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-x-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-[200]">
+    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-200">
     <div :class="toast.type === 'success' ? 'border-l-[3px] border-emerald-500' : 'border-l-[3px] border-red-500'"
       class="flex items-start gap-3 w-80 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200 px-4 py-3.5">
       <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'"
@@ -42,15 +42,15 @@
           </div>
           <div>
             <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Order Sales</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Mengelola pesanan dari para sales</p>
+            <p class="text-sm text-gray-400 mt-0.5">Kelola pesanan dari para sales</p>
           </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
           <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
                 </svg>
@@ -62,8 +62,11 @@
             </div>
             <div class="w-px h-10 bg-gray-200"></div>
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                <span class="text-sm font-bold text-amber-600">{{ $stats['pending'] }}</span>
+              <div class="w-10 h-10 rounded-lg bg-amber-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
               <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending</p>
@@ -80,14 +83,6 @@
             </svg>
             PDF
           </a>
-
-          <button wire:click="openAddModal"
-            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-            </svg>
-            Tambah Order
-          </button>
         </div>
       </div>
     </div>
@@ -133,7 +128,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[800px]">
+      <table class="w-full min-w-225">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left w-12"><span
@@ -147,6 +142,10 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
             <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Harga</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Subtotal</span></th>
+            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
             <th class="px-5 py-4 text-center w-32"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
@@ -154,14 +153,20 @@
         </thead>
         <tbody class="divide-y divide-gray-50">
           @forelse($orders as $index => $order)
+            @php
+              $harga = is_numeric($order->harga_jual) ? (int) $order->harga_jual : 0;
+              $subtotal = $harga * (int) $order->jumlah;
+            @endphp
             <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $orders->firstItem() + $index }}</td>
-              <td class="px-5 py-4 text-sm font-medium text-gray-700">
+              <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                 {{ $order->tanggal_order->translatedFormat('d/m/Y') }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $order->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $order->wilayah->nama_wilayah ?? '-' }}</td>
               <td class="px-5 py-4"><span
                   class="text-sm font-bold text-gray-700">{{ number_format($order->jumlah) }}</span></td>
+              <td class="px-5 py-4 text-sm text-gray-700">Rp {{ number_format($harga, 0, ',', '.') }}</td>
+              <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
               <td class="px-5 py-4">
                 @if ($order->status == 'pending')
                   <span
@@ -178,7 +183,7 @@
                 <div class="flex items-center justify-center gap-0.5">
                   <button wire:click="edit({{ $order->id_order }})"
                     class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition"
-                    title="Edit">
+                    title="Edit Status">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -197,7 +202,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="7" class="px-6 py-20">
+              <td colspan="9" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,13 +214,6 @@
                     <h3 class="text-base font-bold text-gray-900 mb-1">Belum Ada Data</h3>
                     <p class="text-sm text-gray-400">Belum ada order sales yang tercatat.</p>
                   </div>
-                  <button wire:click="openAddModal"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Sekarang
-                  </button>
                 </div>
               </td>
             </tr>
@@ -228,12 +226,12 @@
     @endif
   </div>
 
-  {{-- MODAL --}}
+  {{-- MODAL EDIT STATUS --}}
   <template x-teleport="body">
     <div x-show="modalOpen" x-cloak x-transition:enter="transition ease-out duration-200"
       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
       x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
-      x-transition:leave-end="opacity-0" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      x-transition:leave-end="opacity-0" class="fixed inset-0 z-100 flex items-center justify-center p-4"
       @keydown.escape.window="modalOpen = false">
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
       <div @click.stop class="relative z-50 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -242,19 +240,14 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                <svg x-show="!$wire.isEdit" class="w-5 h-5 text-white" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                </svg>
-                <svg x-show="$wire.isEdit" class="w-5 h-5 text-white" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
               <div class="text-white">
-                <h2 class="text-lg font-bold" x-text="$wire.isEdit ? 'Edit Order' : 'Tambah Order'"></h2>
-                <p class="text-blue-100 text-xs">Lengkapi field wajib <span class="text-white">*</span></p>
+                <h2 class="text-lg font-bold">Update Status Order</h2>
+                <p class="text-blue-100 text-xs">Order #{{ $id_order }}</p>
               </div>
             </div>
             <button @click="modalOpen = false"
@@ -267,69 +260,35 @@
         </div>
 
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
-          <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
-                class="text-red-500">*</span></label>
-            <select wire:model="id_barang"
-              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
-              <option value="">-- Pilih Barang --</option>
-              @foreach ($barangs as $barang)
-                <option value="{{ $barang->id_barang }}">{{ $barang->kode_barang }} - {{ $barang->nama_barang }}
-                </option>
-              @endforeach
-            </select>
-            @error('id_barang')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
+          {{-- INFO ORDER (READONLY) --}}
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-2">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Detail Order</p>
+            <p class="text-sm"><span class="text-gray-500">Barang:</span> <span
+                class="font-semibold">{{ $barangs->find($id_barang)?->nama_barang ?? '-' }}</span></p>
+            <p class="text-sm"><span class="text-gray-500">Wilayah:</span> <span
+                class="font-semibold">{{ $wilayahs->find($id_wilayah)?->nama_wilayah ?? '-' }}</span></p>
+            <p class="text-sm"><span class="text-gray-500">Jumlah:</span> <span
+                class="font-semibold">{{ number_format($jumlah) }}</span></p>
+            <p class="text-sm"><span class="text-gray-500">Subtotal:</span> <span
+                class="font-semibold text-blue-600">Rp {{ number_format((int) $subtotal, 0, ',', '.') }}</span></p>
           </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Wilayah <span
-                class="text-red-500">*</span></label>
-            <select wire:model="id_wilayah"
-              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
-              <option value="">-- Pilih Wilayah --</option>
-              @foreach ($wilayahs as $wilayah)
-                <option value="{{ $wilayah->id_wilayah }}">{{ $wilayah->nama_wilayah }}</option>
-              @endforeach
-            </select>
-            @error('id_wilayah')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah <span
-                  class="text-red-500">*</span></label>
-              <input type="number" wire:model="jumlah" placeholder="0" min="1"
-                class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-              @error('jumlah')
-                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-              @enderror
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span
-                  class="text-red-500">*</span></label>
-              <input type="date" wire:model="tanggal_order"
-                class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-              @error('tanggal_order')
-                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-              @enderror
-            </div>
-          </div>
+
+          {{-- STATUS --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Status <span
                 class="text-red-500">*</span></label>
             <select wire:model="status"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
-              <option value="pending">Pending (Menunggu)</option>
+              <option value="pending">Pending</option>
               <option value="diproses">Diproses</option>
               <option value="selesai">Selesai</option>
             </select>
           </div>
+
+          {{-- KETERANGAN --}}
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
-                class="text-gray-400 font-normal">(opsional)</span></label>
-            <textarea wire:model="keterangan" rows="3" placeholder="Catatan tambahan…"
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan</label>
+            <textarea wire:model="keterangan" rows="3" placeholder="Catatan..."
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none resize-none"></textarea>
           </div>
         </div>
@@ -339,12 +298,12 @@
           <div class="flex items-center gap-2">
             <button @click="modalOpen = false"
               class="px-5 py-2.5 rounded-xl bg-white border-2 border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-700 transition">Batal</button>
-            <button @click="$wire.isEdit ? $wire.update() : $wire.simpan()"
+            <button @click="$wire.update()"
               class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition shadow-lg shadow-blue-600/25 flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span x-text="$wire.isEdit ? 'Simpan Perubahan' : 'Simpan Data'"></span>
+              Simpan Perubahan
             </button>
           </div>
         </div>

@@ -5,7 +5,7 @@
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
     x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-x-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-[200]">
+    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 [z-200]">
     <div :class="toast.type === 'success' ? 'border-l-[3px] border-emerald-500' : 'border-l-[3px] border-red-500'"
       class="flex items-start gap-3 w-80 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200 px-4 py-3.5">
       <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'"
@@ -31,13 +31,11 @@
 
   {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="h-0.5 bg-linear-to-r from-orange-500 via-amber-500 to-yellow-500"></div>
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center shadow-[0_4px_12px_rgba(234,88,12,0.3)]">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -52,7 +50,10 @@
           <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
               <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                <span class="text-sm font-bold text-gray-600">{{ $stats['total'] }}</span>
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+                </svg>
               </div>
               <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total</p>
@@ -62,7 +63,10 @@
             <div class="w-px h-10 bg-gray-200"></div>
             <div class="flex items-center gap-2.5">
               <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                <span class="text-sm font-bold text-amber-600">{{ $stats['pending'] }}</span>
+                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
               <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending</p>
@@ -123,7 +127,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[600px]">
+      <table class="w-full min-w-175">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left"><span
@@ -135,6 +139,8 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
             <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Subtotal</span></th>
+            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
             <th class="px-5 py-4 text-center w-24"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
@@ -142,6 +148,10 @@
         </thead>
         <tbody class="divide-y divide-gray-50">
           @forelse($orders as $order)
+            @php
+              $harga = is_numeric($order->harga_jual) ? (int) $order->harga_jual : 0;
+              $subtotal = $harga * (int) $order->jumlah;
+            @endphp
             <tr class="hover:bg-orange-50/30 transition">
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                 {{ $order->tanggal_order->translatedFormat('d/m/Y') }}</td>
@@ -151,6 +161,7 @@
                 <span class="text-sm font-bold text-orange-600">{{ number_format($order->jumlah) }}</span>
                 <span class="text-xs text-gray-400 ml-1">{{ $order->barang->satuan ?? 'pcs' }}</span>
               </td>
+              <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
               <td class="px-5 py-4">
                 @if ($order->status == 'pending')
                   <span
@@ -190,7 +201,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="6" class="px-6 py-20">
+              <td colspan="7" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +304,7 @@
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah <span
                   class="text-red-500">*</span></label>
-              <input type="number" wire:model="jumlah" placeholder="0" min="1"
+              <input type="number" wire:model.live="jumlah" placeholder="0" min="1"
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none">
               @error('jumlah')
                 <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
@@ -309,6 +320,32 @@
               @enderror
             </div>
           </div>
+
+          {{-- HARGA JUAL --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Harga Jual (Rp) <span
+                class="text-red-500">*</span></label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+              <input type="number" wire:model.live="harga_jual" placeholder="0"
+                class="w-full rounded-xl border-2 border-gray-300 bg-white pl-12 pr-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none">
+            </div>
+            @error('harga_jual')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
+
+          {{-- SUBTOTAL --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Subtotal (Rp)</label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+              <input type="text" value="{{ number_format((int) ($subtotal ?? 0), 0, ',', '.') }}" readonly
+                disabled
+                class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 pl-12 pr-4 py-3 text-sm font-bold text-blue-600 outline-none">
+            </div>
+          </div>
+
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>

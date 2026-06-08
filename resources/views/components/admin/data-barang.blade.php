@@ -47,7 +47,6 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
-          {{-- Stats --}}
           <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
               <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -113,7 +112,6 @@
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
 
-        {{-- FILTER KATEGORI --}}
         <div class="relative shrink-0" x-data="{ showFilter: false }" @click.outside="showFilter = false">
           <button @click="showFilter = !showFilter"
             :class="showFilter ? 'bg-blue-600 text-white border-blue-600' :
@@ -133,7 +131,6 @@
             x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
             class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.3)] border border-gray-200 p-5 z-[9999]">
-
             <p class="text-sm font-black text-gray-900 mb-4">Filter Kategori</p>
             <select wire:model.live="filterKategori"
               class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
@@ -142,23 +139,16 @@
                 <option value="{{ $kat }}">{{ $kat }}</option>
               @endforeach
             </select>
-
             <div class="flex gap-3 mt-4 pt-3 border-t border-gray-100">
               <button wire:click="resetFilters" @click="showFilter = false"
-                class="flex-1 px-4 py-2.5 text-sm font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition">
-                Reset
-              </button>
+                class="flex-1 px-4 py-2.5 text-sm font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition">Reset</button>
               <button @click="showFilter = false"
-                class="flex-1 px-4 py-2.5 text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-lg shadow-blue-500/20">
-                Terapkan
-              </button>
+                class="flex-1 px-4 py-2.5 text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-lg shadow-blue-500/20">Terapkan</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    {{-- Quick Reset --}}
     @if ($filterKategori || $search)
       <div class="px-4 sm:px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
         <button wire:click="resetFilters"
@@ -189,6 +179,8 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Satuan</span></th>
             <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Harga Jual</span></th>
+            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok Min</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok Saat Ini</span></th>
@@ -212,6 +204,8 @@
                   class="px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg text-xs font-semibold">{{ $barang->kategori ?? '-' }}</span>
               </td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $barang->satuan }}</td>
+              <td class="px-5 py-4 text-sm font-medium text-gray-700">Rp
+                {{ number_format($barang->harga_jual_default ?? 0, 0, ',', '.') }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ number_format($barang->stok_minimum) }}</td>
               <td class="px-5 py-4">
                 @php $stokSekarang = $barang->stok ? $barang->stok->jumlah_stok : 0; @endphp
@@ -249,7 +243,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-6 py-20">
+              <td colspan="9" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -381,6 +375,17 @@
             @enderror
             <p class="text-xs text-gray-400 mt-1">Jika stok &le; nilai ini, status "Menipis"</p>
           </div>
+
+          {{-- HARGA JUAL DEFAULT --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Harga Jual Default (Rp)</label>
+            <input type="number" wire:model="harga_jual_default" placeholder="Harga jual default" min="0"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
+            @error('harga_jual_default')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
+
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>

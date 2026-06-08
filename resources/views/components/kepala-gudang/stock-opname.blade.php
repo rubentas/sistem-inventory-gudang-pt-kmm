@@ -42,7 +42,7 @@
           </div>
           <div>
             <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Stock Opname</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Pengecekan stok fisik berkala</p>
+            <p class="text-sm text-gray-400 mt-0.5">Pengecekan stok fisik setiap bulan</p>
           </div>
         </div>
         <button wire:click="openAddModal"
@@ -53,6 +53,21 @@
           Tambah Opname
         </button>
       </div>
+    </div>
+  </div>
+
+  {{-- ALERT SOP --}}
+  <div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-emerald-800">SOP Perusahaan</p>
+      <p class="text-xs text-emerald-600 mt-0.5">Stock opname wajib dilakukan setiap akhir bulan sesuai SOP perusahaan.
+      </p>
     </div>
   </div>
 
@@ -83,13 +98,16 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span></th>
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok
                 Sistem</span></th>
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok
                 Fisik</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Selisih</span></th>
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Input
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Input
                 Oleh</span></th>
             <th class="px-5 py-4 text-center w-24"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
@@ -303,10 +321,15 @@
           confirmButtonColor: '#EF4444',
           cancelButtonColor: '#94A3B8',
           confirmButtonText: 'Ya, Hapus',
-          cancelButtonText: 'Batal'
+          cancelButtonText: 'Batal',
+          customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-xl text-sm font-bold px-5',
+            cancelButton: 'rounded-xl text-sm font-bold px-5'
+          },
         }).then((result) => {
           if (result.isConfirmed) {
-            @this.hapus(id);
+            this.$wire.call('hapus', id);
           }
         });
       }

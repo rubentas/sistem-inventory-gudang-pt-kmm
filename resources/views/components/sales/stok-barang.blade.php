@@ -2,13 +2,11 @@
 
   {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="h-0.5 bg-linear-to-r from-orange-500 via-amber-500 to-yellow-500"></div>
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center shadow-[0_4px_12px_rgba(234,88,12,0.3)]">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
@@ -24,60 +22,51 @@
 
   {{-- STATS --}}
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-gray-400"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Stok</p>
-            <p class="text-2xl font-extrabold text-gray-900 mt-1">{{ number_format($totalStok) }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Seluruh barang</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Stok</p>
+          <p class="text-2xl font-extrabold text-gray-900">{{ number_format($totalStok) }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Seluruh barang</p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-red-500"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Menipis</p>
-            <p class="text-2xl font-extrabold text-red-600 mt-1">{{ number_format($totalMenipis) }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-red-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Stok &le; Minimum</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Menipis</p>
+          <p class="text-2xl font-extrabold text-red-600">{{ number_format($totalMenipis) }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Stok &le; Minimum</p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden group hover:shadow-md transition">
-      <div class="h-0.5 bg-emerald-500"></div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Aman</p>
-            <p class="text-2xl font-extrabold text-emerald-600 mt-1">{{ number_format($totalAman) }}</p>
-          </div>
-          <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
-            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Stok &gt; Minimum</p>
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stok Aman</p>
+          <p class="text-2xl font-extrabold text-emerald-600">{{ number_format($totalAman) }}</p>
+        </div>
       </div>
+      <p class="text-xs text-gray-400 mt-3">Stok &gt; Minimum</p>
     </div>
   </div>
 
@@ -127,8 +116,8 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Barang</span></th>
+            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama
+                Barang</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</span></th>
             <th class="px-5 py-4 text-left"><span

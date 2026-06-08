@@ -4,7 +4,6 @@ namespace App\Livewire\Admin;
 use App\Models\Barang;
 use App\Models\OrderSales as OrderSalesModel;
 use App\Models\Wilayah;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,13 +17,15 @@ class OrderSales extends Component {
   public string $filterStatus = '';
 
   // Form
-  public int | null $id_order     = null;
-  public int | string $id_barang  = '';
-  public int | string $id_wilayah = '';
-  public int | string $jumlah     = '';
-  public string $tanggal_order    = '';
-  public string $status           = 'pending';
-  public string $keterangan       = '';
+  public $id_order             = null;
+  public $id_barang            = '';
+  public $id_wilayah           = '';
+  public $jumlah               = '';
+  public $harga_jual           = '';
+  public $subtotal             = '';
+  public string $tanggal_order = '';
+  public string $status        = 'pending';
+  public string $keterangan    = '';
 
   // UI state
   public bool $isEdit = false;
@@ -33,6 +34,7 @@ class OrderSales extends Component {
     'id_barang'     => 'required|exists:barangs,id_barang',
     'id_wilayah'    => 'required|exists:wilayahs,id_wilayah',
     'jumlah'        => 'required|integer|min:1',
+    'harga_jual'    => 'required|numeric|min:0',
     'tanggal_order' => 'required|date',
     'status'        => 'required|in:pending,diproses,selesai',
     'keterangan'    => 'nullable|string',
@@ -43,6 +45,8 @@ class OrderSales extends Component {
     'id_wilayah.required'    => 'Pilih wilayah terlebih dahulu.',
     'jumlah.required'        => 'Jumlah wajib diisi.',
     'jumlah.min'             => 'Jumlah minimal 1.',
+    'harga_jual.required'    => 'Harga jual wajib diisi.',
+    'harga_jual.min'         => 'Harga jual minimal 0.',
     'tanggal_order.required' => 'Tanggal order wajib diisi.',
   ];
 
@@ -50,8 +54,37 @@ class OrderSales extends Component {
     $this->tanggal_order = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterStatus(): void {$this->resetPage();}
+  public function updatedJumlah(): void {
+    $this->hitungSubtotal();
+  }
+
+  public function updatedHargaJual(): void {
+    $this->hitungSubtotal();
+  }
+
+  public function updatedIdBarang(): void {
+    if ($this->id_barang && ! $this->isEdit) {
+      $barang = Barang::find($this->id_barang);
+      if ($barang && $barang->harga_jual_default > 0) {
+        $this->harga_jual = $barang->harga_jual_default;
+        $this->hitungSubtotal();
+      }
+    }
+  }
+
+  public function hitungSubtotal(): void {
+    $jumlah         = (int) $this->jumlah;
+    $harga          = (int) $this->harga_jual;
+    $this->subtotal = $jumlah * $harga;
+  }
+
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
+
+  public function updatedFilterStatus(): void {
+    $this->resetPage();
+  }
 
   public function resetFilters(): void {
     $this->search       = '';
@@ -61,17 +94,12 @@ class OrderSales extends Component {
 
   public function resetForm(): void {
     $this->reset([
-      'id_order', 'id_barang', 'id_wilayah', 'jumlah',
+      'id_order', 'id_barang', 'id_wilayah', 'jumlah', 'harga_jual', 'subtotal',
       'tanggal_order', 'status', 'keterangan', 'isEdit',
     ]);
     $this->tanggal_order = now()->format('Y-m-d');
     $this->status        = 'pending';
     $this->resetErrorBag();
-  }
-
-  public function openAddModal(): void {
-    $this->resetForm();
-    $this->dispatch('openModal');
   }
 
   public function edit(int $id): void {
@@ -80,6 +108,8 @@ class OrderSales extends Component {
     $this->id_barang     = $order->id_barang;
     $this->id_wilayah    = $order->id_wilayah;
     $this->jumlah        = $order->jumlah;
+    $this->harga_jual    = $order->harga_jual;
+    $this->subtotal      = $order->subtotal;
     $this->tanggal_order = $order->tanggal_order->format('Y-m-d');
     $this->status        = $order->status;
     $this->keterangan    = $order->keterangan ?? '';
@@ -88,40 +118,34 @@ class OrderSales extends Component {
     $this->dispatch('openModal');
   }
 
-  public function simpan(): void {
+  public function update(): void {
     $this->validate();
 
-    $data = [
+    $order = OrderSalesModel::findOrFail($this->id_order);
+
+    // Cek stok jika status diubah menjadi selesai
+    if ($order->status !== 'selesai' && $this->status === 'selesai') {
+      $stok = \App\Models\Stok::where('id_barang', $this->id_barang)->first();
+      if (! $stok || $stok->jumlah_stok < $this->jumlah) {
+        $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Stok tidak mencukupi untuk menyelesaikan order ini.');
+        return;
+      }
+    }
+
+    $order->update([
       'id_barang'     => $this->id_barang,
-      'id_user'       => Auth::id(),
       'id_wilayah'    => $this->id_wilayah,
       'jumlah'        => $this->jumlah,
+      'harga_jual'    => $this->harga_jual,
+      'subtotal'      => $this->subtotal,
       'tanggal_order' => $this->tanggal_order,
       'status'        => $this->status,
       'keterangan'    => $this->keterangan,
-    ];
-
-    if ($this->isEdit) {
-      $order = OrderSalesModel::findOrFail($this->id_order);
-      if ($order->status !== 'selesai' && $this->status === 'selesai') {
-        $stok = \App\Models\Stok::where('id_barang', $this->id_barang)->first();
-        if (! $stok || $stok->jumlah_stok < $this->jumlah) {
-          $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Stok tidak mencukupi untuk menyelesaikan order ini.');
-          return;
-        }
-      }
-      $order->update($data);
-      $message = 'Order sales berhasil diperbarui.';
-    } else {
-      OrderSalesModel::create($data);
-      $message = 'Order sales berhasil ditambahkan.';
-    }
+    ]);
 
     $this->resetForm();
-    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Order sales berhasil diperbarui.');
   }
-
-  public function update(): void {$this->simpan();}
 
   public function hapus(int $id): void {
     $order = OrderSalesModel::findOrFail($id);

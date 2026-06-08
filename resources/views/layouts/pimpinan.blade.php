@@ -141,8 +141,10 @@
           <div x-data="{
               open: localStorage.getItem('laporan-menu') === 'true' ||
                   {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('laporan-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('laporan-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
@@ -262,6 +264,17 @@
               </a>
             </div>
           </div>
+
+          <!-- LAPORAN OMZET -->
+          <a href="{{ route('pimpinan.lap-omzet') }}"
+            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition
+        {{ request()->routeIs('pimpinan.lap-omzet') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Omzet Penjualan
+          </a>
 
           <!-- MANAJEMEN PENGGUNA -->
           <a href="{{ route('pimpinan.pengguna') }}"
