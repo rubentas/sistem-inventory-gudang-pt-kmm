@@ -78,4 +78,6 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/supplier/pdf', [LaporanController::class, 'supplierPdf'])->name('supplier.pdf');
   Route::get('/wilayah/pdf', [LaporanController::class, 'wilayahPdf'])->name('wilayah.pdf');
   Route::get('/inventory/pdf', [LaporanController::class, 'inventoryPdf'])->name('inventory.pdf');
+  Route::get('/data-barang/pdf', [LaporanController::class, 'dataBarangPdf'])->name('data-barang.pdf');
+  Route::get('/omzet/pdf', [LaporanController::class, 'omzetPdf'])->name('omzet.pdf');
 });

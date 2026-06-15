@@ -14,12 +14,14 @@ class OrderSales extends Model {
     'id_barang',
     'id_user',
     'id_wilayah',
+    'nama_toko',
     'jumlah',
     'harga_jual',
     'subtotal',
     'tanggal_order',
     'status',
     'keterangan',
+    'no_invoice',
   ];
 
   protected $casts = [

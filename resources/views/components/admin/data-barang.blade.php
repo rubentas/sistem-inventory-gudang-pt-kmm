@@ -75,7 +75,7 @@
             </div>
           </div>
 
-          <a href="{{ route('laporan.inventory.pdf') }}" target="_blank"
+          <a href="{{ route('laporan.data-barang.pdf') }}" target="_blank"
             class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

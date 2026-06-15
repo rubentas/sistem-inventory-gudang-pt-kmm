@@ -5,7 +5,7 @@
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
     x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-x-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 [z-200]">
+    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-[200]">
     <div :class="toast.type === 'success' ? 'border-l-[3px] border-emerald-500' : 'border-l-[3px] border-red-500'"
       class="flex items-start gap-3 w-80 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200 px-4 py-3.5">
       <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'"
@@ -127,7 +127,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-175">
+      <table class="w-full min-w-[700px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left"><span
@@ -136,6 +136,8 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Wilayah</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Toko</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
             <th class="px-5 py-4 text-left"><span
@@ -157,10 +159,10 @@
                 {{ $order->tanggal_order->translatedFormat('d/m/Y') }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $order->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $order->wilayah->nama_wilayah ?? '-' }}</td>
-              <td class="px-5 py-4">
-                <span class="text-sm font-bold text-orange-600">{{ number_format($order->jumlah) }}</span>
-                <span class="text-xs text-gray-400 ml-1">{{ $order->barang->satuan ?? 'pcs' }}</span>
-              </td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ $order->nama_toko ?: '-' }}</td>
+              <td class="px-5 py-4"><span
+                  class="text-sm font-bold text-orange-600">{{ number_format($order->jumlah) }}</span><span
+                  class="text-xs text-gray-400 ml-1">{{ $order->barang->satuan ?? 'pcs' }}</span></td>
               <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
               <td class="px-5 py-4">
                 @if ($order->status == 'pending')
@@ -201,7 +203,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="7" class="px-6 py-20">
+              <td colspan="8" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,6 +302,12 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
+          {{-- NAMA TOKO --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Nama Toko</label>
+            <input type="text" wire:model="nama_toko" placeholder="Masukkan nama toko"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none">
+          </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah <span
@@ -320,7 +328,6 @@
               @enderror
             </div>
           </div>
-
           {{-- HARGA JUAL --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Harga Jual (Rp) <span
@@ -335,16 +342,7 @@
             @enderror
           </div>
 
-          {{-- SUBTOTAL --}}
-          <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Subtotal (Rp)</label>
-            <div class="relative">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
-              <input type="text" value="{{ number_format((int) ($subtotal ?? 0), 0, ',', '.') }}" readonly
-                disabled
-                class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 pl-12 pr-4 py-3 text-sm font-bold text-blue-600 outline-none">
-            </div>
-          </div>
+          {{-- SUBTOTAL DIHAPUS DARI SINI --}}
 
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span

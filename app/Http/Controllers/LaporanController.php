@@ -15,251 +15,244 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller {
-    /**
-     * Catat aktivitas cetak laporan ke database
-     */
-    private function catatLaporan(string $jenis, ?string $awal = null, ?string $akhir = null): void {
-        Laporan::create([
-            'id_user'       => Auth::user()->id_user,
-            'jenis_laporan' => $jenis,
-            'tanggal_awal'  => $awal,
-            'tanggal_akhir' => $akhir,
-            'tanggal_cetak' => Carbon::today(),
-        ]);
+  private function catatLaporan(string $jenis, ?string $awal = null, ?string $akhir = null): void {
+    Laporan::create([
+      'id_user'       => Auth::id(),
+      'jenis_laporan' => $jenis,
+      'tanggal_awal'  => $awal,
+      'tanggal_akhir' => $akhir,
+      'tanggal_cetak' => Carbon::today(),
+    ]);
+  }
+
+  private function formatTanggal($tanggal): string {
+    if (! $tanggal) {
+      return '-';
     }
 
-    /**
-     * Format tanggal Indonesia
-     */
-    private function formatTanggalIndonesia($tanggal): string {
-        if (! $tanggal) {
-            return '-';
-        }
-        return Carbon::parse($tanggal)->isoFormat('D MMMM Y');
-    }
+    return Carbon::parse($tanggal)->translatedFormat('d F Y');
+  }
 
-    /**
-     * Laporan Barang Masuk PDF
-     */
-    public function barangMasukPdf(Request $request) {
-        $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+  // Barang Masuk
+  public function barangMasukPdf(Request $request) {
+    $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
 
-        $data = BarangMasuk::with(['barang', 'supplier', 'user'])
-            ->whereBetween('tanggal_masuk', [$awal, $akhir])
-            ->orderBy('tanggal_masuk', 'desc')
-            ->get();
+    $data = BarangMasuk::with(['barang', 'supplier', 'user'])
+      ->whereBetween('tanggal_masuk', [$awal, $akhir])
+      ->orderByDesc('tanggal_masuk')
+      ->get();
 
-        $this->catatLaporan('barang_masuk', $awal, $akhir);
+    $this->catatLaporan('barang_masuk', $awal, $akhir);
 
-        $totalJumlah = $data->sum('jumlah');
+    $pdf = Pdf::loadView('laporan.barang-masuk', [
+      'data'          => $data,
+      'tanggal_awal'  => $this->formatTanggal($awal),
+      'tanggal_akhir' => $this->formatTanggal($akhir),
+      'total_jumlah'  => $data->sum('jumlah'),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        $pdf = Pdf::loadView('laporan.barang-masuk', [
-            'data'          => $data,
-            'tanggal_awal'  => $this->formatTanggalIndonesia($awal),
-            'tanggal_akhir' => $this->formatTanggalIndonesia($akhir),
-            'total_jumlah'  => $totalJumlah,
-            'dicetak_oleh'  => Auth::user()->nama,
-            'tanggal_cetak' => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+    return $pdf->stream('laporan-barang-masuk-' . $awal . '-sd-' . $akhir . '.pdf');
+  }
 
-        return $pdf->download('laporan-barang-masuk-' . $awal . '-sd-' . $akhir . '.pdf');
-    }
+  // Barang Keluar
+  public function barangKeluarPdf(Request $request) {
+    $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
 
-    /**
-     * Laporan Barang Keluar PDF
-     */
-    public function barangKeluarPdf(Request $request) {
-        $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $data = BarangKeluar::with(['barang', 'wilayah', 'user'])
+      ->whereBetween('tanggal_keluar', [$awal, $akhir])
+      ->orderByDesc('tanggal_keluar')
+      ->get();
 
-        $data = BarangKeluar::with(['barang', 'wilayah', 'user'])
-            ->whereBetween('tanggal_keluar', [$awal, $akhir])
-            ->orderBy('tanggal_keluar', 'desc')
-            ->get();
+    $this->catatLaporan('barang_keluar', $awal, $akhir);
 
-        $this->catatLaporan('barang_keluar', $awal, $akhir);
+    $pdf = Pdf::loadView('laporan.barang-keluar', [
+      'data'          => $data,
+      'tanggal_awal'  => $this->formatTanggal($awal),
+      'tanggal_akhir' => $this->formatTanggal($akhir),
+      'total_jumlah'  => $data->sum('jumlah'),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        $totalJumlah = $data->sum('jumlah');
+    return $pdf->stream('laporan-barang-keluar-' . $awal . '-sd-' . $akhir . '.pdf');
+  }
 
-        $pdf = Pdf::loadView('laporan.barang-keluar', [
-            'data'          => $data,
-            'tanggal_awal'  => $this->formatTanggalIndonesia($awal),
-            'tanggal_akhir' => $this->formatTanggalIndonesia($akhir),
-            'total_jumlah'  => $totalJumlah,
-            'dicetak_oleh'  => Auth::user()->nama,
-            'tanggal_cetak' => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+  // Stok Barang
+  public function stokPdf() {
+    $data = Stok::with('barang')->orderBy('id_barang')->get();
 
-        return $pdf->download('laporan-barang-keluar-' . $awal . '-sd-' . $akhir . '.pdf');
-    }
+    $this->catatLaporan('stok_barang');
 
-    /**
-     * Laporan Stok Barang PDF
-     */
-    public function stokPdf() {
-        $data = Stok::with('barang')
-            ->orderBy('id_barang')
-            ->get();
+    $pdf = Pdf::loadView('laporan.stok-barang', [
+      'data'          => $data,
+      'total_stok'    => $data->sum('jumlah_stok'),
+      'stok_menipis'  => $data->where('status', 'Menipis')->count(),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        $this->catatLaporan('stok_barang');
+    return $pdf->stream('laporan-stok-barang-' . Carbon::today()->format('Y-m-d') . '.pdf');
+  }
 
-        $totalStok   = $data->sum('jumlah_stok');
-        $stokMenipis = $data->where('status', 'Menipis')->count();
+  // Stock Opname
+  public function stockOpnamePdf(Request $request) {
+    $awal  = $request->input('tanggal_awal', Carbon::now()->subMonths(3)->format('Y-m-d'));
+    $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
 
-        $pdf = Pdf::loadView('laporan.stok-barang', [
-            'data'          => $data,
-            'total_stok'    => $totalStok,
-            'stok_menipis'  => $stokMenipis,
-            'dicetak_oleh'  => Auth::user()->nama,
-            'tanggal_cetak' => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+    $data = StockOpname::with(['barang', 'user'])
+      ->whereBetween('tanggal_opname', [$awal, $akhir])
+      ->orderByDesc('tanggal_opname')
+      ->get();
 
-        return $pdf->download('laporan-stok-barang-' . Carbon::today()->format('Y-m-d') . '.pdf');
-    }
+    $this->catatLaporan('stock_opname', $awal, $akhir);
 
-    /**
-     * Laporan Stock Opname PDF
-     */
-    public function stockOpnamePdf(Request $request) {
-        $awal  = $request->input('tanggal_awal', Carbon::now()->subMonths(3)->format('Y-m-d'));
-        $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $totalSelisih = $data->sum('selisih');
 
-        $data = StockOpname::with(['barang', 'user'])
-            ->whereBetween('tanggal_opname', [$awal, $akhir])
-            ->orderBy('tanggal_opname', 'desc')
-            ->get();
+    $pdf = Pdf::loadView('laporan.stock-opname', [
+      'data'              => $data,
+      'tanggal_awal'      => $this->formatTanggal($awal),
+      'tanggal_akhir'     => $this->formatTanggal($akhir),
+      'total_selisih'     => $totalSelisih,
+      'rata_rata_selisih' => $data->count() > 0 ? round($totalSelisih / $data->count(), 2) : 0,
+      'dicetak_oleh'      => Auth::user()->nama,
+      'tanggal_cetak'     => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        $this->catatLaporan('stock_opname', $awal, $akhir);
+    return $pdf->stream('laporan-stock-opname-' . $awal . '-sd-' . $akhir . '.pdf');
+  }
 
-        $totalSelisih    = $data->sum('selisih');
-        $rataRataSelisih = $data->count() > 0 ? round($totalSelisih / $data->count(), 2) : 0;
+  // Order Sales
+  public function orderSalesPdf(Request $request) {
+    $awal   = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir  = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $status = $request->input('status');
 
-        $pdf = Pdf::loadView('laporan.stock-opname', [
-            'data'              => $data,
-            'tanggal_awal'      => $this->formatTanggalIndonesia($awal),
-            'tanggal_akhir'     => $this->formatTanggalIndonesia($akhir),
-            'total_selisih'     => $totalSelisih,
-            'rata_rata_selisih' => $rataRataSelisih,
-            'dicetak_oleh'      => Auth::user()->nama,
-            'tanggal_cetak'     => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+    $data = OrderSales::with(['barang', 'wilayah', 'user'])
+      ->whereBetween('tanggal_order', [$awal, $akhir])
+      ->when($status, fn($q) => $q->where('status', $status))
+      ->orderByDesc('tanggal_order')
+      ->get();
 
-        return $pdf->download('laporan-stock-opname-' . $awal . '-sd-' . $akhir . '.pdf');
-    }
+    $this->catatLaporan('order_sales', $awal, $akhir);
 
-    /**
-     * Laporan Order Sales PDF
-     */
-    public function orderSalesPdf(Request $request) {
-        $awal   = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $akhir  = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
-        $status = $request->input('status');
+    $pdf = Pdf::loadView('laporan.order-sales', [
+      'data'           => $data,
+      'tanggal_awal'   => $this->formatTanggal($awal),
+      'tanggal_akhir'  => $this->formatTanggal($akhir),
+      'total_jumlah'   => $data->sum('jumlah'),
+      'total_pending'  => $data->where('status', 'pending')->count(),
+      'total_diproses' => $data->where('status', 'diproses')->count(),
+      'total_selesai'  => $data->where('status', 'selesai')->count(),
+      'dicetak_oleh'   => Auth::user()->nama,
+      'tanggal_cetak'  => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        $data = OrderSales::with(['barang', 'wilayah', 'user'])
-            ->whereBetween('tanggal_order', [$awal, $akhir])
-            ->when($status, fn($q) => $q->where('status', $status))
-            ->orderBy('tanggal_order', 'desc')
-            ->get();
+    return $pdf->stream('laporan-order-sales-' . $awal . '-sd-' . $akhir . '.pdf');
+  }
 
-        $this->catatLaporan('order_sales', $awal, $akhir);
+  // Supplier
+  public function supplierPdf() {
+    $data = Supplier::orderBy('kode_supplier')->get();
 
-        $totalJumlah   = $data->sum('jumlah');
-        $totalPending  = $data->where('status', 'pending')->count();
-        $totalDiproses = $data->where('status', 'diproses')->count();
-        $totalSelesai  = $data->where('status', 'selesai')->count();
+    $this->catatLaporan('supplier');
 
-        $pdf = Pdf::loadView('laporan.order-sales', [
-            'data'           => $data,
-            'tanggal_awal'   => $this->formatTanggalIndonesia($awal),
-            'tanggal_akhir'  => $this->formatTanggalIndonesia($akhir),
-            'total_jumlah'   => $totalJumlah,
-            'total_pending'  => $totalPending,
-            'total_diproses' => $totalDiproses,
-            'total_selesai'  => $totalSelesai,
-            'dicetak_oleh'   => Auth::user()->nama,
-            'tanggal_cetak'  => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+    $pdf = Pdf::loadView('laporan.supplier', [
+      'data'           => $data,
+      'total_supplier' => $data->count(),
+      'dicetak_oleh'   => Auth::user()->nama,
+      'tanggal_cetak'  => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'portrait');
 
-        return $pdf->download('laporan-order-sales-' . $awal . '-sd-' . $akhir . '.pdf');
-    }
+    return $pdf->stream('laporan-supplier-' . Carbon::today()->format('Y-m-d') . '.pdf');
+  }
 
-    /**
-     * Laporan Supplier PDF
-     */
-    public function supplierPdf() {
-        $data = Supplier::orderBy('kode_supplier')->get();
+  // Wilayah
+  public function wilayahPdf() {
+    $data = Wilayah::with('sales')->orderBy('nama_wilayah')->get();
 
-        $this->catatLaporan('supplier');
+    $this->catatLaporan('wilayah');
 
-        $pdf = Pdf::loadView('laporan.supplier', [
-            'data'           => $data,
-            'total_supplier' => $data->count(),
-            'dicetak_oleh'   => Auth::user()->nama,
-            'tanggal_cetak'  => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'portrait');
+    $pdf = Pdf::loadView('laporan.wilayah', [
+      'data'          => $data,
+      'total_toko'    => $data->sum('jumlah_toko'),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'portrait');
 
-        return $pdf->download('laporan-supplier-' . Carbon::today()->format('Y-m-d') . '.pdf');
-    }
+    return $pdf->stream('laporan-wilayah-' . Carbon::today()->format('Y-m-d') . '.pdf');
+  }
 
-    /**
-     * Laporan Wilayah PDF
-     */
-    public function wilayahPdf() {
-        $data = Wilayah::with('sales')->orderBy('nama_wilayah')->get();
+  // Inventory
+  public function inventoryPdf(Request $request) {
+    $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
 
-        $this->catatLaporan('wilayah');
+    $stoks = Stok::with('barang')->get()->map(function ($stok) use ($awal, $akhir) {
+      $stok->total_masuk = BarangMasuk::where('id_barang', $stok->id_barang)
+        ->whereBetween('tanggal_masuk', [$awal, $akhir])->sum('jumlah');
+      $stok->total_keluar = BarangKeluar::where('id_barang', $stok->id_barang)
+        ->whereBetween('tanggal_keluar', [$awal, $akhir])->sum('jumlah');
+      return $stok;
+    });
 
-        $totalToko = $data->sum('jumlah_toko');
+    $this->catatLaporan('inventory', $awal, $akhir);
 
-        $pdf = Pdf::loadView('laporan.wilayah', [
-            'data'          => $data,
-            'total_toko'    => $totalToko,
-            'dicetak_oleh'  => Auth::user()->nama,
-            'tanggal_cetak' => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'portrait');
+    $pdf = Pdf::loadView('laporan.inventory', [
+      'stoks'                    => $stoks,
+      'tanggal_awal'             => $this->formatTanggal($awal),
+      'tanggal_akhir'            => $this->formatTanggal($akhir),
+      'total_masuk_keseluruhan'  => $stoks->sum('total_masuk'),
+      'total_keluar_keseluruhan' => $stoks->sum('total_keluar'),
+      'total_stok_akhir'         => $stoks->sum('jumlah_stok'),
+      'dicetak_oleh'             => Auth::user()->nama,
+      'tanggal_cetak'            => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-        return $pdf->download('laporan-wilayah-' . Carbon::today()->format('Y-m-d') . '.pdf');
-    }
+    return $pdf->stream('laporan-inventory-' . $awal . '-sd-' . $akhir . '.pdf');
+  }
 
-    /**
-     * Laporan Inventory Keseluruhan PDF
-     */
-    public function inventoryPdf(Request $request) {
-        $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+  // Data barang
+  public function dataBarangPdf() {
+    $data = \App\Models\Barang::with('stok')->orderBy('kode_barang')->get();
 
-        $stoks = Stok::with('barang')->get()->map(function ($stok) use ($awal, $akhir) {
-            $totalMasuk = BarangMasuk::where('id_barang', $stok->id_barang)
-                ->whereBetween('tanggal_masuk', [$awal, $akhir])
-                ->sum('jumlah');
+    $this->catatLaporan('data_barang');
 
-            $totalKeluar = BarangKeluar::where('id_barang', $stok->id_barang)
-                ->whereBetween('tanggal_keluar', [$awal, $akhir])
-                ->sum('jumlah');
+    $pdf = Pdf::loadView('laporan.data-barang', [
+      'data'          => $data,
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'landscape');
 
-            $stok->total_masuk  = $totalMasuk;
-            $stok->total_keluar = $totalKeluar;
-            return $stok;
-        });
+    return $pdf->stream('data-barang-' . Carbon::today()->format('Y-m-d') . '.pdf');
+  }
 
-        $totalMasukKeseluruhan  = $stoks->sum('total_masuk');
-        $totalKeluarKeseluruhan = $stoks->sum('total_keluar');
-        $totalStokAkhir         = $stoks->sum('jumlah_stok');
+  public function omzetPdf(Request $request) {
+    $bulan = $request->get('bulan', date('m'));
+    $tahun = $request->get('tahun', date('Y'));
 
-        $this->catatLaporan('inventory', $awal, $akhir);
+    $startDate = $tahun . '-' . $bulan . '-01';
+    $endDate   = date('Y-m-t', strtotime($startDate));
 
-        $pdf = Pdf::loadView('laporan.inventory', [
-            'stoks'                    => $stoks,
-            'tanggal_awal'             => $this->formatTanggalIndonesia($awal),
-            'tanggal_akhir'            => $this->formatTanggalIndonesia($akhir),
-            'total_masuk_keseluruhan'  => $totalMasukKeseluruhan,
-            'total_keluar_keseluruhan' => $totalKeluarKeseluruhan,
-            'total_stok_akhir'         => $totalStokAkhir,
-            'dicetak_oleh'             => Auth::user()->nama,
-            'tanggal_cetak'            => $this->formatTanggalIndonesia(Carbon::now()),
-        ])->setPaper('a4', 'landscape');
+    $omzet        = OrderSales::whereBetween('tanggal_order', [$startDate, $endDate])->sum('subtotal');
+    $totalOrder   = OrderSales::whereBetween('tanggal_order', [$startDate, $endDate])->count();
+    $totalTerjual = OrderSales::whereBetween('tanggal_order', [$startDate, $endDate])->sum('jumlah');
 
-        return $pdf->download('laporan-inventory-' . $awal . '-sd-' . $akhir . '.pdf');
-    }
+    $data = [
+      'bulan'         => $bulan,
+      'tahun'         => $tahun,
+      'omzet'         => $omzet,
+      'totalOrder'    => $totalOrder,
+      'totalTerjual'  => $totalTerjual,
+      'periode'       => Carbon::createFromDate($tahun, $bulan, 1)->translatedFormat('F Y'),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => Carbon::now()->isoFormat('D MMMM Y'),
+    ];
+
+    $pdf = Pdf::loadView('laporan.omzet', $data)->setPaper('a4', 'portrait');
+    return $pdf->stream('laporan-omzet-' . $tahun . '-' . $bulan . '.pdf');
+  }
 }

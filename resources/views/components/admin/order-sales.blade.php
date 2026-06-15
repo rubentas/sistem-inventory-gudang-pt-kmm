@@ -5,7 +5,7 @@
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
     x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-x-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-200">
+    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-[200]">
     <div :class="toast.type === 'success' ? 'border-l-[3px] border-emerald-500' : 'border-l-[3px] border-red-500'"
       class="flex items-start gap-3 w-80 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200 px-4 py-3.5">
       <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'"
@@ -128,7 +128,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-225">
+      <table class="w-full min-w-[900px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left w-12"><span
@@ -140,6 +140,10 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Wilayah</span></th>
             <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Toko</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales</span></th>
+            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Harga</span></th>
@@ -147,7 +151,7 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Subtotal</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
-            <th class="px-5 py-4 text-center w-32"><span
+            <th class="px-5 py-4 text-center w-24"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
           </tr>
         </thead>
@@ -163,10 +167,13 @@
                 {{ $order->tanggal_order->translatedFormat('d/m/Y') }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $order->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $order->wilayah->nama_wilayah ?? '-' }}</td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ $order->nama_toko ?: '-' }}</td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ $order->user->nama ?? '-' }}</td>
               <td class="px-5 py-4"><span
                   class="text-sm font-bold text-gray-700">{{ number_format($order->jumlah) }}</span></td>
               <td class="px-5 py-4 text-sm text-gray-700">Rp {{ number_format($harga, 0, ',', '.') }}</td>
-              <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+              <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}
+              </td>
               <td class="px-5 py-4">
                 @if ($order->status == 'pending')
                   <span
@@ -202,7 +209,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9" class="px-6 py-20">
+              <td colspan="11" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +238,7 @@
     <div x-show="modalOpen" x-cloak x-transition:enter="transition ease-out duration-200"
       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
       x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
-      x-transition:leave-end="opacity-0" class="fixed inset-0 z-100 flex items-center justify-center p-4"
+      x-transition:leave-end="opacity-0" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
       @keydown.escape.window="modalOpen = false">
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
       <div @click.stop class="relative z-50 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -247,7 +254,7 @@
               </div>
               <div class="text-white">
                 <h2 class="text-lg font-bold">Update Status Order</h2>
-                <p class="text-blue-100 text-xs">Order #{{ $id_order }}</p>
+                <p class="text-blue-100 text-xs">Order #<span x-text="$wire.id_order"></span></p>
               </div>
             </div>
             <button @click="modalOpen = false"
@@ -260,20 +267,6 @@
         </div>
 
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
-          {{-- INFO ORDER (READONLY) --}}
-          <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-2">
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Detail Order</p>
-            <p class="text-sm"><span class="text-gray-500">Barang:</span> <span
-                class="font-semibold">{{ $barangs->find($id_barang)?->nama_barang ?? '-' }}</span></p>
-            <p class="text-sm"><span class="text-gray-500">Wilayah:</span> <span
-                class="font-semibold">{{ $wilayahs->find($id_wilayah)?->nama_wilayah ?? '-' }}</span></p>
-            <p class="text-sm"><span class="text-gray-500">Jumlah:</span> <span
-                class="font-semibold">{{ number_format($jumlah) }}</span></p>
-            <p class="text-sm"><span class="text-gray-500">Subtotal:</span> <span
-                class="font-semibold text-blue-600">Rp {{ number_format((int) $subtotal, 0, ',', '.') }}</span></p>
-          </div>
-
-          {{-- STATUS --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Status <span
                 class="text-red-500">*</span></label>
@@ -281,11 +274,9 @@
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
               <option value="pending">Pending</option>
               <option value="diproses">Diproses</option>
-              <option value="selesai">Selesai</option>
             </select>
+            <p class="text-xs text-amber-600 mt-1">Status "Selesai" hanya bisa diubah melalui proses Barang Keluar.</p>
           </div>
-
-          {{-- KETERANGAN --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan</label>
             <textarea wire:model="keterangan" rows="3" placeholder="Catatan..."

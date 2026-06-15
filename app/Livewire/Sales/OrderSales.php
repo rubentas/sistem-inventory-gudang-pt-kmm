@@ -13,26 +13,24 @@ use Livewire\WithPagination;
 class OrderSales extends Component {
   use WithPagination;
 
-  // Form
-  public int | string $id_barang  = '';
-  public int | string $id_wilayah = '';
-  public int | string $jumlah     = '';
-  public int | string $harga_jual = '';
-  public int | string $subtotal   = '';
-  public string $tanggal_order    = '';
-  public string $keterangan       = '';
+  public $id_barang            = '';
+  public $id_wilayah           = '';
+  public $nama_toko            = '';
+  public $jumlah               = '';
+  public $harga_jual           = '';
+  public $subtotal             = '';
+  public string $tanggal_order = '';
+  public string $keterangan    = '';
 
-  // Filter
   public string $search       = '';
   public string $filterStatus = '';
-
-  // UI
-  public bool $isEdit       = false;
-  public int | null $editId = null;
+  public bool $isEdit         = false;
+  public $editId              = null;
 
   protected $rules = [
     'id_barang'     => 'required|exists:barangs,id_barang',
     'id_wilayah'    => 'required|exists:wilayahs,id_wilayah',
+    'nama_toko'     => 'nullable|string|max:255',
     'jumlah'        => 'required|integer|min:1',
     'harga_jual'    => 'required|numeric|min:0',
     'tanggal_order' => 'required|date',
@@ -52,11 +50,21 @@ class OrderSales extends Component {
     $this->tanggal_order = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterStatus(): void {$this->resetPage();}
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
 
-  public function updatedJumlah(): void {$this->hitungSubtotal();}
-  public function updatedHargaJual(): void {$this->hitungSubtotal();}
+  public function updatedFilterStatus(): void {
+    $this->resetPage();
+  }
+
+  public function updatedJumlah(): void {
+    $this->hitungSubtotal();
+  }
+
+  public function updatedHargaJual(): void {
+    $this->hitungSubtotal();
+  }
 
   public function updatedIdBarang(): void {
     if ($this->id_barang && ! $this->isEdit) {
@@ -79,7 +87,10 @@ class OrderSales extends Component {
   }
 
   public function resetForm(): void {
-    $this->reset(['id_barang', 'id_wilayah', 'jumlah', 'harga_jual', 'subtotal', 'tanggal_order', 'keterangan', 'editId', 'isEdit']);
+    $this->reset([
+      'id_barang', 'id_wilayah', 'nama_toko', 'jumlah', 'harga_jual', 'subtotal',
+      'tanggal_order', 'keterangan', 'editId', 'isEdit',
+    ]);
     $this->tanggal_order = now()->format('Y-m-d');
     $this->resetErrorBag();
   }
@@ -92,15 +103,16 @@ class OrderSales extends Component {
   public function edit(int $id): void {
     $order = OrderSalesModel::findOrFail($id);
     if ($order->status !== 'pending') {
-      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Order yang sudah diproses tidak bisa diubah.');
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Order sudah diproses, tidak bisa diubah.');
       return;
     }
     $this->editId        = $order->id_order;
     $this->id_barang     = $order->id_barang;
     $this->id_wilayah    = $order->id_wilayah;
+    $this->nama_toko     = $order->nama_toko ?? '';
     $this->jumlah        = $order->jumlah;
-    $this->harga_jual    = $order->harga_jual ?? '';
-    $this->subtotal      = $order->subtotal ?? '';
+    $this->harga_jual    = $order->harga_jual ?? 0;
+    $this->subtotal      = $order->subtotal ?? 0;
     $this->tanggal_order = $order->tanggal_order->format('Y-m-d');
     $this->keterangan    = $order->keterangan ?? '';
     $this->isEdit        = true;
@@ -113,7 +125,7 @@ class OrderSales extends Component {
 
     $stok = \App\Models\Stok::where('id_barang', $this->id_barang)->first();
     if (! $stok || $stok->jumlah_stok < $this->jumlah) {
-      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Stok tidak mencukupi! Stok saat ini: ' . number_format($stok ? $stok->jumlah_stok : 0));
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Stok tidak mencukupi!');
       return;
     }
 
@@ -121,6 +133,7 @@ class OrderSales extends Component {
       'id_barang'     => $this->id_barang,
       'id_user'       => Auth::id(),
       'id_wilayah'    => $this->id_wilayah,
+      'nama_toko'     => $this->nama_toko,
       'jumlah'        => $this->jumlah,
       'harga_jual'    => $this->harga_jual ?: 0,
       'subtotal'      => $this->subtotal ?: 0,
@@ -141,12 +154,14 @@ class OrderSales extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
   }
 
-  public function update(): void {$this->simpan();}
+  public function update(): void {
+    $this->simpan();
+  }
 
   public function hapus(int $id): void {
     $order = OrderSalesModel::findOrFail($id);
     if ($order->status !== 'pending') {
-      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Order yang sudah diproses tidak bisa dihapus.');
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Order sudah diproses, tidak bisa dihapus.');
       return;
     }
     $order->delete();

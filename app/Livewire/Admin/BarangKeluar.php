@@ -116,6 +116,14 @@ class BarangKeluar extends Component {
       'keterangan'     => $this->keterangan,
     ]);
 
+    // Auto generate invoice
+    $order = OrderSales::find($this->id_order);
+    if ($order && ! $order->no_invoice) {
+      $order->update([
+        'no_invoice' => 'INV/' . date('Ymd') . '/' . str_pad($order->id_order, 5, '0', STR_PAD_LEFT),
+      ]);
+    }
+
     $stok->decrement('jumlah_stok', (int) $this->jumlah);
     $stok->updated_at = now();
     $stok->save();
