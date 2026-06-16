@@ -112,7 +112,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[700px]">
+      <table class="w-full min-w-[800px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left w-12"><span
@@ -121,10 +121,14 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Supplier</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Alamat</span></th>
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No.
                 Telepon</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Email</span></th>
+            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No.
+                Rekening</span></th>
             <th class="px-5 py-4 text-center w-32"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
           </tr>
@@ -135,13 +139,13 @@
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $suppliers->firstItem() + $index }}</td>
               <td class="px-5 py-4">
                 <span
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">
-                  {{ $supplier->kode_supplier }}
-                </span>
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">{{ $supplier->kode_supplier }}</span>
               </td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $supplier->nama_supplier }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ $supplier->alamat ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $supplier->no_telp ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $supplier->email ?? '-' }}</td>
+              <td class="px-5 py-4 text-sm text-gray-600">{{ $supplier->no_rekening ?? '-' }}</td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-center gap-0.5">
                   <button wire:click="edit({{ $supplier->id_supplier }})"
@@ -165,7 +169,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="6" class="px-6 py-20">
+              <td colspan="8" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,6 +270,11 @@
               <input type="email" wire:model="email" placeholder="supplier@email.com"
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">No. Rekening</label>
+            <input type="text" wire:model="no_rekening" placeholder="Nomor rekening"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
           </div>
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Alamat</label>

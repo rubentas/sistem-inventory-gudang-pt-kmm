@@ -2,6 +2,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Stok;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -30,13 +31,44 @@ class StokBarang extends Component {
     ];
   }
 
+  // Export PDF sesuai filter
+  public function exportPdf() {
+    $stoks = Stok::with('barang')
+      ->when($this->search, function ($q) {
+        $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
+            ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
+      })
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
+      ->orderBy('id_barang')
+      ->get();
+
+    $filterLabel = match ($this->filterStatus) {
+      'menipis' => 'Stok Menipis',
+      'aman'    => 'Stok Aman',
+      default   => 'Semua Stok'
+    };
+
+    $pdf = Pdf::loadView('laporan.stok-barang', [
+      'data'          => $stoks,
+      'total_stok'    => $stoks->sum('jumlah_stok'),
+      'stok_menipis'  => $stoks->where('status', 'Menipis')->count(),
+      'dicetak_oleh'  => auth()->user()->nama,
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'filter_label'  => $filterLabel,
+    ])->setPaper('a4', 'landscape');
+
+    return response()->streamDownload(
+      fn() => print($pdf->output()),
+      'laporan-stok-' . ($this->filterStatus ?: 'semua') . '-' . now()->format('Ymd') . '.pdf'
+    );
+  }
+
   public function render() {
     $stoks = Stok::with('barang')
       ->when($this->search, function ($q) {
-        $q->whereHas('barang', function ($b) {
-          $b->where('nama_barang', 'like', '%' . $this->search . '%')
-            ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
-        });
+        $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
+            ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
       ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))

@@ -20,6 +20,7 @@ class Supplier extends Component {
   public string $alamat          = '';
   public string $no_telp         = '';
   public string $email           = '';
+  public string $no_rekening     = '';
   public string $keterangan      = '';
 
   // UI state
@@ -31,6 +32,7 @@ class Supplier extends Component {
     'alamat'        => 'nullable|string',
     'no_telp'       => 'nullable|string|max:20',
     'email'         => 'nullable|email|max:255',
+    'no_rekening'   => 'nullable|string|max:50',
     'keterangan'    => 'nullable|string',
   ];
 
@@ -47,7 +49,10 @@ class Supplier extends Component {
     $this->resetPage();}
 
   public function resetForm(): void {
-    $this->reset(['id_supplier', 'kode_supplier', 'nama_supplier', 'alamat', 'no_telp', 'email', 'keterangan', 'isEdit']);
+    $this->reset([
+      'id_supplier', 'kode_supplier', 'nama_supplier', 'alamat',
+      'no_telp', 'email', 'no_rekening', 'keterangan', 'isEdit',
+    ]);
     $this->resetErrorBag();
   }
 
@@ -62,6 +67,7 @@ class Supplier extends Component {
     $this->alamat        = $supplier->alamat ?? '';
     $this->no_telp       = $supplier->no_telp ?? '';
     $this->email         = $supplier->email ?? '';
+    $this->no_rekening   = $supplier->no_rekening ?? '';
     $this->keterangan    = $supplier->keterangan ?? '';
     $this->isEdit        = true;
     $this->resetErrorBag();
@@ -83,6 +89,7 @@ class Supplier extends Component {
       'alamat'        => $this->alamat ?: null,
       'no_telp'       => $this->no_telp ?: null,
       'email'         => $this->email ?: null,
+      'no_rekening'   => $this->no_rekening ?: null,
       'keterangan'    => $this->keterangan ?: null,
     ];
 

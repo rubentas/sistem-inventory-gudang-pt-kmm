@@ -5,14 +5,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
   public function up(): void {
-    Schema::table('order_sales', function (Blueprint $table) {
-      $table->string('nama_toko', 255)->nullable()->after('id_wilayah');
+    Schema::table('suppliers', function (Blueprint $table) {
+      $table->string('no_rekening', 50)->nullable()->after('email');
     });
   }
 
   public function down(): void {
-    Schema::table('order_sales', function (Blueprint $table) {
-      $table->dropColumn('nama_toko');
+    Schema::table('suppliers', function (Blueprint $table) {
+      $table->dropColumn('no_rekening');
     });
   }
 };

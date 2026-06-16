@@ -75,14 +75,14 @@
             </div>
           </div>
 
-          <a href="{{ route('laporan.data-barang.pdf') }}" target="_blank"
+          <button wire:click="exportPdf"
             class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
             PDF
-          </a>
+          </button>
 
           <button wire:click="openAddModal"
             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
@@ -112,44 +112,23 @@
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
 
-        <div class="relative shrink-0" x-data="{ showFilter: false }" @click.outside="showFilter = false">
-          <button @click="showFilter = !showFilter"
-            :class="showFilter ? 'bg-blue-600 text-white border-blue-600' :
-                'bg-white text-gray-700 border-gray-200 hover:border-gray-300'"
-            class="h-11 px-5 border rounded-xl text-sm font-semibold transition flex items-center gap-2 w-full sm:w-auto justify-center">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            <span x-text="showFilter ? 'Tutup' : 'Filter'"></span>
-            @if ($filterKategori)
-              <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
-            @endif
-          </button>
+        <select wire:model.live="filterKategori"
+          class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
+          <option value="">Semua Kategori</option>
+          @foreach ($kategoriList as $kat)
+            <option value="{{ $kat }}">{{ $kat }}</option>
+          @endforeach
+        </select>
 
-          <div x-show="showFilter" x-cloak x-transition:enter="transition ease-out duration-150"
-            x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-            class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.3)] border border-gray-200 p-5 z-[9999]">
-            <p class="text-sm font-black text-gray-900 mb-4">Filter Kategori</p>
-            <select wire:model.live="filterKategori"
-              class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
-              <option value="">— Semua Kategori —</option>
-              @foreach ($kategoriList as $kat)
-                <option value="{{ $kat }}">{{ $kat }}</option>
-              @endforeach
-            </select>
-            <div class="flex gap-3 mt-4 pt-3 border-t border-gray-100">
-              <button wire:click="resetFilters" @click="showFilter = false"
-                class="flex-1 px-4 py-2.5 text-sm font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition">Reset</button>
-              <button @click="showFilter = false"
-                class="flex-1 px-4 py-2.5 text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-lg shadow-blue-500/20">Terapkan</button>
-            </div>
-          </div>
-        </div>
+        <select wire:model.live="filterStok"
+          class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
+          <option value="">Semua Stok</option>
+          <option value="aman">Stok Aman</option>
+          <option value="menipis">Stok Menipis</option>
+        </select>
       </div>
     </div>
-    @if ($filterKategori || $search)
+    @if ($filterKategori || $filterStok || $search)
       <div class="px-4 sm:px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
         <button wire:click="resetFilters"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 text-xs font-semibold text-red-600 transition">
@@ -194,9 +173,7 @@
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $barangs->firstItem() + $index }}</td>
               <td class="px-5 py-4">
                 <span
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">
-                  {{ $barang->kode_barang }}
-                </span>
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">{{ $barang->kode_barang }}</span>
               </td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $barang->nama_barang }}</td>
               <td class="px-5 py-4">
@@ -211,9 +188,7 @@
                 @php $stokSekarang = $barang->stok ? $barang->stok->jumlah_stok : 0; @endphp
                 <div class="flex items-center gap-1.5">
                   <span
-                    class="text-sm font-bold {{ $stokSekarang <= $barang->stok_minimum ? 'text-red-600' : 'text-gray-900' }}">
-                    {{ number_format($stokSekarang) }}
-                  </span>
+                    class="text-sm font-bold {{ $stokSekarang <= $barang->stok_minimum ? 'text-red-600' : 'text-gray-900' }}">{{ number_format($stokSekarang) }}</span>
                   @if ($stokSekarang <= $barang->stok_minimum)
                     <span
                       class="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 rounded-md text-[10px] font-bold uppercase">Menipis</span>
@@ -375,8 +350,6 @@
             @enderror
             <p class="text-xs text-gray-400 mt-1">Jika stok &le; nilai ini, status "Menipis"</p>
           </div>
-
-          {{-- HARGA JUAL DEFAULT --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Harga Jual Default (Rp)</label>
             <input type="number" wire:model="harga_jual_default" placeholder="Harga jual default" min="0"
@@ -385,7 +358,6 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
-
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>

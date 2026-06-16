@@ -2,6 +2,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Barang;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +14,7 @@ class DataBarang extends Component {
   // Filter
   public string $search         = '';
   public string $filterKategori = '';
+  public string $filterStok     = '';
 
   // Form
   public int | null $id_barang            = null;
@@ -49,10 +51,12 @@ class DataBarang extends Component {
 
   public function updatedSearch(): void {$this->resetPage();}
   public function updatedFilterKategori(): void {$this->resetPage();}
+  public function updatedFilterStok(): void {$this->resetPage();}
 
   public function resetFilters(): void {
     $this->search         = '';
     $this->filterKategori = '';
+    $this->filterStok     = '';
     $this->resetPage();
   }
 
@@ -66,10 +70,8 @@ class DataBarang extends Component {
     $this->resetErrorBag();
   }
 
-  public function openAddModal(): void {
-    $this->resetForm();
-    $this->dispatch('openModal');
-  }
+  public function openAddModal(): void {$this->resetForm();
+    $this->dispatch('openModal');}
 
   public function edit(int $id): void {
     $barang                   = Barang::findOrFail($id);
@@ -133,16 +135,47 @@ class DataBarang extends Component {
     return [
       'totalItems' => Barang::count(),
       'kategori'   => Barang::distinct('kategori')->count('kategori'),
+      'menipis'    => Barang::whereHas('stok', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))->count(),
+      'aman'       => Barang::whereHas('stok', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))->count(),
     ];
+  }
+
+  public function exportPdf() {
+    $barangs = Barang::with('stok')
+      ->when($this->search, fn($q) => $q->where('nama_barang', 'like', '%' . $this->search . '%')
+          ->orWhere('kode_barang', 'like', '%' . $this->search . '%'))
+      ->when($this->filterKategori, fn($q) => $q->where('kategori', $this->filterKategori))
+      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
+      ->when($this->filterStok === 'aman', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '>', 'stok_minimum')))
+      ->orderBy('kode_barang')
+      ->get();
+
+    $filterLabel = match ($this->filterStok) {
+      'menipis' => 'Stok Menipis',
+      'aman'    => 'Stok Aman',
+      default   => 'Semua Stok'
+    };
+
+    $pdf = Pdf::loadView('laporan.data-barang', [
+      'data'          => $barangs,
+      'dicetak_oleh'  => auth()->user()->nama,
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'filter_label'  => $filterLabel,
+    ])->setPaper('a4', 'landscape');
+
+    return response()->streamDownload(
+      fn() => print($pdf->output()),
+      'data-barang-' . ($this->filterStok ?: 'semua') . '-' . now()->format('Ymd') . '.pdf'
+    );
   }
 
   public function render() {
     $barangs = Barang::with('stok')
-      ->when($this->search, function ($q) {
-        $q->where('nama_barang', 'like', '%' . $this->search . '%')
-          ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
-      })
+      ->when($this->search, fn($q) => $q->where('nama_barang', 'like', '%' . $this->search . '%')
+          ->orWhere('kode_barang', 'like', '%' . $this->search . '%'))
       ->when($this->filterKategori, fn($q) => $q->where('kategori', $this->filterKategori))
+      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
+      ->when($this->filterStok === 'aman', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '>', 'stok_minimum')))
       ->orderBy('kode_barang')
       ->paginate(15);
 
@@ -153,6 +186,7 @@ class DataBarang extends Component {
       'kategoriList'   => $kategoriList,
       'stats'          => $this->getStats(),
       'filterKategori' => $this->filterKategori,
+      'filterStok'     => $this->filterStok,
     ]);
   }
 }
