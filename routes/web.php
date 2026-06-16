@@ -35,6 +35,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/wilayah', \App\Livewire\Admin\Wilayah::class)->name('wilayah');
   Route::get('/stok-barang', \App\Livewire\Admin\StokBarang::class)->name('stok-barang');
   Route::get('/invoice', \App\Livewire\Admin\Invoice::class)->name('invoice');
+  Route::get('/data-sales', \App\Livewire\Admin\DataSales::class)->name('data-sales');
 });
 
 // =============================================

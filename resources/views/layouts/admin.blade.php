@@ -140,8 +140,10 @@
           <!-- ========== MASTER DATA ========== -->
           <div x-data="{
               open: localStorage.getItem('master-menu') === 'true' || {{ request()->routeIs(['admin.data-barang', 'admin.supplier', 'admin.wilayah']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('master-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('master-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
@@ -187,14 +189,25 @@
                 </svg>
                 Wilayah
               </a>
+              <a href="{{ route('admin.data-sales') }}"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
+  {{ request()->routeIs('admin.data-sales') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Data Sales
+              </a>
             </div>
           </div>
 
           <!-- ========== TRANSAKSI ========== -->
           <div x-data="{
               open: localStorage.getItem('transaksi-menu') === 'true' || {{ request()->routeIs(['admin.barang-masuk', 'admin.barang-keluar', 'admin.order-sales', 'admin.invoice']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('transaksi-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('transaksi-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
@@ -253,8 +266,10 @@
           <!-- ========== PERSEDIAAN ========== -->
           <div x-data="{
               open: localStorage.getItem('persediaan-menu') === 'true' || {{ request()->routeIs(['admin.stok-barang']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('persediaan-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('persediaan-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
@@ -289,8 +304,10 @@
           <!-- ========== LAPORAN ========== -->
           <div x-data="{
               open: localStorage.getItem('laporan-menu') === 'true' || {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('laporan-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('laporan-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
