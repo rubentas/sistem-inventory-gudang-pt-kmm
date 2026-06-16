@@ -29,6 +29,7 @@
       font-size: 15px;
       font-weight: 800;
       color: #111827;
+      letter-spacing: 0.5px;
     }
 
     .header .address {
@@ -46,16 +47,39 @@
       text-align: center;
       font-size: 12px;
       font-weight: 700;
-      margin: 10px 0;
+      margin: 10px 0 5px;
       letter-spacing: 1px;
       text-transform: uppercase;
+      color: #111827;
     }
 
     .subtitle {
       text-align: center;
       font-size: 8px;
       color: #6b7280;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+    }
+
+    .info-box {
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      background: #f3f4f6;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+    }
+
+    .info-box .label {
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-box .value {
+      color: #111827;
+      font-weight: 700;
     }
 
     table {
@@ -64,19 +88,25 @@
       margin-bottom: 12px;
     }
 
+    thead {
+      display: table-header-group;
+    }
+
     th {
       background: #111827;
       color: white;
-      padding: 6px 5px;
-      font-size: 8px;
+      padding: 7px 5px;
+      font-size: 7.5px;
       font-weight: 700;
       text-transform: uppercase;
       text-align: center;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #000;
     }
 
     td {
-      padding: 4px 5px;
-      border-bottom: 1px solid #d1d5db;
+      padding: 5px 5px;
+      border-bottom: 0.5px solid #d1d5db;
       font-size: 8px;
       text-align: center;
     }
@@ -97,19 +127,56 @@
       font-weight: 700;
     }
 
-    .summary {
-      margin-top: 8px;
+    .text-xs {
+      font-size: 7px;
+      color: #6b7280;
+    }
+
+    tfoot tr {
+      background: #1f2937 !important;
+      color: white;
+    }
+
+    tfoot td {
+      padding: 8px 5px;
       font-size: 9px;
-      text-align: right;
+      font-weight: 700;
+      border-bottom: none;
     }
 
     .footer {
       margin-top: 20px;
-      font-size: 8px;
-      text-align: center;
+      font-size: 7.5px;
+      text-align: right;
       color: #9ca3af;
       border-top: 1px solid #e5e7eb;
-      padding-top: 8px;
+      padding-top: 10px;
+    }
+
+    .footer .signature {
+      margin-top: 30px;
+      text-align: right;
+    }
+
+    .footer .signature-line {
+      margin-top: 40px;
+      border-top: 1px solid #374151;
+      width: 150px;
+      display: inline-block;
+    }
+
+    .page-number {
+      text-align: center;
+      font-size: 7px;
+      color: #9ca3af;
+      margin-top: 5px;
+    }
+
+    @media print {
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
     }
   </style>
 </head>
@@ -123,20 +190,40 @@
   </div>
 
   <div class="title">LAPORAN BARANG MASUK</div>
-  <div class="subtitle">Periode: {{ $tanggal_awal }} — {{ $tanggal_akhir }}</div>
+
+  <div class="info-box">
+    <div>
+      <span class="label">Periode:</span>
+      <span class="value">{{ $tanggal_awal }} — {{ $tanggal_akhir }}</span>
+    </div>
+    <div>
+      <span class="label">Total Data:</span>
+      <span class="value">{{ $data->count() }} transaksi</span>
+    </div>
+    <div>
+      <span class="label">Total Jumlah:</span>
+      <span class="value">{{ number_format($total_jumlah) }} unit</span>
+    </div>
+    @if ($nama_supplier)
+      <div>
+        <span class="label">Supplier:</span>
+        <span class="value">{{ $nama_supplier }}</span>
+      </div>
+    @endif
+  </div>
 
   <table>
     <thead>
       <tr>
-        <th>No</th>
-        <th class="text-left">Tanggal</th>
-        <th class="text-left">No. Nota</th>
-        <th class="text-left">Surat Jalan</th>
-        <th class="text-left">Nama Barang</th>
-        <th class="text-right">Jumlah</th>
-        <th class="text-left">Supplier</th>
-        <th class="text-left">Sumber</th>
-        <th class="text-left">Input Oleh</th>
+        <th style="width: 4%;">NO</th>
+        <th class="text-left" style="width: 10%;">TANGGAL</th>
+        <th class="text-left" style="width: 12%;">NO. NOTA</th>
+        <th class="text-left" style="width: 12%;">SURAT JALAN</th>
+        <th class="text-left" style="width: 20%;">NAMA BARANG</th>
+        <th class="text-right" style="width: 8%;">JUMLAH</th>
+        <th class="text-left" style="width: 14%;">SUPPLIER</th>
+        <th class="text-left" style="width: 10%;">SUMBER</th>
+        <th class="text-left" style="width: 10%;">INPUT OLEH</th>
       </tr>
     </thead>
     <tbody>
@@ -144,31 +231,56 @@
         <tr>
           <td>{{ $index + 1 }}</td>
           <td class="text-left">{{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}</td>
-          <td class="text-left">{{ $item->no_nota }}</td>
-          <td class="text-left">{{ $item->no_surat_jalan }}</td>
-          <td class="text-left">{{ $item->barang->nama_barang ?? '-' }}</td>
-          <td class="text-right">{{ number_format($item->jumlah) }}</td>
+          <td class="text-left">
+            <span style="font-family: 'Courier New', monospace; font-size: 7.5px;">{{ $item->no_nota }}</span>
+          </td>
+          <td class="text-left">
+            <span style="font-size: 7.5px;">{{ $item->no_surat_jalan ?: '-' }}</span>
+          </td>
+          <td class="text-left">
+            <div style="font-weight: 600;">{{ $item->barang->nama_barang ?? '-' }}</div>
+            <div class="text-xs">{{ $item->barang->kode_barang ?? '' }}</div>
+          </td>
+          <td class="text-right">
+            <span style="font-weight: 700;">{{ number_format($item->jumlah) }}</span>
+          </td>
           <td class="text-left">{{ $item->supplier->nama_supplier ?? '-' }}</td>
-          <td class="text-left">{{ $item->sumber }}</td>
-          <td class="text-left">{{ $item->user->nama ?? '-' }}</td>
+          <td class="text-left">
+            @if ($item->sumber === 'Supplier')
+              <span
+                style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 3px; font-size: 7px; font-weight: 600;">SUPPLIER</span>
+            @else
+              {{ $item->sumber }}
+            @endif
+          </td>
+          <td class="text-left">{{ $item->user->nama ?? 'System' }}</td>
         </tr>
       @empty
         <tr>
-          <td colspan="9">Tidak ada data</td>
+          <td colspan="9" style="padding: 30px; text-align: center; color: #9ca3af; font-style: italic;">
+            Tidak ada data barang masuk pada periode ini
+          </td>
         </tr>
       @endforelse
     </tbody>
-    <tfoot>
-      <tr style="background: #111827; color: white;">
-        <td colspan="5" class="text-left text-bold">TOTAL</td>
-        <td class="text-right text-bold">{{ number_format($total_jumlah) }}</td>
-        <td colspan="3"></td>
-      </tr>
-    </tfoot>
+    @if ($data->count() > 0)
+      <tfoot>
+        <tr>
+          <td colspan="5" class="text-left">TOTAL</td>
+          <td class="text-right">{{ number_format($total_jumlah) }}</td>
+          <td colspan="3"></td>
+        </tr>
+      </tfoot>
+    @endif
   </table>
 
   <div class="footer">
-    Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}
+    <div>Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
+    <div class="signature">
+      <div>Mengetahui,</div>
+      <div class="signature-line"></div>
+      <div style="margin-top: 5px; font-weight: 600; color: #374151;">{{ $dicetak_oleh }}</div>
+    </div>
   </div>
 
 </body>

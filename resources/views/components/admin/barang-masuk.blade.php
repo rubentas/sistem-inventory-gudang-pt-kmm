@@ -1,6 +1,6 @@
 <div x-data="barangMasukManager()" x-init="init()" class="space-y-5">
 
-  {{-- TOAST NOTIFICATION --}}
+  {{-- TOAST --}}
   <div x-show="toast.show" x-cloak x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
     x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
@@ -31,13 +31,11 @@
 
   {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="h-0.5 bg-linear-to-rfrom-blue-500 via-indigo-500 to-violet-500"></div>
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-[0_4px_12px_rgba(37,99,235,0.3)]">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
@@ -51,8 +49,8 @@
         <div class="flex flex-wrap items-center gap-3">
           <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
                 </svg>
@@ -64,8 +62,8 @@
             </div>
             <div class="w-px h-10 bg-gray-200"></div>
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
@@ -77,9 +75,37 @@
             </div>
           </div>
 
-          <a href="{{ route('laporan.masuk.pdf', ['tanggal_awal' => $filterDate ?? now()->startOfMonth()->format('Y-m-d'), 'tanggal_akhir' => $filterDate ?? now()->format('Y-m-d')]) }}"
-            target="_blank"
-            class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
+          @php
+            // Siapin parameter PDF sesuai filter aktif
+            $pdfParams = [];
+
+            if ($filterType === 'today') {
+                $pdfParams['tanggal_awal'] = $filterDate;
+                $pdfParams['tanggal_akhir'] = $filterDate;
+            } elseif ($filterType === 'week') {
+                $pdfParams['tanggal_awal'] = now()->subDays(6)->format('Y-m-d');
+                $pdfParams['tanggal_akhir'] = now()->format('Y-m-d');
+            } elseif ($filterType === 'month') {
+                $pdfParams['tanggal_awal'] = Carbon\Carbon::parse($filterDate)->startOfMonth()->format('Y-m-d');
+                $pdfParams['tanggal_akhir'] = Carbon\Carbon::parse($filterDate)->endOfMonth()->format('Y-m-d');
+            } elseif ($filterType === 'custom' && $filterDate) {
+                // Custom date: 1 hari spesifik
+                $pdfParams['tanggal_awal'] = $filterDate;
+                $pdfParams['tanggal_akhir'] = $filterDate;
+            } else {
+                // Default: bulan ini
+                $pdfParams['tanggal_awal'] = now()->startOfMonth()->format('Y-m-d');
+                $pdfParams['tanggal_akhir'] = now()->format('Y-m-d');
+            }
+
+            // Tambahin supplier filter kalau ada
+            if ($filterSupplier) {
+                $pdfParams['id_supplier'] = $filterSupplier;
+            }
+          @endphp
+
+          <a href="{{ route('laporan.masuk.pdf', $pdfParams) }}" target="_blank"
+            class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm {{ !$barangMasuk->count() ? 'opacity-50 pointer-events-none' : '' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -87,7 +113,7 @@
             PDF
           </a>
 
-          <button @click="openAddModal()"
+          <button wire:click="openAddModal"
             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
@@ -116,7 +142,6 @@
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
 
-        {{-- FILTER BUTTON + DROPDOWN --}}
         <div class="relative shrink-0" x-data="{ showFilter: false }" @click.outside="showFilter = false">
           <button @click="showFilter = !showFilter"
             :class="showFilter ? 'bg-blue-600 text-white border-blue-600' :
@@ -132,12 +157,8 @@
             @endif
           </button>
 
-          {{-- DROPDOWN --}}
-          <div x-show="showFilter" x-cloak x-transition:enter="transition ease-out duration-150"
-            x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+          <div x-show="showFilter" x-cloak x-transition
             class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.3)] border border-gray-200 p-6 z-[9999] max-h-[450px] overflow-y-auto">
-
             <p class="text-sm font-black text-gray-900 mb-5 flex items-center gap-2">
               <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -145,12 +166,9 @@
               </svg>
               Filter Data
             </p>
-
             <div class="space-y-5">
               <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Supplier
-                </label>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Supplier</label>
                 <select wire:model.live="filterSupplier"
                   class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
                   <option value="">— Semua Supplier —</option>
@@ -159,68 +177,53 @@
                   @endforeach
                 </select>
               </div>
-
               <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Tanggal
-                </label>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Tanggal</label>
                 <input type="date" wire:model.live="filterDate"
-                  class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer"
-                  style="color-scheme: light;">
+                  class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
               </div>
-
               <div class="flex gap-3 pt-3 border-t border-gray-100">
                 <button wire:click="resetFilters" @click="showFilter = false"
-                  class="flex-1 px-4 py-2.5 text-sm font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition">
-                  Reset
-                </button>
+                  class="flex-1 px-4 py-2.5 text-sm font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition">Reset</button>
                 <button @click="showFilter = false"
-                  class="flex-1 px-4 py-2.5 text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-lg shadow-blue-500/20">
-                  Terapkan
-                </button>
+                  class="flex-1 px-4 py-2.5 text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-lg shadow-blue-500/20">Terapkan</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    {{-- Quick Filters --}}
     <div class="px-4 sm:px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2 flex-wrap">
       <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">Cepat:</span>
-
-      <button wire:click="$set('filterDate', '{{ now()->format('Y-m-d') }}')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button wire:click="setFilter('today')"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'today' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
         Hari Ini
       </button>
-
-      <button wire:click="$set('filterDate', '{{ now()->subDays(7)->format('Y-m-d') }}')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button wire:click="setFilter('week')"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'week' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         7 Hari
       </button>
-
-      <button wire:click="$set('filterDate', '{{ now()->startOfMonth()->format('Y-m-d') }}')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button wire:click="setFilter('month')"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'month' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
         Bulan Ini
       </button>
-
       @if ($filterDate || $filterSupplier || $search)
         <button wire:click="resetFilters"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 text-xs font-semibold text-red-600 transition ml-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
           Reset
         </button>
@@ -234,35 +237,26 @@
       <table class="w-full">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
-            <th class="px-5 py-4 text-left w-12">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span>
-            </th>
-            <th class="px-5 py-4 text-left">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span>
-            </th>
-            <th class="px-5 py-4 text-left">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No. Nota</span>
-            </th>
-            <th class="px-5 py-4 text-left">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span>
-            </th>
-            <th class="px-5 py-4 text-left">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span>
-            </th>
-            <th class="px-5 py-4 text-left">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Supplier</span>
-            </th>
-            <th class="px-5 py-4 text-center w-32">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span>
-            </th>
+            <th class="px-5 py-4 text-left w-12"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span></th>
+            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No.
+                Nota</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Supplier</span></th>
+            <th class="px-5 py-4 text-center w-32"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
           </tr>
         </thead>
-        @forelse ($barangMasuk as $index => $item)
+        @forelse($barangMasuk as $index => $item)
           <tbody x-data="{ expanded: false }" class="table-row-animate">
             <tr class="data-row border-b border-gray-50 hover:bg-blue-50/30">
-              <td class="px-5 py-4 text-xs font-semibold text-gray-300">
-                {{ $barangMasuk->firstItem() + $index }}
-              </td>
+              <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $barangMasuk->firstItem() + $index }}</td>
               <td class="px-5 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-blue-100 flex flex-col items-center justify-center shrink-0">
@@ -281,9 +275,7 @@
               </td>
               <td class="px-5 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">
-                  {{ $item->no_nota }}
-                </span>
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">{{ $item->no_nota }}</span>
               </td>
               <td class="px-5 py-4">
                 <p class="text-sm font-bold text-gray-900">{{ $item->barang->nama_barang ?? '—' }}</p>
@@ -299,7 +291,7 @@
                 <div class="flex items-center gap-2.5">
                   <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
                     <span
-                      class="text-xs font-bold text-indigo-600 uppercase">{{ substr($item->supplier->nama_supplier ?? 'S', 0, 2) }}</span>
+                      class="text-xs font-bold text-indigo-600 uppercase">{{ substr($item->supplier->nama_supplier ?? '—', 0, 2) }}</span>
                   </div>
                   <span class="text-sm font-medium text-gray-700">{{ $item->supplier->nama_supplier ?? '—' }}</span>
                 </div>
@@ -333,29 +325,19 @@
                 </div>
               </td>
             </tr>
-
-            {{-- Detail Row --}}
             <tr x-show="expanded" x-cloak class="border-b border-gray-100">
               <td colspan="7" class="px-5 pb-4 pt-1">
                 <div class="rounded-xl bg-linear-to-br from-gray-50 to-blue-50/30 border border-gray-200 p-4">
                   <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Detail Transaksi</p>
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div>
-                      <span class="text-xs text-gray-400 block">Surat Jalan</span>
-                      <span
+                    <div><span class="text-xs text-gray-400 block">Surat Jalan</span><span
                         class="text-sm font-bold text-gray-800 font-mono">{{ $item->no_surat_jalan ?? '—' }}</span>
                     </div>
-                    <div>
-                      <span class="text-xs text-gray-400 block">Sumber</span>
-                      <span class="text-sm font-bold text-gray-800">{{ $item->sumber ?? '—' }}</span>
-                    </div>
-                    <div>
-                      <span class="text-xs text-gray-400 block">ID Transaksi</span>
-                      <span class="text-sm font-bold text-gray-800 font-mono">#{{ $item->id_masuk }}</span>
-                    </div>
-                    <div>
-                      <span class="text-xs text-gray-400 block">Dicatat</span>
-                      <span
+                    <div><span class="text-xs text-gray-400 block">Sumber</span><span
+                        class="text-sm font-bold text-gray-800">{{ $item->sumber ?? '—' }}</span></div>
+                    <div><span class="text-xs text-gray-400 block">ID Transaksi</span><span
+                        class="text-sm font-bold text-gray-800 font-mono">#{{ $item->id_masuk }}</span></div>
+                    <div><span class="text-xs text-gray-400 block">Dicatat</span><span
                         class="text-sm font-semibold text-gray-600">{{ $item->created_at?->translatedFormat('d M Y, H:i') ?? '—' }}</span>
                     </div>
                   </div>
@@ -398,15 +380,12 @@
         @endforelse
       </table>
     </div>
-
     @if ($barangMasuk->hasPages())
-      <div class="px-5 py-4 border-t border-gray-100">
-        {{ $barangMasuk->links() }}
-      </div>
+      <div class="px-5 py-4 border-t border-gray-100">{{ $barangMasuk->links() }}</div>
     @endif
   </div>
 
-  {{-- MODAL TAMBAH / EDIT --}}
+  {{-- MODAL --}}
   <template x-teleport="body">
     <div x-show="modalOpen" x-cloak x-transition:enter="transition ease-out duration-200"
       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -414,16 +393,13 @@
       x-transition:leave-end="opacity-0" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
       @keydown.escape.window="modalOpen = false">
 
-      {{-- BACKDROP --}}
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
 
-      {{-- MODAL PANEL --}}
       <div @click.stop x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-95 translate-y-4"
         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
         class="relative z-50 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
 
-        {{-- Modal Header --}}
         <div class="bg-blue-600 px-6 py-5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -452,12 +428,12 @@
           </div>
         </div>
 
-        {{-- Modal Body --}}
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
+          {{-- Barang --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
                 class="text-red-500">*</span></label>
-            <select wire:model="id_barang"
+            <select wire:model.live="id_barang"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
               <option value="">— Pilih Barang —</option>
               @foreach ($barangs as $barang)
@@ -470,17 +446,50 @@
             @enderror
           </div>
 
+          {{-- Satuan (auto-fill) --}}
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Supplier <span
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Satuan</label>
+            <input type="text" value="{{ $satuan_display }}" readonly disabled
+              class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-500 outline-none">
+          </div>
+
+          {{-- Sumber --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Sumber <span
                 class="text-red-500">*</span></label>
-            <select wire:model="id_supplier"
+            <select wire:model.live="sumber"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
+              <option value="">— Pilih Sumber —</option>
+              @foreach ($sumberList as $s)
+                <option value="{{ $s }}">{{ $s }}</option>
+              @endforeach
+            </select>
+            @error('sumber')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
+
+          {{-- Supplier (disable jika sumber bukan Supplier) --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Supplier
+              @if ($sumber !== 'Supplier')
+                <span class="text-gray-400 font-normal">(otomatis)</span>
+              @else
+                <span class="text-red-500">*</span>
+              @endif
+            </label>
+            <select wire:model="id_supplier"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer"
+              {{ $sumber !== 'Supplier' ? 'disabled' : '' }}>
               <option value="">— Pilih Supplier —</option>
               @foreach ($suppliers as $supplier)
                 <option value="{{ $supplier->id_supplier }}">{{ $supplier->kode_supplier }} –
                   {{ $supplier->nama_supplier }}</option>
               @endforeach
             </select>
+            @if ($sumber !== 'Supplier')
+              <p class="text-xs text-amber-600 mt-1">Supplier hanya bisa dipilih jika sumber = Supplier.</p>
+            @endif
             @error('id_supplier')
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
@@ -528,21 +537,6 @@
           </div>
 
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Sumber <span
-                class="text-red-500">*</span></label>
-            <select wire:model="sumber"
-              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-              <option value="">— Pilih Sumber —</option>
-              @foreach ($sumberList as $s)
-                <option value="{{ $s }}">{{ $s }}</option>
-              @endforeach
-            </select>
-            @error('sumber')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
-          </div>
-
-          <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>
             <textarea wire:model="keterangan" rows="3" placeholder="Catatan tambahan…"
@@ -550,14 +544,11 @@
           </div>
         </div>
 
-        {{-- Modal Footer --}}
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-3">
           <p class="text-xs text-gray-400"><span class="text-red-500">*</span> Wajib diisi</p>
           <div class="flex items-center gap-2">
             <button @click="modalOpen = false"
-              class="px-5 py-2.5 rounded-xl bg-white border-2 border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-700 transition">
-              Batal
-            </button>
+              class="px-5 py-2.5 rounded-xl bg-white border-2 border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-700 transition">Batal</button>
             <button @click="$wire.isEdit ? $wire.update() : $wire.simpan()"
               class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition shadow-lg shadow-blue-600/25 flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -585,24 +576,24 @@
         title: '',
         message: ''
       },
-
       init() {
         window.addEventListener('dataSaved', (e) => {
           this.modalOpen = false;
           this.showToast(e.detail.type, e.detail.title, e.detail.message);
         });
-
+        window.addEventListener('openModal', () => {
+          this.isEdit = false;
+          this.modalOpen = true;
+        });
         window.addEventListener('openEditModal', () => {
           this.isEdit = true;
           this.modalOpen = true;
         });
       },
-
       openAddModal() {
         this.isEdit = false;
         this.modalOpen = true;
       },
-
       showToast(type, title, message) {
         this.toast = {
           show: true,
@@ -612,7 +603,6 @@
         };
         setTimeout(() => this.toast.show = false, 4000);
       },
-
       confirmDelete(id) {
         Swal.fire({
           title: 'Hapus data ini?',
@@ -626,7 +616,7 @@
           customClass: {
             popup: 'rounded-2xl',
             confirmButton: 'rounded-xl text-sm font-bold px-5',
-            cancelButton: 'rounded-xl text-sm font-bold px-5',
+            cancelButton: 'rounded-xl text-sm font-bold px-5'
           },
         }).then((result) => {
           if (result.isConfirmed) {

@@ -35,13 +35,28 @@ class LaporanController extends Controller {
 
   // Barang Masuk
   public function barangMasukPdf(Request $request) {
-    $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
-    $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $awal       = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir      = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $idSupplier = $request->input('id_supplier');
 
-    $data = BarangMasuk::with(['barang', 'supplier', 'user'])
-      ->whereBetween('tanggal_masuk', [$awal, $akhir])
-      ->orderByDesc('tanggal_masuk')
+    $query = BarangMasuk::with(['barang', 'supplier', 'user'])
+      ->whereBetween('tanggal_masuk', [$awal, $akhir]);
+
+    // Filter supplier kalau ada
+    if ($idSupplier) {
+      $query->where('id_supplier', $idSupplier);
+    }
+
+    $data = $query->orderByDesc('tanggal_masuk')
+      ->orderByDesc('id_masuk')
       ->get();
+
+    // Ambil nama supplier untuk judul
+    $namaSupplier = null;
+    if ($idSupplier) {
+      $supplier     = Supplier::find($idSupplier);
+      $namaSupplier = $supplier?->nama_supplier;
+    }
 
     $this->catatLaporan('barang_masuk', $awal, $akhir);
 
@@ -50,8 +65,9 @@ class LaporanController extends Controller {
       'tanggal_awal'  => $this->formatTanggal($awal),
       'tanggal_akhir' => $this->formatTanggal($akhir),
       'total_jumlah'  => $data->sum('jumlah'),
-      'dicetak_oleh'  => Auth::user()->nama,
+      'dicetak_oleh'  => Auth::user()->nama ?? 'System',
       'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+      'nama_supplier' => $namaSupplier,
     ])->setPaper('a4', 'landscape');
 
     return $pdf->stream('laporan-barang-masuk-' . $awal . '-sd-' . $akhir . '.pdf');
