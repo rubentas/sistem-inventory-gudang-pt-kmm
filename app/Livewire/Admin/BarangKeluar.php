@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 use App\Models\BarangKeluar as BarangKeluarModel;
 use App\Models\OrderSales;
 use App\Models\Stok;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -17,6 +18,7 @@ class BarangKeluar extends Component {
   public string $search        = '';
   public string $filterDate    = '';
   public string $filterWilayah = '';
+  public string $filterType    = '';
 
   // Form
   public int | string $id_order   = '';
@@ -30,6 +32,7 @@ class BarangKeluar extends Component {
   public string $nama_barang_display  = '';
   public string $satuan_display       = '';
   public string $order_status_display = '';
+  public string $nama_sales_display = '';
 
   // UI state
   public bool $isEdit       = false;
@@ -55,43 +58,83 @@ class BarangKeluar extends Component {
     $this->tanggal_keluar = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterDate(): void {$this->resetPage();}
-  public function updatedFilterWilayah(): void {$this->resetPage();}
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
+
+  public function updatedFilterDate(): void {
+    $this->resetPage();
+  }
+
+  public function updatedFilterWilayah(): void {
+    $this->resetPage();
+  }
+
+  public function setFilter(string $type): void {
+    $this->filterType = $type;
+
+    switch ($type) {
+    case 'today':
+      $this->filterDate = now()->format('Y-m-d');
+      break;
+    case 'week':
+      $this->filterDate = now()->format('Y-m-d');
+      break;
+    case 'month':
+      $this->filterDate = now()->startOfMonth()->format('Y-m-d');
+      break;
+    default:
+      $this->filterType = 'custom';
+      break;
+    }
+
+    $this->resetPage();
+  }
 
   public function resetFilters(): void {
     $this->search        = '';
     $this->filterDate    = '';
     $this->filterWilayah = '';
+    $this->filterType    = '';
     $this->resetPage();
   }
 
-  public function resetForm(): void {
+  public function resetForm(): void
+{
     $this->reset([
-      'id_order', 'id_barang', 'id_wilayah', 'jumlah',
-      'keterangan', 'nama_barang_display', 'satuan_display',
-      'order_status_display', 'editId', 'isEdit',
+        'id_order',
+        'id_barang',
+        'id_wilayah',
+        'jumlah',
+        'keterangan',
+        'nama_barang_display',
+        'satuan_display',
+        'order_status_display',
+        'nama_sales_display',
+        'editId',
+        'isEdit',
     ]);
     $this->tanggal_keluar = now()->format('Y-m-d');
     $this->resetErrorBag();
-  }
+}
 
-  public function updatedIdOrder($value): void {
+  public function updatedIdOrder($value): void
+{
     if ($value) {
-      $order = OrderSales::with(['barang', 'wilayah'])->find($value);
-      if ($order) {
-        $this->id_barang            = $order->id_barang;
-        $this->id_wilayah           = $order->id_wilayah;
-        $this->jumlah               = $order->jumlah;
-        $this->nama_barang_display  = $order->barang->nama_barang ?? '';
-        $this->satuan_display       = $order->barang->satuan ?? '';
-        $this->order_status_display = $order->status;
-      }
+        $order = OrderSales::with(['barang', 'wilayah', 'sales'])->find($value);
+        if ($order) {
+            $this->id_barang            = $order->id_barang;
+            $this->id_wilayah           = $order->id_wilayah;
+            $this->jumlah               = $order->jumlah;
+            $this->nama_barang_display  = $order->barang->nama_barang ?? '';
+            $this->satuan_display       = $order->barang->satuan ?? '';
+            $this->order_status_display = $order->status;
+            $this->nama_sales_display   = $order->sales->nama_sales ?? '—';
+        }
     } else {
-      $this->reset(['id_barang', 'id_wilayah', 'jumlah', 'nama_barang_display', 'satuan_display', 'order_status_display']);
+        $this->reset(['id_barang', 'id_wilayah', 'jumlah', 'nama_barang_display', 'satuan_display', 'order_status_display', 'nama_sales_display']);
     }
-  }
-
+}
   public function openAddModal(): void {
     $this->resetForm();
     $this->dispatch('openModal');
@@ -116,7 +159,6 @@ class BarangKeluar extends Component {
       'keterangan'     => $this->keterangan,
     ]);
 
-    // Auto generate invoice
     $order = OrderSales::find($this->id_order);
     if ($order && ! $order->no_invoice) {
       $order->update([
@@ -157,26 +199,55 @@ class BarangKeluar extends Component {
   public function getStats(): array {
     return [
       'totalItems' => BarangKeluarModel::count(),
-      'thisMonth'  => BarangKeluarModel::whereMonth('tanggal_keluar', now()->month)->count(),
+      'thisMonth'  => BarangKeluarModel::whereMonth('tanggal_keluar', now()->month)
+        ->whereYear('tanggal_keluar', now()->year)
+        ->count(),
     ];
   }
 
   public function render() {
-    $barangKeluar = BarangKeluarModel::with(['barang', 'order', 'user', 'wilayah'])
-      ->when($this->search, function ($q) {
-        $q->whereHas('barang', function ($b) {
-          $b->where('nama_barang', 'like', '%' . $this->search . '%')
-            ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
-        })->orWhereHas('wilayah', function ($w) {
-          $w->where('nama_wilayah', 'like', '%' . $this->search . '%');
+    $barangKeluar = BarangKeluarModel::with(['barang', 'order.sales', 'user', 'wilayah'])
+      ->when($this->search, function ($query) {
+        $query->where(function ($sub) {
+          $sub->whereHas('barang', function ($q) {
+            $q->where('nama_barang', 'like', '%' . $this->search . '%')
+              ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
+          })
+            ->orWhereHas('wilayah', function ($q) {
+              $q->where('nama_wilayah', 'like', '%' . $this->search . '%');
+            })
+            ->orWhereHas('order.sales', function ($q) {
+              $q->where('nama_sales', 'like', '%' . $this->search . '%');
+            });
         });
       })
-      ->when($this->filterDate, fn($q) => $q->whereDate('tanggal_keluar', $this->filterDate))
-      ->when($this->filterWilayah, fn($q) => $q->where('id_wilayah', $this->filterWilayah))
+      ->when($this->filterDate, function ($query) {
+        $date = Carbon::parse($this->filterDate);
+
+        switch ($this->filterType) {
+        case 'week':
+          return $query->whereBetween('tanggal_keluar', [
+            now()->subDays(6)->startOfDay(),
+            now()->endOfDay(),
+          ]);
+        case 'month':
+          return $query->whereBetween('tanggal_keluar', [
+            $date->copy()->startOfMonth()->startOfDay(),
+            $date->copy()->endOfMonth()->endOfDay(),
+          ]);
+        case 'today':
+        default:
+          return $query->whereDate('tanggal_keluar', $this->filterDate);
+        }
+      })
+      ->when($this->filterWilayah, function ($query) {
+        $query->where('id_wilayah', $this->filterWilayah);
+      })
       ->orderByDesc('tanggal_keluar')
+      ->orderByDesc('id_keluar')
       ->paginate(10);
 
-    $orders = OrderSales::with(['barang', 'wilayah'])
+    $orders = OrderSales::with(['barang', 'wilayah', 'sales'])
       ->where('status', '!=', 'selesai')
       ->orderByDesc('tanggal_order')
       ->get();
@@ -190,6 +261,7 @@ class BarangKeluar extends Component {
       'stats'         => $this->getStats(),
       'filterDate'    => $this->filterDate,
       'filterWilayah' => $this->filterWilayah,
+      'filterType'    => $this->filterType,
     ]);
   }
 }

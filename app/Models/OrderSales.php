@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Models\Barang;
 use App\Models\BarangKeluar;
+use App\Models\Sales;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class OrderSales extends Model {
   protected $fillable = [
     'id_barang',
     'id_user',
+    'id_sales',
     'id_wilayah',
     'nama_toko',
     'jumlah',
@@ -34,6 +36,10 @@ class OrderSales extends Model {
 
   public function user() {
     return $this->belongsTo(User::class, 'id_user', 'id_user');
+  }
+
+  public function sales() {
+    return $this->belongsTo(Sales::class, 'id_sales', 'id_sales');
   }
 
   public function wilayah() {

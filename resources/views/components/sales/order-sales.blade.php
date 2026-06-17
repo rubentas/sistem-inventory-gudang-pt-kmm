@@ -273,6 +273,7 @@
         </div>
 
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
+          {{-- BARANG --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
                 class="text-red-500">*</span></label>
@@ -288,6 +289,8 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
+
+          {{-- WILAYAH --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Wilayah <span
                 class="text-red-500">*</span></label>
@@ -302,13 +305,28 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
+
+          {{-- SALES --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Sales</label>
+            <select wire:model="id_sales"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none cursor-pointer">
+              <option value="">— Pilih Sales —</option>
+              @foreach ($salesList as $sales)
+                <option value="{{ $sales->id_sales }}">{{ $sales->kode_sales }} - {{ $sales->nama_sales }}</option>
+              @endforeach
+            </select>
+          </div>
+
           {{-- NAMA TOKO --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Nama Toko</label>
             <input type="text" wire:model="nama_toko" placeholder="Masukkan nama toko"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none">
           </div>
+
           <div class="grid grid-cols-2 gap-3">
+            {{-- JUMLAH --}}
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah <span
                   class="text-red-500">*</span></label>
@@ -318,6 +336,8 @@
                 <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
               @enderror
             </div>
+
+            {{-- TANGGAL --}}
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span
                   class="text-red-500">*</span></label>
@@ -328,6 +348,7 @@
               @enderror
             </div>
           </div>
+
           {{-- HARGA JUAL --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Harga Jual (Rp) <span
@@ -342,8 +363,7 @@
             @enderror
           </div>
 
-          {{-- SUBTOTAL DIHAPUS DARI SINI --}}
-
+          {{-- KETERANGAN --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>

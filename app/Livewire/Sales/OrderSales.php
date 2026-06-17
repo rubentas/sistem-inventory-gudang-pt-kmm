@@ -3,6 +3,7 @@ namespace App\Livewire\Sales;
 
 use App\Models\Barang;
 use App\Models\OrderSales as OrderSalesModel;
+use App\Models\Sales;
 use App\Models\Wilayah;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -15,6 +16,7 @@ class OrderSales extends Component {
 
   public $id_barang            = '';
   public $id_wilayah           = '';
+  public $id_sales             = '';
   public $nama_toko            = '';
   public $jumlah               = '';
   public $harga_jual           = '';
@@ -30,6 +32,7 @@ class OrderSales extends Component {
   protected $rules = [
     'id_barang'     => 'required|exists:barangs,id_barang',
     'id_wilayah'    => 'required|exists:wilayahs,id_wilayah',
+    'id_sales'      => 'nullable|exists:sales,id_sales',
     'nama_toko'     => 'nullable|string|max:255',
     'jumlah'        => 'required|integer|min:1',
     'harga_jual'    => 'required|numeric|min:0',
@@ -88,8 +91,8 @@ class OrderSales extends Component {
 
   public function resetForm(): void {
     $this->reset([
-      'id_barang', 'id_wilayah', 'nama_toko', 'jumlah', 'harga_jual', 'subtotal',
-      'tanggal_order', 'keterangan', 'editId', 'isEdit',
+      'id_barang', 'id_wilayah', 'id_sales', 'nama_toko', 'jumlah',
+      'harga_jual', 'subtotal', 'tanggal_order', 'keterangan', 'editId', 'isEdit',
     ]);
     $this->tanggal_order = now()->format('Y-m-d');
     $this->resetErrorBag();
@@ -109,6 +112,7 @@ class OrderSales extends Component {
     $this->editId        = $order->id_order;
     $this->id_barang     = $order->id_barang;
     $this->id_wilayah    = $order->id_wilayah;
+    $this->id_sales      = $order->id_sales ?? '';
     $this->nama_toko     = $order->nama_toko ?? '';
     $this->jumlah        = $order->jumlah;
     $this->harga_jual    = $order->harga_jual ?? 0;
@@ -132,6 +136,7 @@ class OrderSales extends Component {
     $data = [
       'id_barang'     => $this->id_barang,
       'id_user'       => Auth::id(),
+      'id_sales'      => $this->id_sales ?: null,
       'id_wilayah'    => $this->id_wilayah,
       'nama_toko'     => $this->nama_toko,
       'jumlah'        => $this->jumlah,
@@ -179,7 +184,7 @@ class OrderSales extends Component {
   public function render() {
     $userId = Auth::id();
 
-    $orders = OrderSalesModel::with(['barang', 'wilayah'])
+    $orders = OrderSalesModel::with(['barang', 'wilayah', 'sales'])
       ->where('id_user', $userId)
       ->when($this->search, function ($q) {
         $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%'));
@@ -188,13 +193,15 @@ class OrderSales extends Component {
       ->orderByDesc('tanggal_order')
       ->paginate(10);
 
-    $barangs  = Barang::orderBy('nama_barang')->get();
-    $wilayahs = Wilayah::where('id_user', $userId)->orWhereNull('id_user')->orderBy('nama_wilayah')->get();
+    $barangs   = Barang::orderBy('nama_barang')->get();
+    $wilayahs  = Wilayah::where('id_user', $userId)->orWhereNull('id_user')->orderBy('nama_wilayah')->get();
+    $salesList = Sales::orderBy('nama_sales')->get();
 
     return view('components.sales.order-sales', [
       'orders'       => $orders,
       'barangs'      => $barangs,
       'wilayahs'     => $wilayahs,
+      'salesList'    => $salesList,
       'stats'        => $this->getStats(),
       'filterStatus' => $this->filterStatus,
     ]);
