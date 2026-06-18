@@ -22,6 +22,7 @@ class OrderSales extends Model {
     'subtotal',
     'tanggal_order',
     'status',
+    'status_pembayaran',
     'keterangan',
     'no_invoice',
   ];

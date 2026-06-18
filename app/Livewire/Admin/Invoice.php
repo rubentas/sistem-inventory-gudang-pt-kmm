@@ -14,8 +14,13 @@ class Invoice extends Component {
   public string $search       = '';
   public string $filterStatus = '';
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterStatus(): void {$this->resetPage();}
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
+
+  public function updatedFilterStatus(): void {
+    $this->resetPage();
+  }
 
   public function resetFilters(): void {
     $this->search       = '';
@@ -24,7 +29,7 @@ class Invoice extends Component {
   }
 
   public function cetakPdf(int $id) {
-    $order = OrderSales::with(['barang', 'wilayah', 'user'])->findOrFail($id);
+    $order = OrderSales::with(['barang', 'wilayah', 'sales'])->findOrFail($id);
     $pdf   = Pdf::loadView('laporan.invoice', compact('order'))->setPaper('a4', 'portrait');
     return response()->streamDownload(
       fn() => print($pdf->output()),
@@ -35,12 +40,13 @@ class Invoice extends Component {
   public function getStats(): array {
     return [
       'total'   => OrderSales::whereNotNull('no_invoice')->count(),
-      'selesai' => OrderSales::whereNotNull('no_invoice')->where('status', 'selesai')->count(),
+      'lunas'   => OrderSales::whereNotNull('no_invoice')->where('status_pembayaran', 'lunas')->count(),
+      'dicicil' => OrderSales::whereNotNull('no_invoice')->where('status_pembayaran', 'dicicil')->count(),
     ];
   }
 
   public function render() {
-    $invoices = OrderSales::with(['barang', 'wilayah', 'user'])
+    $invoices = OrderSales::with(['barang', 'wilayah', 'sales'])
       ->whereNotNull('no_invoice')
       ->when($this->search, function ($q) {
         $q->where('no_invoice', 'like', '%' . $this->search . '%')
@@ -58,5 +64,11 @@ class Invoice extends Component {
       'stats'           => $this->getStats(),
       'filterStatus'    => $this->filterStatus,
     ]);
+  }
+
+  public function lunasi(int $id): void {
+    $order = OrderSales::findOrFail($id);
+    $order->update(['status_pembayaran' => 'lunas']);
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Pembayaran berhasil dilunasi.');
   }
 }

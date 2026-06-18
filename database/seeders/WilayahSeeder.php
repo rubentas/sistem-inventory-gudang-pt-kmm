@@ -4,47 +4,54 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class WilayahSeeder extends Seeder {
-    public function run(): void {
-        $sales1 = User::where('username', 'andi_sales')->first();
-        $sales2 = User::where('username', 'sari_sales')->first();
+  public function run(): void {
+    // Matiin foreign key check
+    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+    Wilayah::truncate();
+    DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        $wilayahs = [
-            [
-                'nama_wilayah' => 'Wilayah A - Tanjung Kota',
-                'jumlah_toko'  => 20,
-                'id_user'      => $sales1 ? $sales1->id_user : null,
-                'keterangan'   => 'Area Tanjung Kota dan sekitarnya',
-            ],
-            [
-                'nama_wilayah' => 'Wilayah B - Tanjung Utara',
-                'jumlah_toko'  => 18,
-                'id_user'      => $sales2 ? $sales2->id_user : null,
-                'keterangan'   => 'Area Tanjung Utara dan sekitarnya',
-            ],
-            [
-                'nama_wilayah' => 'Wilayah C - Tanjung Selatan',
-                'jumlah_toko'  => 25,
-                'id_user'      => $sales1 ? $sales1->id_user : null,
-                'keterangan'   => 'Area Tanjung Selatan dan sekitarnya',
-            ],
-            [
-                'nama_wilayah' => 'Wilayah D - Tanjung Timur',
-                'jumlah_toko'  => 15,
-                'id_user'      => $sales2 ? $sales2->id_user : null,
-                'keterangan'   => 'Area Tanjung Timur dan sekitarnya',
-            ],
-            [
-                'nama_wilayah' => 'Wilayah E - Tanjung Barat',
-                'jumlah_toko'  => 22,
-                'id_user'      => $sales1 ? $sales1->id_user : null,
-                'keterangan'   => 'Area Tanjung Barat dan sekitarnya',
-            ],
-        ];
+    // Ambil akun sales yang sudah di-seed oleh UserSeeder
+    $sales1 = User::where('username', 'andi_sales')->first();
+    $sales2 = User::where('username', 'sari_sales')->first();
 
-        foreach ($wilayahs as $wilayah) {
-            Wilayah::create($wilayah);
-        }
+    $wilayahs = [
+      [
+        'nama_wilayah' => 'Tanjung Kota',
+        'jumlah_toko'  => 25,
+        'id_user'      => $sales1?->id_user,
+        'keterangan'   => 'Area pusat Kota Tanjung dan pasar utama',
+      ],
+      [
+        'nama_wilayah' => 'Murung Pudak',
+        'jumlah_toko'  => 18,
+        'id_user'      => $sales2?->id_user,
+        'keterangan'   => 'Area Kecamatan Murung Pudak dan sekitarnya',
+      ],
+      [
+        'nama_wilayah' => 'Kelua & Pugaan',
+        'jumlah_toko'  => 20,
+        'id_user'      => $sales1?->id_user,
+        'keterangan'   => 'Area Kecamatan Kelua dan Pugaan',
+      ],
+      [
+        'nama_wilayah' => 'Muara Uya & Jaro',
+        'jumlah_toko'  => 15,
+        'id_user'      => $sales2?->id_user,
+        'keterangan'   => 'Area Kecamatan Muara Uya dan Jaro',
+      ],
+      [
+        'nama_wilayah' => 'Haruai & Bintang Ara',
+        'jumlah_toko'  => 17,
+        'id_user'      => $sales1?->id_user,
+        'keterangan'   => 'Area Kecamatan Haruai dan Bintang Ara',
+      ],
+    ];
+
+    foreach ($wilayahs as $wilayah) {
+      Wilayah::create($wilayah);
     }
+  }
 }

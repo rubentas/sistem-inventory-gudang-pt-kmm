@@ -39,8 +39,21 @@
                 </svg>
               </div>
               <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Selesai</p>
-                <p class="text-xl font-bold text-gray-900">{{ $stats['selesai'] }}</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Lunas</p>
+                <p class="text-xl font-bold text-gray-900">{{ $stats['lunas'] }}</p>
+              </div>
+            </div>
+            <div class="w-px h-10 bg-gray-200"></div>
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-lg bg-amber-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Dicicil</p>
+                <p class="text-xl font-bold text-gray-900">{{ $stats['dicicil'] }}</p>
               </div>
             </div>
           </div>
@@ -106,15 +119,17 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[900px]">
+      <table class="w-full min-w-[1000px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No.
                 Invoice</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span></th>
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama
-                Toko</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Toko</span></th>
+            <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span></th>
             <th class="px-5 py-4 text-left"><span
@@ -122,7 +137,7 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Subtotal</span></th>
             <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pembayaran</span></th>
             <th class="px-5 py-4 text-center w-32"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
           </tr>
@@ -137,8 +152,21 @@
                 </span>
               </td>
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $invoice->tanggal_order->translatedFormat('d/m/Y') }}</td>
+                {{ $invoice->tanggal_order->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4 text-sm font-semibold text-gray-900">{{ $invoice->nama_toko ?? '-' }}</td>
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-700">{{ $invoice->sales->nama_sales ?? '—' }}</span>
+                </div>
+              </td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $invoice->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4">
                 <span class="text-sm font-bold text-gray-700">{{ number_format($invoice->jumlah) }}</span>
@@ -147,19 +175,25 @@
               <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp
                 {{ number_format($invoice->subtotal ?? 0, 0, ',', '.') }}</td>
               <td class="px-5 py-4">
-                @if ($invoice->status == 'pending')
+                @if ($invoice->status_pembayaran == 'lunas')
                   <span
-                    class="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-xs font-semibold">Pending</span>
-                @elseif($invoice->status == 'diproses')
-                  <span
-                    class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-xs font-semibold">Diproses</span>
+                    class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">Lunas</span>
                 @else
                   <span
-                    class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">Selesai</span>
+                    class="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-xs font-semibold">Dicicil</span>
                 @endif
               </td>
               <td class="px-5 py-4">
-                <div class="flex items-center justify-center">
+                <div class="flex items-center justify-center gap-1">
+                  @if ($invoice->status_pembayaran == 'dicicil')
+                    <button wire:click="lunasi({{ $invoice->id_order }})" wire:confirm="Tandai pembayaran ini lunas?"
+                      class="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Lunasi
+                    </button>
+                  @endif
                   <button wire:click="cetakPdf({{ $invoice->id_order }})"
                     class="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +207,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-6 py-20">
+              <td colspan="9" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,3 +231,21 @@
     @endif
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('livewire:initialized', () => {
+    Livewire.on('dataSaved', (e) => {
+      Swal.fire({
+        title: e.title || 'Berhasil!',
+        text: e.message || 'Data berhasil disimpan.',
+        icon: e.type || 'success',
+        confirmButtonColor: '#3B82F6',
+        customClass: {
+          popup: 'rounded-2xl',
+          confirmButton: 'rounded-xl text-sm font-bold px-5'
+        },
+      });
+    });
+  });
+</script>

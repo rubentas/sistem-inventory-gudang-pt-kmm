@@ -143,6 +143,8 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Subtotal</span></th>
             <th class="px-5 py-4 text-left"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pembayaran</span></th>
+            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
             <th class="px-5 py-4 text-center w-24"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
@@ -164,6 +166,15 @@
                   class="text-sm font-bold text-orange-600">{{ number_format($order->jumlah) }}</span><span
                   class="text-xs text-gray-400 ml-1">{{ $order->barang->satuan ?? 'pcs' }}</span></td>
               <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+              <td class="px-5 py-4">
+                @if ($order->status_pembayaran == 'lunas')
+                  <span
+                    class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">Lunas</span>
+                @else
+                  <span
+                    class="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg text-xs font-semibold">Dicicil</span>
+                @endif
+              </td>
               <td class="px-5 py-4">
                 @if ($order->status == 'pending')
                   <span
@@ -203,7 +214,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-6 py-20">
+              <td colspan="9" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -361,6 +372,16 @@
             @error('harga_jual')
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
+          </div>
+
+          {{-- STATUS PEMBAYARAN --}}
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Status Pembayaran</label>
+            <select wire:model="status_pembayaran"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none cursor-pointer">
+              <option value="lunas">Lunas</option>
+              <option value="dicicil">Dicicil</option>
+            </select>
           </div>
 
           {{-- KETERANGAN --}}
