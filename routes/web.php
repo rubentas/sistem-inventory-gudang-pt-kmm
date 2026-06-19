@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/stok-barang', \App\Livewire\Admin\StokBarang::class)->name('stok-barang');
   Route::get('/invoice', \App\Livewire\Admin\Invoice::class)->name('invoice');
   Route::get('/data-sales', \App\Livewire\Admin\DataSales::class)->name('data-sales');
+  Route::get('/laporan-barang-masuk', \App\Livewire\Admin\Laporan\BarangMasuk::class)->name('laporan.masuk');
 });
 
 // =============================================
@@ -68,10 +70,11 @@ Route::middleware(['auth', 'role:pimpinan'])->prefix('pimpinan')->name('pimpinan
 });
 
 // =============================================
-// EXPORT PDF
+// EXPORT PDF & EXCEL
 // =============================================
 Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function () {
   Route::get('/barang-masuk/pdf', [LaporanController::class, 'barangMasukPdf'])->name('masuk.pdf');
+  Route::get('/barang-masuk/excel', [ExportController::class, 'barangMasukExcel'])->name('masuk.excel');
   Route::get('/barang-keluar/pdf', [LaporanController::class, 'barangKeluarPdf'])->name('keluar.pdf');
   Route::get('/stok/pdf', [LaporanController::class, 'stokPdf'])->name('stok.pdf');
   Route::get('/stock-opname/pdf', [LaporanController::class, 'stockOpnamePdf'])->name('opname.pdf');
