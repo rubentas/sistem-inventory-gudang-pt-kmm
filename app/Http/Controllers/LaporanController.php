@@ -98,8 +98,26 @@ class LaporanController extends Controller {
   }
 
   // Stok Barang
-  public function stokPdf() {
-    $data = Stok::with('barang')->orderBy('id_barang')->get();
+  public function stokPdf(Request $request) {
+    $kategori = $request->input('kategori', '');
+    $status   = $request->input('status', '');
+    $search   = $request->input('search', '');
+
+    $data = Stok::with('barang')
+      ->when($kategori, function ($q) use ($kategori) {
+        $q->whereHas('barang', fn($b) => $b->where('kategori', $kategori));
+      })
+      ->when($status === 'menipis', function ($q) {
+        $q->whereColumn('jumlah_stok', '<=', 'stok_minimum');
+      })
+      ->when($status === 'aman', function ($q) {
+        $q->whereColumn('jumlah_stok', '>', 'stok_minimum');
+      })
+      ->when($search, function ($q) use ($search) {
+        $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $search . '%'));
+      })
+      ->orderBy('jumlah_stok', 'asc')
+      ->get();
 
     $this->catatLaporan('stok_barang');
 

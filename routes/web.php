@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/data-sales', \App\Livewire\Admin\DataSales::class)->name('data-sales');
   Route::get('/laporan-barang-masuk', \App\Livewire\Admin\Laporan\BarangMasuk::class)->name('laporan.masuk');
   Route::get('/laporan-barang-keluar', \App\Livewire\Admin\Laporan\BarangKeluar::class)->name('laporan.keluar');
+  Route::get('/laporan-stok', \App\Livewire\Admin\Laporan\StokBarang::class)->name('laporan.stok');
 });
 
 // =============================================
@@ -86,4 +87,5 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/inventory/pdf', [LaporanController::class, 'inventoryPdf'])->name('inventory.pdf');
   Route::get('/data-barang/pdf', [LaporanController::class, 'dataBarangPdf'])->name('data-barang.pdf');
   Route::get('/omzet/pdf', [LaporanController::class, 'omzetPdf'])->name('omzet.pdf');
+  Route::get('/stok/excel', [ExportController::class, 'stokBarangExcel'])->name('stok.excel');
 });
