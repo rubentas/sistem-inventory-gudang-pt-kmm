@@ -303,7 +303,7 @@
 
           <!-- ========== LAPORAN ========== -->
           <div x-data="{
-              open: localStorage.getItem('laporan-menu') === 'true' || {{ request()->routeIs(['admin.laporan.masuk', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'true' : 'false' }},
+              open: localStorage.getItem('laporan-menu') === 'true' || {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'true' : 'false' }},
               toggle() {
                   this.open = !this.open;
                   localStorage.setItem('laporan-menu', this.open);
@@ -311,7 +311,7 @@
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-      {{ request()->routeIs(['admin.laporan.masuk', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'menu-active' : 'menu-inactive' }}">
+      {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -335,6 +335,16 @@
                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
                 Laporan Barang Masuk
+              </a>
+
+              {{-- LAPORAN BARANG KELUAR --}}
+              <a href="{{ route('admin.laporan.keluar') }}"
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.keluar') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16V4m0 0l4 4m-4-4l-4 4M7 16v4m0 0l-4-4m4 4l4-4" />
+                </svg>
+                Laporan Barang Keluar
               </a>
 
               {{-- LAPORAN STOK --}}
@@ -392,6 +402,22 @@
   </div>
 
   @livewireScripts
+
+  <script>
+    document.addEventListener('livewire:navigated', () => {
+      const sidebar = document.querySelector('.sidebar-scroll');
+      if (sidebar) {
+        const scrollPos = sessionStorage.getItem('sidebar-scroll');
+        if (scrollPos) {
+          sidebar.scrollTop = parseInt(scrollPos);
+        }
+
+        sidebar.addEventListener('scroll', () => {
+          sessionStorage.setItem('sidebar-scroll', sidebar.scrollTop);
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
