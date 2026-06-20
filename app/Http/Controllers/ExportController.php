@@ -6,6 +6,7 @@ use App\Exports\BarangMasukExport;
 use App\Exports\OrderSalesExport;
 use App\Exports\StokBarangExport;
 use Illuminate\Http\Request;
+use OmzetExport;
 
 class ExportController extends Controller {
   public function barangMasukExcel(Request $request) {
@@ -37,5 +38,9 @@ class ExportController extends Controller {
       $request->input('tanggal_akhir', now()->format('Y-m-d')),
       $request->input('status', '')
     ))->download();
+  }
+
+  public function omzetExcel(Request $request) {
+    return (new OmzetExport($request->input('tahun', now()->year)))->download();
   }
 }
