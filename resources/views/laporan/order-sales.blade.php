@@ -58,18 +58,6 @@
       margin-bottom: 10px;
     }
 
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 12px;
-      font-size: 9px;
-    }
-
-    .stats span {
-      font-weight: 700;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -130,13 +118,6 @@
 
   <div class="title">LAPORAN ORDER SALES</div>
   <div class="subtitle">Periode: {{ $tanggal_awal }} — {{ $tanggal_akhir }}</div>
-
-  <div class="stats">
-    <div>Total: <span>{{ number_format($total_jumlah) }}</span></div>
-    <div>Pending: <span style="color:#d97706;">{{ $total_pending }}</span></div>
-    <div>Diproses: <span style="color:#2563eb;">{{ $total_diproses }}</span></div>
-    <div>Selesai: <span style="color:#059669;">{{ $total_selesai }}</span></div>
-  </div>
 
   <table>
     <thead>
