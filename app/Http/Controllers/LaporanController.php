@@ -318,4 +318,15 @@ class LaporanController extends Controller {
 
     return $pdf->stream('laporan-barang-terlaris-' . $awal . '.pdf');
   }
+
+  public function barangExpiredPdf(Request $request) {
+    $data = BarangMasuk::with(['barang', 'supplier'])->whereNotNull('tanggal_expired')
+      ->when($request->status, fn($q) => $q->where('status_expired', $request->status))
+      ->orderBy('tanggal_expired')->get();
+
+    $pdf = Pdf::loadView('laporan.barang-expired', [
+      'data' => $data, 'dicetak_oleh' => Auth::user()->nama, 'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'portrait');
+    return $pdf->stream('laporan-barang-expired.pdf');
+  }
 }

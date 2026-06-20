@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/laporan-order-sales', \App\Livewire\Admin\Laporan\OrderSales::class)->name('laporan.order');
   Route::get('/laporan-omzet', \App\Livewire\Admin\Laporan\Omzet::class)->name('laporan.omzet');
   Route::get('/laporan-barang-terlaris', \App\Livewire\Admin\Laporan\BarangTerlaris::class)->name('laporan.terlaris');
+  Route::get('/laporan-barang-expired', \App\Livewire\Admin\Laporan\BarangExpired::class)->name('laporan.expired');
 
 });
 
@@ -96,4 +97,6 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/omzet/excel', [ExportController::class, 'omzetExcel'])->name('omzet.excel');
   Route::get('/barang-terlaris/pdf', [LaporanController::class, 'barangTerlarisPdf'])->name('terlaris.pdf');
   Route::get('/barang-terlaris/excel', [ExportController::class, 'barangTerlarisExcel'])->name('terlaris.excel');
+  Route::get('/barang-expired/pdf', [LaporanController::class, 'barangExpiredPdf'])->name('expired.pdf');
+  Route::get('/barang-expired/excel', [ExportController::class, 'barangExpiredExcel'])->name('expired.excel');
 });

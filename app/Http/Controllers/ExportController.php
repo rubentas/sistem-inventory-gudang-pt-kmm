@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\BarangExpiredExport;
 use App\Exports\BarangKeluarExport;
 use App\Exports\BarangMasukExport;
 use App\Exports\BarangTerlarisExport;
@@ -52,5 +53,9 @@ class ExportController extends Controller {
       $request->input('kategori', ''),
       $request->input('limit', 10)
     ))->download();
+  }
+
+  public function barangExpiredExcel(Request $request) {
+    return (new BarangExpiredExport($request->input('status', '')))->download();
   }
 }
