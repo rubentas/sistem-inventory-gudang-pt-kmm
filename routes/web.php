@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/laporan-stok', \App\Livewire\Admin\Laporan\StokBarang::class)->name('laporan.stok');
   Route::get('/laporan-order-sales', \App\Livewire\Admin\Laporan\OrderSales::class)->name('laporan.order');
   Route::get('/laporan-omzet', \App\Livewire\Admin\Laporan\Omzet::class)->name('laporan.omzet');
+  Route::get('/laporan-barang-terlaris', \App\Livewire\Admin\Laporan\BarangTerlaris::class)->name('laporan.terlaris');
 
 });
 
@@ -93,4 +94,6 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/stok/excel', [ExportController::class, 'stokBarangExcel'])->name('stok.excel');
   Route::get('/order-sales/excel', [ExportController::class, 'orderSalesExcel'])->name('order.excel');
   Route::get('/omzet/excel', [ExportController::class, 'omzetExcel'])->name('omzet.excel');
+  Route::get('/barang-terlaris/pdf', [LaporanController::class, 'barangTerlarisPdf'])->name('terlaris.pdf');
+  Route::get('/barang-terlaris/excel', [ExportController::class, 'barangTerlarisExcel'])->name('terlaris.excel');
 });

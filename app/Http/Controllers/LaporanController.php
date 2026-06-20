@@ -289,4 +289,33 @@ class LaporanController extends Controller {
     $pdf = Pdf::loadView('laporan.omzet', $data)->setPaper('a4', 'portrait');
     return $pdf->stream('laporan-omzet-' . $tahun . '-' . $bulan . '.pdf');
   }
+
+  public function barangTerlarisPdf(Request $request) {
+    $awal     = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $akhir    = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
+    $kategori = $request->input('kategori', '');
+    $limit    = $request->input('limit', 10);
+
+    $data = BarangKeluar::with('barang')
+      ->whereBetween('tanggal_keluar', [$awal, $akhir])
+      ->when($kategori, fn($q) => $q->whereHas('barang', fn($b) => $b->where('kategori', $kategori)))
+      ->selectRaw('id_barang, SUM(jumlah) as total_keluar')
+      ->groupBy('id_barang')
+      ->orderByDesc('total_keluar')
+      ->limit($limit)
+      ->get();
+
+    $this->catatLaporan('barang_terlaris', $awal, $akhir);
+
+    $pdf = Pdf::loadView('laporan.barang-terlaris', [
+      'data'          => $data,
+      'tanggal_awal'  => $this->formatTanggal($awal),
+      'tanggal_akhir' => $this->formatTanggal($akhir),
+      'total_keluar'  => $data->sum('total_keluar'),
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+    ])->setPaper('a4', 'portrait');
+
+    return $pdf->stream('laporan-barang-terlaris-' . $awal . '.pdf');
+  }
 }

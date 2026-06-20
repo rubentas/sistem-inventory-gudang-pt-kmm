@@ -3,10 +3,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\BarangKeluarExport;
 use App\Exports\BarangMasukExport;
+use App\Exports\BarangTerlarisExport;
+use App\Exports\OmzetExport;
 use App\Exports\OrderSalesExport;
 use App\Exports\StokBarangExport;
 use Illuminate\Http\Request;
-use OmzetExport;
 
 class ExportController extends Controller {
   public function barangMasukExcel(Request $request) {
@@ -42,5 +43,14 @@ class ExportController extends Controller {
 
   public function omzetExcel(Request $request) {
     return (new OmzetExport($request->input('tahun', now()->year)))->download();
+  }
+
+  public function barangTerlarisExcel(Request $request) {
+    return (new BarangTerlarisExport(
+      $request->input('tanggal_awal', now()->startOfMonth()->format('Y-m-d')),
+      $request->input('tanggal_akhir', now()->format('Y-m-d')),
+      $request->input('kategori', ''),
+      $request->input('limit', 10)
+    ))->download();
   }
 }
