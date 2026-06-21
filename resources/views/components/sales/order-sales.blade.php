@@ -203,7 +203,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9" class="px-6 py-20">
+              <td colspan="8" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,7 +277,7 @@
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
                 class="text-red-500">*</span></label>
-            <select wire:model="id_barang"
+            <select wire:model.live="id_barang"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none cursor-pointer">
               <option value="">-- Pilih Barang --</option>
               @foreach ($barangs as $barang)
@@ -289,6 +289,31 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
+
+          {{-- INFO STOK --}}
+          @if ($id_barang)
+            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <span class="text-sm font-semibold text-gray-700">Stok Tersedia: <span
+                      class="text-emerald-600 font-bold">{{ number_format($stok_tersedia) }} Dos</span></span>
+                </div>
+                @if ($stok_tersedia <= $stok_minimum && $stok_tersedia > 0)
+                  <span
+                    class="px-2 py-0.5 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠️
+                    Menipis</span>
+                @elseif($stok_tersedia > 0)
+                  <span
+                    class="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">✅
+                    Aman</span>
+                @endif
+              </div>
+            </div>
+          @endif
 
           {{-- WILAYAH --}}
           <div>

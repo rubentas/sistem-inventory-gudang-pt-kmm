@@ -21,6 +21,8 @@ class OrderSales extends Component {
   public $jumlah               = '';
   public $harga_jual           = '';
   public $subtotal             = '';
+  public $stok_tersedia        = 0;
+  public $stok_minimum         = 0;
   public string $tanggal_order = '';
   public string $keterangan    = '';
 
@@ -53,29 +55,24 @@ class OrderSales extends Component {
     $this->tanggal_order = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {
-    $this->resetPage();
-  }
+  public function updatedSearch(): void {$this->resetPage();}
+  public function updatedFilterStatus(): void {$this->resetPage();}
 
-  public function updatedFilterStatus(): void {
-    $this->resetPage();
-  }
-
-  public function updatedJumlah(): void {
-    $this->hitungSubtotal();
-  }
-
-  public function updatedHargaJual(): void {
-    $this->hitungSubtotal();
-  }
+  public function updatedJumlah(): void {$this->hitungSubtotal();}
+  public function updatedHargaJual(): void {$this->hitungSubtotal();}
 
   public function updatedIdBarang(): void {
     if ($this->id_barang && ! $this->isEdit) {
-      $barang = Barang::find($this->id_barang);
-      if ($barang && $barang->harga_jual_default > 0) {
-        $this->harga_jual = $barang->harga_jual_default;
+      $barang = Barang::with('stok')->find($this->id_barang);
+      if ($barang) {
+        $this->harga_jual    = $barang->harga_jual_default ?? 0;
+        $this->stok_tersedia = $barang->stok->jumlah_stok ?? 0;
+        $this->stok_minimum  = $barang->stok->stok_minimum ?? 0;
         $this->hitungSubtotal();
       }
+    } else {
+      $this->stok_tersedia = 0;
+      $this->stok_minimum  = 0;
     }
   }
 
@@ -94,6 +91,8 @@ class OrderSales extends Component {
       'id_barang', 'id_wilayah', 'id_sales', 'nama_toko', 'jumlah',
       'harga_jual', 'subtotal', 'tanggal_order', 'keterangan', 'editId', 'isEdit',
     ]);
+    $this->stok_tersedia = 0;
+    $this->stok_minimum  = 0;
     $this->tanggal_order = now()->format('Y-m-d');
     $this->resetErrorBag();
   }
@@ -120,6 +119,12 @@ class OrderSales extends Component {
     $this->tanggal_order = $order->tanggal_order->format('Y-m-d');
     $this->keterangan    = $order->keterangan ?? '';
     $this->isEdit        = true;
+
+    // Info stok pas edit
+    $barang              = Barang::with('stok')->find($order->id_barang);
+    $this->stok_tersedia = $barang->stok->jumlah_stok ?? 0;
+    $this->stok_minimum  = $barang->stok->stok_minimum ?? 0;
+
     $this->resetErrorBag();
     $this->dispatch('openModal');
   }
@@ -159,9 +164,7 @@ class OrderSales extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
   }
 
-  public function update(): void {
-    $this->simpan();
-  }
+  public function update(): void {$this->simpan();}
 
   public function hapus(int $id): void {
     $order = OrderSalesModel::findOrFail($id);
@@ -186,9 +189,7 @@ class OrderSales extends Component {
 
     $orders = OrderSalesModel::with(['barang', 'wilayah', 'sales'])
       ->where('id_user', $userId)
-      ->when($this->search, function ($q) {
-        $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%'));
-      })
+      ->when($this->search, fn($q) => $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')))
       ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
       ->orderByDesc('tanggal_order')
       ->paginate(10);
