@@ -67,7 +67,7 @@
 
     .info-item strong {
       display: inline-block;
-      width: 110px;
+      width: 100px;
       color: #4b5563;
     }
 
@@ -143,11 +143,9 @@
     <div class="info-item"><strong>Tanggal</strong><span>: {{ $order->tanggal_order->translatedFormat('d F Y') }}</span>
     </div>
     <div class="info-item"><strong>Nama Toko</strong><span>: {{ $order->nama_toko ?: '-' }}</span></div>
-    <div class="info-item"><strong>Wilayah</strong><span>: {{ $order->wilayah->nama_wilayah ?? '-' }}</span></div>
     <div class="info-item"><strong>Sales</strong><span>:
         {{ $order->sales->nama_sales ?? ($order->user->nama ?? '-') }}</span></div>
-    <div class="info-item"><strong>Pembayaran</strong><span>:
-        {{ $order->status_pembayaran == 'lunas' ? 'Lunas' : 'Dicicil' }}</span></div>
+    <div class="info-item"><strong>Wilayah</strong><span>: {{ $order->wilayah->nama_wilayah ?? '-' }}</span></div>
   </div>
 
   <table class="items-table">

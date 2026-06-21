@@ -14,16 +14,15 @@ use Livewire\WithPagination;
 class OrderSales extends Component {
   use WithPagination;
 
-  public $id_barang                = '';
-  public $id_wilayah               = '';
-  public $id_sales                 = '';
-  public $nama_toko                = '';
-  public $jumlah                   = '';
-  public $harga_jual               = '';
-  public $subtotal                 = '';
-  public string $tanggal_order     = '';
-  public string $keterangan        = '';
-  public string $status_pembayaran = 'dicicil';
+  public $id_barang            = '';
+  public $id_wilayah           = '';
+  public $id_sales             = '';
+  public $nama_toko            = '';
+  public $jumlah               = '';
+  public $harga_jual           = '';
+  public $subtotal             = '';
+  public string $tanggal_order = '';
+  public string $keterangan    = '';
 
   public string $search       = '';
   public string $filterStatus = '';
@@ -31,15 +30,14 @@ class OrderSales extends Component {
   public $editId              = null;
 
   protected $rules = [
-    'id_barang'         => 'required|exists:barangs,id_barang',
-    'id_wilayah'        => 'required|exists:wilayahs,id_wilayah',
-    'id_sales'          => 'nullable|exists:sales,id_sales',
-    'nama_toko'         => 'nullable|string|max:255',
-    'jumlah'            => 'required|integer|min:1',
-    'harga_jual'        => 'required|numeric|min:0',
-    'tanggal_order'     => 'required|date',
-    'keterangan'        => 'nullable|string',
-    'status_pembayaran' => 'required|in:lunas,dicicil',
+    'id_barang'     => 'required|exists:barangs,id_barang',
+    'id_wilayah'    => 'required|exists:wilayahs,id_wilayah',
+    'id_sales'      => 'nullable|exists:sales,id_sales',
+    'nama_toko'     => 'nullable|string|max:255',
+    'jumlah'        => 'required|integer|min:1',
+    'harga_jual'    => 'required|numeric|min:0',
+    'tanggal_order' => 'required|date',
+    'keterangan'    => 'nullable|string',
   ];
 
   protected $messages = [
@@ -96,8 +94,7 @@ class OrderSales extends Component {
       'id_barang', 'id_wilayah', 'id_sales', 'nama_toko', 'jumlah',
       'harga_jual', 'subtotal', 'tanggal_order', 'keterangan', 'editId', 'isEdit',
     ]);
-    $this->status_pembayaran = 'dicicil';
-    $this->tanggal_order     = now()->format('Y-m-d');
+    $this->tanggal_order = now()->format('Y-m-d');
     $this->resetErrorBag();
   }
 
@@ -112,18 +109,17 @@ class OrderSales extends Component {
       $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Order sudah diproses, tidak bisa diubah.');
       return;
     }
-    $this->editId            = $order->id_order;
-    $this->id_barang         = $order->id_barang;
-    $this->id_wilayah        = $order->id_wilayah;
-    $this->id_sales          = $order->id_sales ?? '';
-    $this->nama_toko         = $order->nama_toko ?? '';
-    $this->jumlah            = $order->jumlah;
-    $this->harga_jual        = $order->harga_jual ?? 0;
-    $this->subtotal          = $order->subtotal ?? 0;
-    $this->tanggal_order     = $order->tanggal_order->format('Y-m-d');
-    $this->keterangan        = $order->keterangan ?? '';
-    $this->status_pembayaran = $order->status_pembayaran ?? 'dicicil';
-    $this->isEdit            = true;
+    $this->editId        = $order->id_order;
+    $this->id_barang     = $order->id_barang;
+    $this->id_wilayah    = $order->id_wilayah;
+    $this->id_sales      = $order->id_sales ?? '';
+    $this->nama_toko     = $order->nama_toko ?? '';
+    $this->jumlah        = $order->jumlah;
+    $this->harga_jual    = $order->harga_jual ?? 0;
+    $this->subtotal      = $order->subtotal ?? 0;
+    $this->tanggal_order = $order->tanggal_order->format('Y-m-d');
+    $this->keterangan    = $order->keterangan ?? '';
+    $this->isEdit        = true;
     $this->resetErrorBag();
     $this->dispatch('openModal');
   }
@@ -138,18 +134,17 @@ class OrderSales extends Component {
     }
 
     $data = [
-      'id_barang'         => $this->id_barang,
-      'id_user'           => Auth::id(),
-      'id_sales'          => $this->id_sales ?: null,
-      'id_wilayah'        => $this->id_wilayah,
-      'nama_toko'         => $this->nama_toko,
-      'jumlah'            => $this->jumlah,
-      'harga_jual'        => $this->harga_jual ?: 0,
-      'subtotal'          => $this->subtotal ?: 0,
-      'tanggal_order'     => $this->tanggal_order,
-      'status'            => 'pending',
-      'status_pembayaran' => $this->status_pembayaran,
-      'keterangan'        => $this->keterangan,
+      'id_barang'     => $this->id_barang,
+      'id_user'       => Auth::id(),
+      'id_sales'      => $this->id_sales ?: null,
+      'id_wilayah'    => $this->id_wilayah,
+      'nama_toko'     => $this->nama_toko,
+      'jumlah'        => $this->jumlah,
+      'harga_jual'    => $this->harga_jual ?: 0,
+      'subtotal'      => $this->subtotal ?: 0,
+      'tanggal_order' => $this->tanggal_order,
+      'status'        => 'pending',
+      'keterangan'    => $this->keterangan,
     ];
 
     if ($this->isEdit) {
