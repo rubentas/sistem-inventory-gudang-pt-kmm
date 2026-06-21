@@ -55,6 +55,7 @@ class BarangExpired extends Component {
   }
 
   public function render() {
+    // Tabel 1: Belum diinput
     $barangMasuk = BarangMasuk::with(['barang', 'supplier'])
       ->whereNull('tanggal_expired')
       ->when($this->search, function ($query) {
@@ -64,17 +65,27 @@ class BarangExpired extends Component {
         });
       })
       ->orderBy('tanggal_masuk', 'desc')
-      ->paginate(10);
+      ->paginate(10, ['*'], 'belumPage');
+
+    // Tabel 2: Sudah diinput
+    $sudahDinput = BarangMasuk::with(['barang', 'supplier'])
+      ->whereNotNull('tanggal_expired')
+      ->when($this->search, function ($query) {
+        $query->whereHas('barang', function ($q) {
+          $q->where('nama_barang', 'like', '%' . $this->search . '%')
+            ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
+        });
+      })
+      ->orderBy('tanggal_expired', 'desc')
+      ->paginate(10, ['*'], 'sudahPage');
 
     $sudahExpired = BarangMasuk::whereNotNull('tanggal_expired')
-      ->where('status_expired', 'expired')
-      ->count();
-
+      ->where('status_expired', 'expired')->count();
     $hampirExpired = BarangMasuk::whereNotNull('tanggal_expired')
-      ->where('status_expired', 'hampir_expired')
-      ->count();
+      ->where('status_expired', 'hampir_expired')->count();
 
-    return view('components.kepala-gudang.barang-expired', compact('barangMasuk', 'sudahExpired', 'hampirExpired'))
-      ->layout('layouts.kepala-gudang');
+    return view('components.kepala-gudang.barang-expired', compact(
+      'barangMasuk', 'sudahDinput', 'sudahExpired', 'hampirExpired'
+    ))->layout('layouts.kepala-gudang');
   }
 }

@@ -120,7 +120,7 @@
               <td class="px-5 py-3 text-sm font-medium text-gray-900">{{ $item->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-3 text-sm text-gray-500">{{ $item->supplier->nama_supplier ?? '-' }}</td>
               <td class="px-5 py-3 text-center">
-                <button wire:click="edit({{ $item->id_masuk }})" @click="openModal = true"
+                <button wire:click="edit({{ $item->id_masuk }})"
                   class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -149,6 +149,54 @@
     </div>
     <div class="px-5 py-3 border-t border-gray-100 bg-gray-50">
       {{ $barangMasuk->links() }}
+    </div>
+  </div>
+
+  {{-- TABLE SUDAH DIINPUT --}}
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mt-5">
+    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
+      <h3 class="text-sm font-semibold text-gray-700">Daftar Barang Sudah Punya Tanggal Expired</h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-100">
+            <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase">Tanggal Masuk</th>
+            <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase">Kode Barang</th>
+            <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase">Nama Barang</th>
+            <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase">Tgl Expired</th>
+            <th class="px-5 py-3 text-center text-xs font-bold text-gray-400 uppercase">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @forelse($sudahDinput as $item)
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-5 py-3 text-sm text-gray-600">{{ $item->tanggal_masuk->format('d/m/Y') }}</td>
+              <td class="px-5 py-3 text-sm font-mono text-gray-700">{{ $item->barang->kode_barang ?? '-' }}</td>
+              <td class="px-5 py-3 text-sm font-medium text-gray-900">{{ $item->barang->nama_barang ?? '-' }}</td>
+              <td class="px-5 py-3 text-sm font-semibold">{{ $item->tanggal_expired->format('d/m/Y') }}</td>
+              <td class="px-5 py-3 text-center">
+                @if ($item->status_expired == 'expired')
+                  <span class="px-2 py-0.5 bg-red-50 text-red-700 text-xs font-semibold rounded-lg">❌ Expired</span>
+                @elseif($item->status_expired == 'hampir_expired')
+                  <span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 text-xs font-semibold rounded-lg">⚠️
+                    Hampir</span>
+                @else
+                  <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">✅
+                    Aman</span>
+                @endif
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="5" class="px-5 py-12 text-center text-gray-500">Belum ada data expired</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+    <div class="px-5 py-3 border-t border-gray-100 bg-gray-50">
+      {{ $sudahDinput->links() }}
     </div>
   </div>
 
@@ -199,7 +247,7 @@
         <div class="px-5 py-3 border-t border-gray-100 bg-gray-50 flex justify-end gap-2">
           <button @click="modalOpen = false"
             class="px-3 py-1.5 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium">Batal</button>
-          <button wire:click="simpan" @click="modalOpen = false"
+          <button wire:click="simpan"
             class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium">Simpan</button>
         </div>
       </div>
@@ -223,12 +271,14 @@
           this.modalOpen = false;
           this.showToast(e.detail.type, e.detail.title, e.detail.message);
         });
+        window.addEventListener('openModal', () => {
+          this.modalOpen = true;
+        });
       },
 
-      edit(id) {
+      openModal(id) {
         this.modalOpen = true;
       },
-
       showToast(type, title, message) {
         this.toast = {
           show: true,

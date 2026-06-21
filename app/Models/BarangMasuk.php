@@ -19,7 +19,8 @@ class BarangMasuk extends Model {
   ];
 
   protected $casts = [
-    'tanggal_masuk' => 'datetime',
+    'tanggal_masuk'   => 'datetime',
+    'tanggal_expired' => 'date',
   ];
 
   public function barang() {
