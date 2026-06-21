@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Data Wilayah</title>
+  <title>Laporan Wilayah</title>
   <style>
     * {
       margin: 0;
@@ -51,13 +51,6 @@
       text-transform: uppercase;
     }
 
-    .subtitle {
-      text-align: center;
-      font-size: 9px;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -70,7 +63,6 @@
       padding: 7px 6px;
       font-size: 9px;
       font-weight: 700;
-      text-transform: uppercase;
       text-align: center;
     }
 
@@ -81,20 +73,34 @@
       text-align: center;
     }
 
-    tr:nth-child(even) td {
-      background: #f9fafb;
+    .signature-section {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .text-left {
-      text-align: left;
+    .signature-box {
+      width: 35%;
+      text-align: center;
     }
 
-    .text-right {
-      text-align: right;
+    .signature-box .label {
+      font-size: 10px;
+      color: #4b5563;
+      margin-bottom: 40px;
     }
 
-    .text-bold {
+    .signature-box .name {
+      font-size: 11px;
       font-weight: 700;
+      color: #111827;
+      margin-top: 3px;
+    }
+
+    .signature-box .line {
+      border-top: 1px solid #374151;
+      width: 70%;
+      margin: 0 auto;
     }
 
     .footer {
@@ -109,48 +115,47 @@
 </head>
 
 <body>
-
   <div class="header">
     <div class="company">PT. KUDA MAS MANDIRI</div>
-    <div class="address">Jl. Tanjung Tabalong, Kalimantan Selatan</div>
+    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561</div>
+    <div class="address">Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
     <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
   </div>
-
-  <div class="title">DATA WILAYAH DISTRIBUSI</div>
-  <div class="subtitle">Total Wilayah: {{ $data->count() }} | Total Toko: {{ $total_toko }} | Tanggal Cetak:
-    {{ $tanggal_cetak }}</div>
-
+  <div class="title">LAPORAN WILAYAH</div>
   <table>
     <thead>
       <tr>
         <th>No</th>
-        <th class="text-left">Nama Wilayah</th>
-        <th class="text-right">Jumlah Toko</th>
-        <th class="text-left">Sales Penanggung Jawab</th>
-        <th class="text-left">Keterangan</th>
+        <th>Nama Wilayah</th>
+        <th>Jumlah Toko</th>
+        <th>Total Barang Keluar</th>
       </tr>
     </thead>
     <tbody>
-      @forelse($data as $index => $wilayah)
+      @foreach ($data as $i => $d)
         <tr>
-          <td>{{ $index + 1 }}</td>
-          <td class="text-left">{{ $wilayah->nama_wilayah }}</td>
-          <td class="text-right">{{ number_format($wilayah->jumlah_toko) }}</td>
-          <td class="text-left">{{ $wilayah->sales->nama ?? '-' }}</td>
-          <td class="text-left">{{ $wilayah->keterangan ?? '-' }}</td>
+          <td>{{ $i + 1 }}</td>
+          <td>{{ $d->nama_wilayah }}</td>
+          <td>{{ $d->jumlah_toko }}</td>
+          <td>{{ number_format($d->total_keluar ?? 0) }}</td>
         </tr>
-      @empty
-        <tr>
-          <td colspan="5">Tidak ada data</td>
-        </tr>
-      @endforelse
+      @endforeach
     </tbody>
   </table>
 
-  <div class="footer">
-    Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}
+  <div class="signature-section">
+    <div class="signature-box">
+      <div class="label">Mengetahui,</div>
+      <div class="line"></div>
+      <div class="name">{{ $dicetak_oleh }}</div>
+    </div>
+    <div class="signature-box">
+      <div class="label">Admin</div>
+      <div class="line"></div>
+      <div class="name">{{ $dicetak_oleh }}</div>
+    </div>
   </div>
-
+  <div class="footer">Dicetak: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
 </body>
 
 </html>

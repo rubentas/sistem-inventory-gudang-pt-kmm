@@ -116,8 +116,39 @@
       margin-top: 4px;
     }
 
+    /* Tanda Tangan */
+    .signature-section {
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .signature-box {
+      width: 40%;
+      text-align: center;
+    }
+
+    .signature-box .label {
+      font-size: 11px;
+      color: #4b5563;
+      margin-bottom: 50px;
+    }
+
+    .signature-box .name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 5px;
+    }
+
+    .signature-box .line {
+      border-top: 1px solid #374151;
+      width: 80%;
+      margin: 0 auto;
+    }
+
     .footer {
-      margin-top: 36px;
+      margin-top: 30px;
       text-align: center;
       font-size: 10px;
       color: #9ca3af;
@@ -132,7 +163,9 @@
 
   <div class="header">
     <div class="title">PT. Kuda Mas Mandiri</div>
-    <div class="subtitle">Tanjung Tabalong, Kalimantan Selatan</div>
+    <div class="subtitle">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalimantan Selatan 71561
+    </div>
+    <div class="subtitle">Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
     <div class="subtitle">Telp: 0511-123456 &nbsp;|&nbsp; Email: kmm@kmm.com</div>
   </div>
 
@@ -173,6 +206,20 @@
 
   <div class="total-box">
     TOTAL: Rp {{ number_format($order->subtotal, 0, ',', '.') }}
+  </div>
+
+  {{-- TANDA TANGAN --}}
+  <div class="signature-section">
+    <div class="signature-box">
+      <div class="label">Penerima,</div>
+      <div class="line"></div>
+      <div class="name">{{ $order->nama_toko ?: '............................' }}</div>
+    </div>
+    <div class="signature-box">
+      <div class="label">Hormat Kami,</div>
+      <div class="line"></div>
+      <div class="name">{{ $order->sales->nama_sales ?? ($order->user->nama ?? 'Admin') }}</div>
+    </div>
   </div>
 
   <div class="footer">

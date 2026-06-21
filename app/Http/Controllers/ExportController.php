@@ -9,6 +9,7 @@ use App\Exports\OmzetExport;
 use App\Exports\OrderSalesExport;
 use App\Exports\StokBarangExport;
 use App\Exports\SupplierExport;
+use App\Exports\WilayahExport;
 use Illuminate\Http\Request;
 
 class ExportController extends Controller {
@@ -60,5 +61,11 @@ class ExportController extends Controller {
     return (new BarangExpiredExport($request->input('status', '')))->download();
   }
 
-  public function supplierExcel() {return (new SupplierExport)->download();}
+  public function supplierExcel() {
+    return (new SupplierExport)->download();
+  }
+
+  public function wilayahExcel() {
+    return (new WilayahExport)->download();
+  }
 }

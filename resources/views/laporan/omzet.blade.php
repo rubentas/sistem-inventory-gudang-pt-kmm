@@ -164,7 +164,8 @@
       <div style="font-size: 9px; color: #4b5563; margin-top: 3px;">Sistem Inventory Gudang</div>
     </div>
     <div class="info">
-      Jl. Tanjung Tabalong, Kalimantan Selatan<br>
+      Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561
+      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC<br>
       Telp: 0511-123456 | Email: kmm@kmm.com
     </div>
   </div>

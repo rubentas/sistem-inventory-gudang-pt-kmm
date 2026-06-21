@@ -185,7 +185,8 @@
 
   <div class="header">
     <div class="company">PT. KUDA MAS MANDIRI</div>
-    <div class="address">Jl. Tanjung Tabalong, Kalimantan Selatan</div>
+    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561
+      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
     <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
   </div>
 

@@ -65,7 +65,8 @@
 <body>
   <div class="header">
     <h1>PT. KUDA MAS MANDIRI</h1>
-    <p>Jl. Tanjung Tabalong, Kalimantan Selatan</p>
+    <p>Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561
+      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</p>
   </div>
   <div class="title">LAPORAN BARANG EXPIRED</div>
   <table>
