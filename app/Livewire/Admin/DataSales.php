@@ -103,10 +103,14 @@ class DataSales extends Component {
       ->orderBy('kode_sales')
       ->paginate(10);
 
+    // Ambil data user terkait (berdasarkan nama)
+    $users = \App\Models\User::where('role', 'sales')->get()->keyBy('nama');
+
     $wilayahs = Wilayah::orderBy('nama_wilayah')->get();
 
     return view('components.admin.data-sales', [
       'sales'    => $sales,
+      'users'    => $users,
       'stats'    => $this->getStats(),
       'wilayahs' => $wilayahs,
     ]);

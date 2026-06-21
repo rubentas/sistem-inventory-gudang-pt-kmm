@@ -34,8 +34,8 @@
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -104,7 +104,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[700px]">
+      <table class="w-full min-w-[800px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left w-12"><span
@@ -119,12 +119,15 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Wilayah</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span></th>
+            <th class="px-5 py-4 text-center"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Dokumen</span></th>
             <th class="px-5 py-4 text-center w-32"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
           @forelse($sales as $index => $s)
+            @php $user = $users[$s->nama_sales] ?? null; @endphp
             <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $sales->firstItem() + $index }}</td>
               <td class="px-5 py-4">
@@ -142,6 +145,46 @@
                   <span
                     class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">Non-Aktif</span>
                 @endif
+              </td>
+              <td class="px-5 py-4">
+                <div class="flex items-center justify-center gap-2">
+                  @if ($user?->foto_ktp)
+                    <a href="{{ Storage::url($user->foto_ktp) }}" target="_blank"
+                      class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition"
+                      title="KTP">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5" />
+                      </svg>
+                    </a>
+                  @else
+                    <span class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300"
+                      title="Belum upload KTP">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5" />
+                      </svg>
+                    </span>
+                  @endif
+                  @if ($user?->surat_kerja)
+                    <a href="{{ Storage::url($user->surat_kerja) }}" target="_blank"
+                      class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center hover:bg-amber-100 transition"
+                      title="Surat Kerja">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </a>
+                  @else
+                    <span class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300"
+                      title="Belum upload Surat Kerja">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </span>
+                  @endif
+                </div>
               </td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-center gap-0.5">
@@ -166,7 +209,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="7" class="px-6 py-20">
+              <td colspan="8" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
