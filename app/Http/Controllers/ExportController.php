@@ -8,6 +8,7 @@ use App\Exports\BarangTerlarisExport;
 use App\Exports\OmzetExport;
 use App\Exports\OrderSalesExport;
 use App\Exports\StokBarangExport;
+use App\Exports\SupplierExport;
 use Illuminate\Http\Request;
 
 class ExportController extends Controller {
@@ -58,4 +59,6 @@ class ExportController extends Controller {
   public function barangExpiredExcel(Request $request) {
     return (new BarangExpiredExport($request->input('status', '')))->download();
   }
+
+  public function supplierExcel() {return (new SupplierExport)->download();}
 }
