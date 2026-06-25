@@ -143,18 +143,6 @@
     </tbody>
   </table>
 
-  <div class="signature-section">
-    <div class="signature-box">
-      <div class="label">Mengetahui,</div>
-      <div class="line"></div>
-      <div class="name">{{ $dicetak_oleh }}</div>
-    </div>
-    <div class="signature-box">
-      <div class="label">Admin</div>
-      <div class="line"></div>
-      <div class="name">{{ $dicetak_oleh }}</div>
-    </div>
-  </div>
   <div class="footer">Dicetak: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
 </body>
 

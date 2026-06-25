@@ -4,6 +4,8 @@ namespace App\Livewire\KepalaGudang;
 use App\Models\Barang;
 use App\Models\StockOpname as StockOpnameModel;
 use App\Models\Stok;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -107,5 +109,32 @@ class StockOpname extends Component {
     $barangs = Barang::orderBy('nama_barang')->get();
 
     return view('components.kepala-gudang.stock-opname', compact('opnames', 'barangs'));
+  }
+
+  public function cetakPdf() {
+    $data = StockOpnameModel::with(['barang', 'user'])
+      ->orderByDesc('tanggal_opname')
+      ->get();
+
+    $totalSelisih = $data->sum('selisih');
+
+    $pdf = Pdf::loadView('laporan.stock-opname', [
+      'data'              => $data,
+      'tanggal_awal'      => '-',
+      'tanggal_akhir'     => '-',
+      'total_selisih'     => $totalSelisih,
+      'rata_rata_selisih' => $data->count() > 0 ? round($totalSelisih / $data->count(), 2) : 0,
+      'dicetak_oleh'      => Auth::user()->nama ?? 'System',
+      'tanggal_cetak'     => Carbon::now()->translatedFormat('d F Y'),
+    ])->setPaper('a4', 'landscape');
+
+    return response()->stream(
+      fn() => print($pdf->output()),
+      200,
+      [
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="laporan-stock-opname.pdf"',
+      ]
+    );
   }
 }

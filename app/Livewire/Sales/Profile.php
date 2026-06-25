@@ -53,7 +53,6 @@ class Profile extends Component {
       if ($user->foto_ktp) {
         Storage::disk('public')->delete($user->foto_ktp);
       }
-
       $data['foto_ktp'] = $this->foto_ktp->store('dokumen/ktp', 'public');
     }
 
@@ -62,7 +61,6 @@ class Profile extends Component {
       if ($user->surat_kerja) {
         Storage::disk('public')->delete($user->surat_kerja);
       }
-
       $data['surat_kerja'] = $this->surat_kerja->store('dokumen/surat', 'public');
     }
 
@@ -71,11 +69,19 @@ class Profile extends Component {
       if ($user->foto_profil) {
         Storage::disk('public')->delete($user->foto_profil);
       }
-
       $data['foto_profil'] = $this->foto_profil->store('dokumen/foto', 'public');
     }
 
     $user->update($data);
+
+    // Refresh data yang ditampilkan setelah update
+    $this->existing_ktp   = $user->fresh()->foto_ktp;
+    $this->existing_surat = $user->fresh()->surat_kerja;
+    $this->existing_foto  = $user->fresh()->foto_profil;
+
+    // Reset file input biar kosong
+    $this->reset(['foto_ktp', 'surat_kerja', 'foto_profil']);
+
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Profile berhasil diperbarui.');
   }
 
