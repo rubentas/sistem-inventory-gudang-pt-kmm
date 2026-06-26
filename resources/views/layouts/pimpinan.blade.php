@@ -276,19 +276,6 @@
             Omzet Penjualan
           </a>
 
-          <!-- MANAJEMEN PENGGUNA -->
-          <a href="{{ route('pimpinan.pengguna') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('pimpinan.pengguna') ? 'menu-active' : 'menu-inactive' }}">
-            @if (request()->routeIs('pimpinan.pengguna'))
-              <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
-            @endif
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-            </svg>
-            Manajemen Pengguna
-          </a>
         </nav>
 
         <div class="border-t border-slate-200 p-4">

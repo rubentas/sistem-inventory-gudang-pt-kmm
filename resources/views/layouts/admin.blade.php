@@ -139,7 +139,7 @@
 
           <!-- ========== MASTER DATA ========== -->
           <div x-data="{
-              open: localStorage.getItem('master-menu') === 'true' || {{ request()->routeIs(['admin.data-barang', 'admin.supplier', 'admin.wilayah']) ? 'true' : 'false' }},
+              open: localStorage.getItem('master-menu') === 'true' || {{ request()->routeIs(['admin.data-barang', 'admin.supplier', 'admin.wilayah', 'admin.data-sales']) ? 'true' : 'false' }},
               toggle() {
                   this.open = !this.open;
                   localStorage.setItem('master-menu', this.open);
@@ -147,7 +147,7 @@
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                {{ request()->routeIs(['admin.data-barang', 'admin.supplier', 'admin.wilayah']) ? 'menu-active' : 'menu-inactive' }}">
+                {{ request()->routeIs(['admin.data-barang', 'admin.supplier', 'admin.wilayah', 'admin.data-sales']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -178,7 +178,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
                 </svg>
-                Data Supplier
+                Supplier
               </a>
               <a href="{{ route('admin.wilayah') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.wilayah') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
@@ -187,7 +187,7 @@
                     d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                   </path>
                 </svg>
-                Data Wilayah
+                Wilayah
               </a>
               <a href="{{ route('admin.data-sales') }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
@@ -250,7 +250,6 @@
                 </svg>
                 Order Sales
               </a>
-              <!-- MENU INVOICE -->
               <a href="{{ route('admin.invoice') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.invoice') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,7 +302,7 @@
 
           <!-- ========== LAPORAN ========== -->
           <div x-data="{
-              open: localStorage.getItem('laporan-menu') === 'true' || {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'true' : 'false' }},
+              open: localStorage.getItem('laporan-menu') === 'true' || {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'admin.laporan.stok', 'admin.laporan.order', 'admin.laporan.omzet', 'admin.laporan.terlaris', 'admin.laporan.expired', 'admin.laporan.supplier', 'admin.laporan.wilayah']) ? 'true' : 'false' }},
               toggle() {
                   this.open = !this.open;
                   localStorage.setItem('laporan-menu', this.open);
@@ -311,7 +310,7 @@
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-      {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'laporan.stok', 'laporan.keluar', 'laporan.wilayah']) ? 'menu-active' : 'menu-inactive' }}">
+                {{ request()->routeIs(['admin.laporan.masuk', 'admin.laporan.keluar', 'admin.laporan.stok', 'admin.laporan.order', 'admin.laporan.omzet', 'admin.laporan.terlaris', 'admin.laporan.expired', 'admin.laporan.supplier', 'admin.laporan.wilayah']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -327,98 +326,97 @@
             </button>
 
             <div x-show="open" x-transition x-cloak class="mt-2 pl-4 space-y-1">
-              {{-- LAPORAN BARANG MASUK --}}
               <a href="{{ route('admin.laporan.masuk') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.masuk') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    d="M7 16V4m0 0L3 8m4-4l4 4m6 12v-4m0 0l4 4m-4-4l-4 4"></path>
                 </svg>
                 Laporan Barang Masuk
               </a>
-
-              {{-- LAPORAN BARANG KELUAR --}}
               <a href="{{ route('admin.laporan.keluar') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.keluar') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 16V4m0 0l4 4m-4-4l-4 4M7 16v4m0 0l-4-4m4 4l4-4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                  </path>
                 </svg>
                 Laporan Barang Keluar
               </a>
-
-              {{-- LAPORAN STOK BARANG --}}
               <a href="{{ route('admin.laporan.stok') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.stok') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                  </path>
                 </svg>
                 Laporan Stok Barang
               </a>
-
-              {{-- LAPORAN ORDER SALES --}}
               <a href="{{ route('admin.laporan.order') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.order') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.order') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
                 Laporan Order Sales
               </a>
-
-              {{-- LAPORAN OMZET --}}
               <a href="{{ route('admin.laporan.omzet') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.omzet') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                  </path>
                 </svg>
                 Laporan Omzet
               </a>
-
-              {{-- LAPORAN BARANG TERLARIS --}}
               <a href="{{ route('admin.laporan.terlaris') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.terlaris') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
-                Laporan Barang Terlaris
+                Barang Terlaris
               </a>
-
-              {{-- LAPORAN BARANG EXPIRED --}}
               <a href="{{ route('admin.laporan.expired') }}"
                 class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.expired') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                Laporan Barang Expired
+                Barang Expired
               </a>
-
-              {{-- LAPORAN SUPPLIER --}}
               <a href="{{ route('admin.laporan.supplier') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.supplier') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.supplier') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                    d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
                 </svg>
                 Laporan Supplier
               </a>
-
-              {{-- LAPORAN WILAYAH --}}
               <a href="{{ route('admin.laporan.wilayah') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.wilayah') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.laporan.wilayah') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                  </path>
                 </svg>
                 Laporan Wilayah
               </a>
             </div>
           </div>
 
+          <!-- MANAJEMEN PENGGUNA -->
+          <a href="{{ route('admin.pengguna') }}"
+            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+              {{ request()->routeIs('admin.pengguna') ? 'menu-active' : 'menu-inactive' }}">
+            @if (request()->routeIs('admin.pengguna'))
+              <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
+            @endif
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+            </svg>
+            Manajemen Pengguna
+          </a>
         </nav>
 
         <div class="border-t border-slate-200 p-4">
@@ -442,22 +440,6 @@
   </div>
 
   @livewireScripts
-
-  <script>
-    document.addEventListener('livewire:navigated', () => {
-      const sidebar = document.querySelector('.sidebar-scroll');
-      if (sidebar) {
-        const scrollPos = sessionStorage.getItem('sidebar-scroll');
-        if (scrollPos) {
-          sidebar.scrollTop = parseInt(scrollPos);
-        }
-
-        sidebar.addEventListener('scroll', () => {
-          sessionStorage.setItem('sidebar-scroll', sidebar.scrollTop);
-        });
-      }
-    });
-  </script>
 </body>
 
 </html>
