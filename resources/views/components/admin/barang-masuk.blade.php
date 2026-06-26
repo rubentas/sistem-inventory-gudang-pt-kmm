@@ -1,5 +1,4 @@
 <div x-data="barangMasukManager()" x-init="init()" class="space-y-5">
-
   {{-- TOAST --}}
   <div x-show="toast.show" x-cloak x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 translate-x-8 scale-95"
@@ -75,10 +74,9 @@
             </div>
           </div>
 
-          @php
-            // Siapin parameter PDF sesuai filter aktif
-            $pdfParams = [];
 
+          @php
+            $pdfParams = [];
             if ($filterType === 'today') {
                 $pdfParams['tanggal_awal'] = $filterDate;
                 $pdfParams['tanggal_akhir'] = $filterDate;
@@ -86,19 +84,15 @@
                 $pdfParams['tanggal_awal'] = now()->subDays(6)->format('Y-m-d');
                 $pdfParams['tanggal_akhir'] = now()->format('Y-m-d');
             } elseif ($filterType === 'month') {
-                $pdfParams['tanggal_awal'] = Carbon\Carbon::parse($filterDate)->startOfMonth()->format('Y-m-d');
-                $pdfParams['tanggal_akhir'] = Carbon\Carbon::parse($filterDate)->endOfMonth()->format('Y-m-d');
+                $pdfParams['tanggal_awal'] = \Carbon\Carbon::parse($filterDate)->startOfMonth()->format('Y-m-d');
+                $pdfParams['tanggal_akhir'] = \Carbon\Carbon::parse($filterDate)->endOfMonth()->format('Y-m-d');
             } elseif ($filterType === 'custom' && $filterDate) {
-                // Custom date: 1 hari spesifik
                 $pdfParams['tanggal_awal'] = $filterDate;
                 $pdfParams['tanggal_akhir'] = $filterDate;
             } else {
-                // Default: bulan ini
                 $pdfParams['tanggal_awal'] = now()->startOfMonth()->format('Y-m-d');
                 $pdfParams['tanggal_akhir'] = now()->format('Y-m-d');
             }
-
-            // Tambahin supplier filter kalau ada
             if ($filterSupplier) {
                 $pdfParams['id_supplier'] = $filterSupplier;
             }
@@ -141,7 +135,6 @@
             placeholder="Cari barang, supplier, atau nomor nota…"
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
-
         <div class="relative shrink-0" x-data="{ showFilter: false }" @click.outside="showFilter = false">
           <button @click="showFilter = !showFilter"
             :class="showFilter ? 'bg-blue-600 text-white border-blue-600' :
@@ -156,16 +149,9 @@
               <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
             @endif
           </button>
-
           <div x-show="showFilter" x-cloak x-transition
-            class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.3)] border border-gray-200 p-6 z-[9999] max-h-[450px] overflow-y-auto">
-            <p class="text-sm font-black text-gray-900 mb-5 flex items-center gap-2">
-              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              Filter Data
-            </p>
+            class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.3)] border border-gray-200 p-6 z-[9999]">
+            <p class="text-sm font-black text-gray-900 mb-5">Filter Data</p>
             <div class="space-y-5">
               <div>
                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Supplier</label>
@@ -196,37 +182,17 @@
     <div class="px-4 sm:px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2 flex-wrap">
       <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">Cepat:</span>
       <button wire:click="setFilter('today')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'today' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Hari Ini
-      </button>
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'today' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">Hari
+        Ini</button>
       <button wire:click="setFilter('week')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'week' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        7 Hari
-      </button>
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'week' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">7
+        Hari</button>
       <button wire:click="setFilter('month')"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'month' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        Bulan Ini
-      </button>
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:text-blue-600 text-xs font-semibold text-gray-600 transition {{ $filterType === 'month' ? 'bg-blue-50 border-blue-300 text-blue-600' : '' }}">Bulan
+        Ini</button>
       @if ($filterDate || $filterSupplier || $search)
         <button wire:click="resetFilters"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 text-xs font-semibold text-red-600 transition ml-1">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-          Reset
-        </button>
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 text-xs font-semibold text-red-600 transition ml-1">Reset</button>
       @endif
     </div>
   </div>
@@ -282,20 +248,10 @@
                 <p class="text-xs text-gray-400 font-mono">{{ $item->barang->kode_barang ?? '—' }}</p>
               </td>
               <td class="px-5 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-1">
-                  <span class="text-base font-bold text-blue-600">{{ number_format($item->jumlah) }}</span>
-                  <span class="text-xs text-gray-400">unit</span>
-                </div>
+                <span class="text-base font-bold text-gray-900">{{ number_format($item->jumlah) }}</span>
+                <span class="text-xs text-gray-400 ml-1">unit</span>
               </td>
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
-                    <span
-                      class="text-xs font-bold text-indigo-600 uppercase">{{ substr($item->supplier->nama_supplier ?? '—', 0, 2) }}</span>
-                  </div>
-                  <span class="text-sm font-medium text-gray-700">{{ $item->supplier->nama_supplier ?? '—' }}</span>
-                </div>
-              </td>
+              <td class="px-5 py-4">{{ $item->supplier->nama_supplier ?? '—' }}</td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-center gap-0.5">
                   <button @click="expanded = !expanded"
@@ -327,7 +283,7 @@
             </tr>
             <tr x-show="expanded" x-cloak class="border-b border-gray-100">
               <td colspan="7" class="px-5 pb-4 pt-1">
-                <div class="rounded-xl bg-linear-to-br from-gray-50 to-blue-50/30 border border-gray-200 p-4">
+                <div class="rounded-xl bg-gradient-to-br from-gray-50 to-blue-50/30 border border-gray-200 p-4">
                   <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Detail Transaksi</p>
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div><span class="text-xs text-gray-400 block">Surat Jalan</span><span
@@ -341,6 +297,16 @@
                         class="text-sm font-semibold text-gray-600">{{ $item->created_at?->translatedFormat('d M Y, H:i') ?? '—' }}</span>
                     </div>
                   </div>
+                  @if ($item->no_invoice)
+                    <div class="mt-3 pt-3 border-t border-gray-200 flex items-center gap-4">
+                      <span class="text-xs text-gray-400">Invoice:</span>
+                      <span class="text-sm font-mono font-bold text-blue-600">{{ $item->no_invoice }}</span>
+                      @if ($item->bukti_pembayaran)
+                        <a href="{{ Storage::url($item->bukti_pembayaran) }}" target="_blank"
+                          class="text-xs text-blue-600 hover:underline">Lihat Bukti</a>
+                      @endif
+                    </div>
+                  @endif
                   @if ($item->keterangan)
                     <div class="mt-3 pt-3 border-t border-gray-200">
                       <span class="text-xs text-gray-400 block mb-1">Keterangan</span>
@@ -354,27 +320,7 @@
         @empty
           <tbody>
             <tr>
-              <td colspan="7" class="px-6 py-20">
-                <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
-                  <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
-                    <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="text-base font-bold text-gray-900 mb-1">Belum Ada Data</h3>
-                    <p class="text-sm text-gray-400">Belum ada barang masuk yang tercatat.</p>
-                  </div>
-                  <button @click="openAddModal()"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Sekarang
-                  </button>
-                </div>
-              </td>
+              <td colspan="7" class="px-6 py-20 text-center text-gray-400">Belum ada barang masuk.</td>
             </tr>
           </tbody>
         @endforelse
@@ -392,9 +338,7 @@
       x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
       x-transition:leave-end="opacity-0" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
       @keydown.escape.window="modalOpen = false">
-
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
-
       <div @click.stop x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-95 translate-y-4"
         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -420,16 +364,14 @@
               </div>
             </div>
             <button @click="modalOpen = false"
-              class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"><svg
+                class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              </svg></button>
           </div>
         </div>
 
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
-          {{-- Barang --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
                 class="text-red-500">*</span></label>
@@ -445,15 +387,26 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
-
-          {{-- Satuan (auto-fill) --}}
-          <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Satuan</label>
-            <input type="text" value="{{ $satuan_display }}" readonly disabled
-              class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-500 outline-none">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-bold text-gray-900 mb-1.5">Satuan</label>
+              <input type="text" value="{{ $satuan_display }}" readonly disabled
+                class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-900 mb-1.5">Stok Tersedia</label>
+              @if ($id_barang)
+                @php $stok = \App\Models\Stok::where('id_barang', $id_barang)->first(); @endphp
+                <input type="text"
+                  value="{{ $stok ? number_format($stok->jumlah_stok) . ' ' . $satuan_display : '0 ' . $satuan_display }}"
+                  readonly disabled
+                  class="w-full rounded-xl border-2 {{ $stok && $stok->jumlah_stok <= $stok->stok_minimum ? 'border-red-200 bg-red-50 text-red-600' : 'border-emerald-200 bg-emerald-50 text-emerald-600' }} px-4 py-3 text-sm font-bold outline-none">
+              @else
+                <input type="text" value="Pilih barang dulu" readonly disabled
+                  class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-400 outline-none">
+              @endif
+            </div>
           </div>
-
-          {{-- Sumber --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Sumber <span
                 class="text-red-500">*</span></label>
@@ -464,15 +417,9 @@
                 <option value="{{ $s }}">{{ $s }}</option>
               @endforeach
             </select>
-            @error('sumber')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
           </div>
-
-          {{-- Supplier (disable jika sumber bukan Supplier) --}}
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Supplier
-              @if ($sumber !== 'Supplier')
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Supplier @if ($sumber !== 'Supplier')
                 <span class="text-gray-400 font-normal">(otomatis)</span>
               @else
                 <span class="text-red-500">*</span>
@@ -487,23 +434,13 @@
                   {{ $supplier->nama_supplier }}</option>
               @endforeach
             </select>
-            @if ($sumber !== 'Supplier')
-              <p class="text-xs text-amber-600 mt-1">Supplier hanya bisa dipilih jika sumber = Supplier.</p>
-            @endif
-            @error('id_supplier')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
           </div>
-
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Nomor Nota <span
                   class="text-red-500">*</span></label>
               <input type="text" wire:model="no_nota" placeholder="NOT-2025-001"
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-              @error('no_nota')
-                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-              @enderror
             </div>
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Surat Jalan</label>
@@ -511,31 +448,29 @@
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             </div>
           </div>
-
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah <span
                   class="text-red-500">*</span></label>
-              <div class="relative">
-                <input type="number" wire:model="jumlah" placeholder="0" min="1"
-                  class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none pr-14">
-                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">unit</span>
-              </div>
-              @error('jumlah')
-                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-              @enderror
+              <input type="number" wire:model="jumlah" placeholder="0" min="1"
+                class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             </div>
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span
                   class="text-red-500">*</span></label>
               <input type="date" wire:model="tanggal_masuk"
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-              @error('tanggal_masuk')
-                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-              @enderror
             </div>
           </div>
-
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Bukti Pembayaran <span
+                class="text-red-500">*</span></label>
+            <input type="file" wire:model="bukti_pembayaran" accept="image/*,.pdf"
+              class="w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            @error('bukti_pembayaran')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>
@@ -605,46 +540,47 @@
       },
       confirmDelete(id) {
         Swal.fire({
-          title: 'Hapus data ini?',
-          text: 'Tindakan ini tidak dapat dibatalkan.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#EF4444',
-          cancelButtonColor: '#94A3B8',
-          confirmButtonText: 'Ya, Hapus',
-          cancelButtonText: 'Batal',
-          customClass: {
-            popup: 'rounded-2xl',
-            confirmButton: 'rounded-xl text-sm font-bold px-5',
-            cancelButton: 'rounded-xl text-sm font-bold px-5'
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.$wire.call('hapus', id);
-          }
-        });
+            title: 'Hapus data ini?',
+            text: 'Tindakan ini tidak dapat dibatalkan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#94A3B8',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            customClass: {
+              popup: 'rounded-2xl',
+              confirmButton: 'rounded-xl text-sm font-bold px-5',
+              cancelButton: 'rounded-xl text-sm font-bold px-5'
+            }
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              this.$wire.call('hapus', id);
+            }
+          });
       }
     };
   }
 </script>
 <style>
   [x-cloak] {
-    display: none !important;
+    display: none !important
   }
 
   .table-row-animate {
-    animation: rowFadeIn 0.25s ease-out both;
+    animation: rowFadeIn 0.25s ease-out both
   }
 
   @keyframes rowFadeIn {
     from {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(6px)
     }
 
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0)
     }
   }
 </style>

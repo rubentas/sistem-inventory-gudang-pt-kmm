@@ -16,6 +16,8 @@ class BarangMasuk extends Model {
     'tanggal_masuk',
     'sumber',
     'keterangan',
+    'no_invoice',
+    'bukti_pembayaran',
   ];
 
   protected $casts = [

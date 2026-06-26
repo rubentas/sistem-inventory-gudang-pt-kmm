@@ -12,46 +12,47 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Invoice Penjualan</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Kelola invoice dari order sales</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Invoice</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Invoice Barang Masuk & Keluar</p>
           </div>
         </div>
-
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
-            <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Invoice</p>
-                <p class="text-xl font-bold text-gray-900">{{ $stats['total'] }}</p>
-              </div>
-            </div>
+        <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
+          <div>
+            <p class="text-xs text-gray-400 uppercase font-semibold">Total</p>
+            <p class="text-xl font-bold text-gray-900">{{ $stats['total'] }}</p>
+          </div>
+          <div class="w-px h-8 bg-gray-200"></div>
+          <div>
+            <p class="text-xs text-gray-400 uppercase font-semibold">Masuk</p>
+            <p class="text-xl font-bold text-green-600">{{ $stats['total_masuk'] }}</p>
+          </div>
+          <div class="w-px h-8 bg-gray-200"></div>
+          <div>
+            <p class="text-xs text-gray-400 uppercase font-semibold">Keluar</p>
+            <p class="text-xl font-bold text-blue-600">{{ $stats['total_keluar'] }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  {{-- SEARCH --}}
-  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm">
-    <div class="p-4 sm:p-5">
-      <div
-        class="flex items-center bg-gray-50 border border-gray-200 rounded-xl focus-within:border-blue-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition">
-        <div class="pl-3.5 shrink-0 text-gray-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari no invoice atau nama toko…"
-          class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
-      </div>
+  {{-- SEARCH & FILTER --}}
+  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex gap-3">
+    <div
+      class="flex-1 flex items-center bg-gray-50 border border-gray-200 rounded-xl focus-within:border-blue-400 transition">
+      <div class="pl-3.5 text-gray-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg></div>
+      <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari no invoice..."
+        class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none text-gray-900">
     </div>
+    <select wire:model.live="filterJenis"
+      class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold cursor-pointer">
+      <option value="">Semua</option>
+      <option value="masuk">Barang Masuk</option>
+      <option value="keluar">Barang Keluar</option>
+    </select>
   </div>
 
   {{-- TABLE --}}
@@ -59,91 +60,62 @@
     <div class="overflow-x-auto">
       <table class="w-full min-w-[900px]">
         <thead>
-          <tr class="bg-gray-50 border-b border-gray-100">
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">No.
-                Invoice</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span></th>
-            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama
-                Toko</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Barang</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total</span></th>
-            <th class="px-5 py-4 text-center w-24"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</span></th>
+          <tr class="bg-gray-50">
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">No. Invoice</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Jenis</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Tanggal</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Toko/Supplier</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Sales/Admin</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Barang</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Jumlah</th>
+            <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Total</th>
+            <th class="px-5 py-4 text-center text-xs font-bold text-gray-400 uppercase w-24">Aksi</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
-          @forelse($invoices as $invoice)
-            <tr class="hover:bg-blue-50/30 transition">
+          @forelse($invoices as $inv)
+            <tr class="hover:bg-blue-50/30">
+              <td class="px-5 py-4"><span
+                  class="text-xs font-mono font-semibold bg-violet-50 text-violet-700 px-2 py-1 rounded-md">{{ $inv['no_invoice'] }}</span>
+              </td>
               <td class="px-5 py-4">
-                <span
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">
-                  {{ $invoice->no_invoice }}
-                </span>
+                @if ($inv['jenis'] === 'masuk')
+                  <span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs font-semibold rounded-lg">Masuk</span>
+                @else
+                  <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg">Keluar</span>
+                @endif
               </td>
-              <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $invoice->tanggal_order->translatedFormat('d/m/Y') }}
+              <td class="px-5 py-4 text-sm">{{ \Carbon\Carbon::parse($inv['tanggal'])->format('d/m/Y') }}</td>
+              <td class="px-5 py-4 text-sm font-semibold">{{ $inv['toko'] }}</td>
+              <td class="px-5 py-4 text-sm">{{ $inv['sales'] }}</td>
+              <td class="px-5 py-4 text-sm">{{ $inv['barang'] }}</td>
+              <td class="px-5 py-4 text-sm">{{ number_format($inv['jumlah']) }} {{ $inv['satuan'] }}</td>
+              <td
+                class="px-5 py-4 text-sm font-bold {{ $inv['jenis'] === 'masuk' ? 'text-gray-500' : 'text-blue-600' }}">
+                {{ $inv['jenis'] === 'masuk' ? '—' : 'Rp ' . number_format($inv['total'], 0, ',', '.') }}
               </td>
-              <td class="px-5 py-4 text-sm font-semibold text-gray-900">{{ $invoice->nama_toko ?? '-' }}</td>
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <span
-                    class="text-sm font-semibold text-gray-700">{{ $invoice->sales->nama_sales ?? ($invoice->user->nama ?? '—') }}</span>
-                </div>
-              </td>
-              <td class="px-5 py-4 text-sm text-gray-600">{{ $invoice->barang->nama_barang ?? '-' }}</td>
-              <td class="px-5 py-4">
-                <span class="text-sm font-bold text-gray-700">{{ number_format($invoice->jumlah) }}</span>
-                <span class="text-xs text-gray-400 ml-1">{{ $invoice->barang->satuan ?? 'pcs' }}</span>
-              </td>
-              <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp
-                {{ number_format($invoice->subtotal ?? 0, 0, ',', '.') }}</td>
               <td class="px-5 py-4 text-center">
-                <button wire:click="cetakPdf({{ $invoice->id_order }})"
-                  class="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                  PDF
-                </button>
+                <div class="flex items-center justify-center gap-1">
+                  @if ($inv['jenis'] === 'masuk')
+                    <button wire:click="cetakPdfMasuk({{ $inv['id'] }})"
+                      class="text-xs bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-lg font-semibold transition">PDF</button>
+                  @else
+                    <button wire:click="cetakPdfKeluar({{ $inv['id'] }})"
+                      class="text-xs bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-lg font-semibold transition">PDF</button>
+                  @endif
+                </div>
               </td>
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-6 py-20">
-                <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
-                  <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
-                    <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="text-base font-bold text-gray-900 mb-1">Belum Ada Invoice</h3>
-                    <p class="text-sm text-gray-400">Invoice akan otomatis dibuat saat Barang Keluar diproses.</p>
-                  </div>
-                </div>
-              </td>
+              <td colspan="9" class="px-6 py-20 text-center text-gray-400">Belum ada invoice</td>
             </tr>
           @endforelse
         </tbody>
       </table>
     </div>
     @if ($invoices->hasPages())
-      <div class="px-5 py-4 border-t border-gray-100">{{ $invoices->links() }}</div>
+      <div class="px-5 py-3">{{ $invoices->links() }}</div>
     @endif
   </div>
 </div>
