@@ -56,6 +56,7 @@ Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->grou
   Route::get('/order-sales', \App\Livewire\Sales\OrderSales::class)->name('order-sales');
   Route::get('/stok-barang', \App\Livewire\Sales\StokBarang::class)->name('stok-barang');
   Route::get('/profile', \App\Livewire\Sales\Profile::class)->name('profile');
+  Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.'); Route::get('/history-order', \App\Livewire\Sales\HistoryOrder::class)->name('history.order');
 });
 
 // =============================================
