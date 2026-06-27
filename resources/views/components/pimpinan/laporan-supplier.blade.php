@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Data Supplier</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Laporan lengkap supplier/pemasok barang</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Data Supplier</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data supplier/pemasok barang</p>
           </div>
         </div>
         <a href="{{ route('laporan.supplier.pdf') }}" target="_blank"

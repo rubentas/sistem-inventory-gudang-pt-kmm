@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Barang Terlaris</h1>
-            <p class="text-sm text-gray-400 mt-0.5">5 barang dengan penjualan terbanyak per bulan</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Barang Terlaris</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data 5 barang dengan penjualan terbanyak per bulan</p>
           </div>
         </div>
       </div>
@@ -89,7 +89,8 @@
                 <span class="text-xs text-gray-400 ml-1">unit</span>
               </td>
               <td class="px-5 py-4 text-sm font-bold text-blue-600">Rp
-                {{ number_format($item->total_omzet, 0, ',', '.') }}</td>
+                {{ number_format($item->total_omzet, 0, ',', '.') }}
+              </td>
             </tr>
           @empty
             <tr>

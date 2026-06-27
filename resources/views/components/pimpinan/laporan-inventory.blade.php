@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Inventory</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Pergerakan stok barang dalam periode tertentu</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Inventory</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data pergerakan stok barang dalam periode tertentu</p>
           </div>
         </div>
         <a href="{{ route('laporan.inventory.pdf', ['tanggal_awal' => $tanggalAwal ?: now()->startOfMonth()->format('Y-m-d'), 'tanggal_akhir' => $tanggalAkhir ?: now()->format('Y-m-d')]) }}"
@@ -132,8 +132,7 @@
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ number_format($stok->jumlah_stok) }}</td>
               <td class="px-5 py-4">
                 @if ($stok->status == 'Menipis')
-                  <span
-                    class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
+                  <span class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
                     Menipis</span>
                 @else
                   <span
@@ -165,7 +164,8 @@
           <tr class="bg-gray-50 border-t-2 border-gray-200 font-bold">
             <td colspan="4" class="px-5 py-4 text-right text-gray-700">TOTAL:</td>
             <td class="px-5 py-4 text-gray-900">
-              {{ number_format($stoks->sum(function ($s) {return $s->jumlah_stok - $s->total_masuk + $s->total_keluar;})) }}
+              {{ number_format($stoks->sum(function ($s) {
+  return $s->jumlah_stok - $s->total_masuk + $s->total_keluar; })) }}
             </td>
             <td class="px-5 py-4 text-blue-600">{{ number_format($totalMasukKeseluruhan) }}</td>
             <td class="px-5 py-4 text-red-600">{{ number_format($totalKeluarKeseluruhan) }}</td>

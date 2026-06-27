@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Stok Barang</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Laporan lengkap stok barang gudang</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Stok Barang</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data stok barang gudang</p>
           </div>
         </div>
         <button wire:click="exportPdf"
@@ -131,14 +131,14 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Barang</span></th>
+            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama
+                Barang</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Satuan</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok Min</span></th>
+            <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stok
+                Min</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah Stok</span></th>
             <th class="px-5 py-4 text-left"><span
@@ -163,8 +163,7 @@
               </td>
               <td class="px-5 py-4">
                 @if ($stok->status == 'Menipis')
-                  <span
-                    class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
+                  <span class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
                     Menipis</span>
                 @else
                   <span

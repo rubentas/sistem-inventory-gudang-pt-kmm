@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Barang Expired</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Daftar barang yang mendekati atau sudah expired</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Barang Expired</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data barang yang mendekati atau sudah expired</p>
           </div>
         </div>
       </div>
@@ -81,7 +81,8 @@
           @forelse($expired as $item)
             <tr class="hover:bg-purple-50/30 transition">
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}</td>
+                {{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4">
                 <span
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">
@@ -91,7 +92,8 @@
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $item->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $item->supplier->nama_supplier ?? '-' }}</td>
               <td class="px-5 py-4 text-sm font-mono text-gray-700 whitespace-nowrap">
-                {{ \Carbon\Carbon::parse($item->tanggal_expired)->translatedFormat('d/m/Y') }}</td>
+                {{ \Carbon\Carbon::parse($item->tanggal_expired)->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4">
                 @if ($item->status_expired == 'expired')
                   <span

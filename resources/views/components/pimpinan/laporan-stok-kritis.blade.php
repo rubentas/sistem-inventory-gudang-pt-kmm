@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Stok Kritis</h1>
-            <p class="text-sm text-gray-400 mt-0.5">5 barang dengan stok paling menipis</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Stok Kritis</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data 5 barang dengan stok paling menipis</p>
           </div>
         </div>
         <a href="{{ route('laporan.stok.pdf') }}" target="_blank"
@@ -86,8 +86,7 @@
               <td class="px-5 py-4 text-sm font-bold text-red-600">{{ number_format($stok->jumlah_stok) }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ number_format($stok->stok_minimum) }}</td>
               <td class="px-5 py-4">
-                <span
-                  class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
+                <span class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
                   Menipis</span>
               </td>
             </tr>

@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Barang Keluar</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Laporan lengkap barang keluar per wilayah</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Barang Keluar</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data barang keluar per wilayah</p>
           </div>
         </div>
         <a href="{{ route('laporan.keluar.pdf', ['tanggal_awal' => $tanggalAwal ?: now()->startOfMonth()->format('Y-m-d'), 'tanggal_akhir' => $tanggalAkhir ?: now()->format('Y-m-d')]) }}"
@@ -103,7 +103,8 @@
           @forelse($barangKeluar as $item)
             <tr class="hover:bg-purple-50/30 transition">
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $item->tanggal_keluar->translatedFormat('d/m/Y') }}</td>
+                {{ $item->tanggal_keluar->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $item->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $item->wilayah->nama_wilayah ?? '-' }}</td>
               <td class="px-5 py-4"><span

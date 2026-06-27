@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Omzet</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Total penjualan per periode</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Omzet</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data total penjualan per periode</p>
           </div>
         </div>
         <div class="flex items-center gap-3">

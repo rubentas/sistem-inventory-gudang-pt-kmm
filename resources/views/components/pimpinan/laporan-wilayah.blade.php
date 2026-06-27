@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Wilayah</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Laporan wilayah distribusi dan jumlah toko</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Wilayah</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data wilayah distribusi dan jumlah toko</p>
           </div>
         </div>
         <a href="{{ route('laporan.wilayah.pdf') }}" target="_blank"

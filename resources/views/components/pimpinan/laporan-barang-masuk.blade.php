@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Barang Masuk</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Laporan lengkap barang masuk dari semua sumber</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Barang Masuk</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data barang masuk dari semua sumber</p>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -109,7 +109,8 @@
           @forelse($barangMasuk as $item)
             <tr class="hover:bg-purple-50/30 transition">
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}</td>
+                {{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4"><span
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-100">{{ $item->no_nota }}</span>
               </td>

@@ -12,8 +12,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Stock Opname</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Hasil pengecekan stok fisik vs sistem</p>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Stock Opname</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data pengecekan stok fisik vs sistem</p>
           </div>
         </div>
         <a href="{{ route('laporan.opname.pdf', ['tanggal_awal' => $tanggalAwal ?: now()->startOfMonth()->format('Y-m-d'), 'tanggal_akhir' => $tanggalAkhir ?: now()->format('Y-m-d')]) }}"
@@ -38,7 +38,8 @@
     <div class="bg-purple-50 border border-purple-200 rounded-2xl px-6 py-4 flex items-center justify-between">
       <p class="text-sm font-semibold text-purple-700">Total Selisih</p>
       <p class="text-2xl font-extrabold {{ $totalSelisih >= 0 ? 'text-emerald-700' : 'text-red-700' }}">
-        {{ number_format($totalSelisih) }}</p>
+        {{ number_format($totalSelisih) }}
+      </p>
     </div>
   </div>
 
@@ -102,7 +103,8 @@
           @forelse($stockOpnames as $item)
             <tr class="hover:bg-purple-50/30 transition">
               <td class="px-5 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                {{ $item->tanggal_opname->translatedFormat('d/m/Y') }}</td>
+                {{ $item->tanggal_opname->translatedFormat('d/m/Y') }}
+              </td>
               <td class="px-5 py-4">
                 <p class="text-sm font-bold text-gray-900">{{ $item->barang->nama_barang ?? '-' }}</p>
                 <p class="text-xs text-gray-400 font-mono">{{ $item->barang->kode_barang ?? '-' }}</p>
