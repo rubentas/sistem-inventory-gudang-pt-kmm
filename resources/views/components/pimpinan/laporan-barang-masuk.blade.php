@@ -84,7 +84,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[900px]">
+      <table class="w-full min-w-[1000px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left"><span
@@ -103,6 +103,8 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sumber</span></th>
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Input
                 Oleh</span></th>
+            <th class="px-5 py-4 text-center"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Bukti</span></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
@@ -123,10 +125,24 @@
                   class="px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-100 rounded-lg text-xs font-semibold">{{ $item->sumber }}</span>
               </td>
               <td class="px-5 py-4 text-sm text-gray-500">{{ $item->user->nama ?? '-' }}</td>
+              <td class="px-5 py-4 text-center">
+                @if ($item->bukti_pembayaran)
+                  <a href="{{ Storage::url($item->bukti_pembayaran) }}" target="_blank"
+                    class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    Lihat
+                  </a>
+                @else
+                  <span class="text-xs text-gray-400">—</span>
+                @endif
+              </td>
             </tr>
           @empty
             <tr>
-              <td colspan="8" class="px-6 py-20">
+              <td colspan="9" class="px-6 py-20">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-purple-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

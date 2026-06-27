@@ -17,13 +17,12 @@ class BarangExpired extends Component {
 
   protected $rules = [
     'id_barang_masuk' => 'required|exists:barang_masuks,id_masuk',
-    'tanggal_expired' => 'required|date|after_or_equal:today',
+    'tanggal_expired' => 'required|date',
   ];
 
   protected $messages = [
-    'id_barang_masuk.required'       => 'Pilih barang masuk terlebih dahulu',
-    'tanggal_expired.required'       => 'Tanggal expired wajib diisi',
-    'tanggal_expired.after_or_equal' => 'Tanggal expired tidak boleh kurang dari hari ini',
+    'id_barang_masuk.required' => 'Pilih barang masuk terlebih dahulu',
+    'tanggal_expired.required' => 'Tanggal expired wajib diisi',
   ];
 
   public function edit($id) {
@@ -55,7 +54,6 @@ class BarangExpired extends Component {
   }
 
   public function render() {
-    // Tabel 1: Belum diinput
     $barangMasuk = BarangMasuk::with(['barang', 'supplier'])
       ->whereNull('tanggal_expired')
       ->when($this->search, function ($query) {
@@ -67,7 +65,6 @@ class BarangExpired extends Component {
       ->orderBy('tanggal_masuk', 'desc')
       ->paginate(10, ['*'], 'belumPage');
 
-    // Tabel 2: Sudah diinput
     $sudahDinput = BarangMasuk::with(['barang', 'supplier'])
       ->whereNotNull('tanggal_expired')
       ->when($this->search, function ($query) {
@@ -79,13 +76,14 @@ class BarangExpired extends Component {
       ->orderBy('tanggal_expired', 'desc')
       ->paginate(10, ['*'], 'sudahPage');
 
-    $sudahExpired = BarangMasuk::whereNotNull('tanggal_expired')
-      ->where('status_expired', 'expired')->count();
-    $hampirExpired = BarangMasuk::whereNotNull('tanggal_expired')
-      ->where('status_expired', 'hampir_expired')->count();
+    $sudahExpired  = BarangMasuk::whereNotNull('tanggal_expired')->where('status_expired', 'expired')->count();
+    $hampirExpired = BarangMasuk::whereNotNull('tanggal_expired')->where('status_expired', 'hampir_expired')->count();
 
     return view('components.kepala-gudang.barang-expired', compact(
-      'barangMasuk', 'sudahDinput', 'sudahExpired', 'hampirExpired'
+      'barangMasuk',
+      'sudahDinput',
+      'sudahExpired',
+      'hampirExpired'
     ))->layout('layouts.kepala-gudang');
   }
 }
