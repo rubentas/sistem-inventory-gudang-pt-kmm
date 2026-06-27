@@ -12,7 +12,7 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Barang Masuk</h1>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Barang Masuk</h1>
             <p class="text-sm text-gray-400 mt-0.5">Data barang masuk ke gudang</p>
           </div>
         </div>

@@ -142,8 +142,10 @@
           <div x-data="{
               open: localStorage.getItem('persediaan-menu') === 'true' ||
                   {{ request()->routeIs(['kg.stok-barang', 'kg.barang-expired']) ? 'true' : 'false' }},
-              toggle() { this.open = !this.open;
-                  localStorage.setItem('persediaan-menu', this.open); }
+              toggle() {
+                  this.open = !this.open;
+                  localStorage.setItem('persediaan-menu', this.open);
+              }
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
@@ -185,7 +187,7 @@
             </div>
           </div>
 
-          <!-- Laporan Barang Masuk -->
+          <!-- Barang Masuk -->
           <a href="{{ route('kg.barang-masuk') }}"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
               {{ request()->routeIs('kg.barang-masuk') ? 'menu-active' : 'menu-inactive' }}">
@@ -193,7 +195,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 16V4m0 0L3 8m4-4l4 4m6 12v-4m0 0l4 4m-4-4l-4 4"></path>
             </svg>
-            Laporan Barang Masuk
+            Barang Masuk
           </a>
 
           <!-- Stock Opname -->

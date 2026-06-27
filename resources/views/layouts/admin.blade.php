@@ -440,6 +440,25 @@
   </div>
 
   @livewireScripts
+
+  <script>
+    document.addEventListener('livewire:navigated', () => {
+      const sidebar = document.querySelector('.sidebar-scroll');
+      if (sidebar) {
+        const saved = sessionStorage.getItem('sidebar-scroll-admin');
+        if (saved) sidebar.scrollTop = parseInt(saved);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.querySelector('.sidebar-scroll');
+      if (sidebar) {
+        sidebar.addEventListener('scroll', () => {
+          sessionStorage.setItem('sidebar-scroll-admin', sidebar.scrollTop);
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
