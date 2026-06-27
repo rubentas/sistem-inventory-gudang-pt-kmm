@@ -57,15 +57,14 @@
       <div class="flex items-center gap-4">
         <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-slate-600 hover:text-purple-600 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-purple-100 flex items-center justify-center shadow-lg">
             <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"></path>
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
             </svg>
           </div>
           <div class="leading-tight">
@@ -74,7 +73,6 @@
           </div>
         </div>
       </div>
-
       <div class="flex items-center gap-5">
         <div class="relative" x-data="{ open: false }">
           <button @click="open = !open" class="flex items-center gap-3 group">
@@ -89,7 +87,6 @@
               </svg>
             </div>
           </button>
-
           <div x-show="open" @click.away="open = false" x-transition x-cloak
             class="absolute right-0 mt-3 w-60 rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
             <div class="p-4 border-b border-slate-100">
@@ -101,8 +98,7 @@
               <button type="submit"
                 class="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7">
-                  </path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
                 </svg>
                 Logout
               </button>
@@ -119,165 +115,138 @@
     <aside
       class="fixed top-16 left-0 z-40 w-72 h-[calc(100vh-4rem)] bg-white border-r border-slate-200 shadow-[0_10px_50px_rgba(0,0,0,0.05)] transition-transform duration-300 overflow-hidden lg:translate-x-0"
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
-
       <div class="h-full flex flex-col">
         <nav class="flex-1 overflow-y-auto sidebar-scroll p-4 space-y-2">
+
           <!-- DASHBOARD -->
           <a href="{{ route('pimpinan.dashboard') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                          {{ request()->routeIs('pimpinan.dashboard') ? 'menu-active' : 'menu-inactive' }}">
+            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 {{ request()->routeIs('pimpinan.dashboard') ? 'menu-active' : 'menu-inactive' }}">
             @if (request()->routeIs('pimpinan.dashboard'))
               <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
             @endif
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-              </path>
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             Dashboard
           </a>
 
-          <!-- LAPORAN DROPDOWN -->
+          <!-- MONITORING -->
           <div x-data="{
-              open: localStorage.getItem('laporan-menu') === 'true' ||
-                  {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'true' : 'false' }},
-              toggle() {
-                  this.open = !this.open;
-                  localStorage.setItem('laporan-menu', this.open);
-              }
+              open: localStorage.getItem('monitoring-menu') === 'true' || {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'true' : 'false' }},
+              toggle() { this.open = !this.open;
+                  localStorage.setItem('monitoring-menu', this.open); }
           }">
             <button @click="toggle()"
-              class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                                {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'menu-active' : 'menu-inactive' }}">
+              class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Laporan
+                Monitoring
               </div>
               <svg class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none"
                 stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-
-            <div x-show="open" x-transition x-cloak class="mt-2 pl-4 space-y-2">
+            <div x-show="open" x-transition x-cloak class="mt-2 pl-4 space-y-1">
               <a href="{{ route('pimpinan.lap-masuk') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-masuk') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-masuk') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M7 16V4m0 0L3 8m4-4l4 4m6 12v-4m0 0l4 4m-4-4l-4 4" />
-                </svg>
-                Barang Masuk
+                </svg> Barang Masuk
               </a>
               <a href="{{ route('pimpinan.lap-keluar') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-keluar') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-keluar') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M17 16V4m0 0l4 4m-4-4l-4 4M7 16v4m0 0l-4-4m4 4l4-4" />
-                </svg>
-                Barang Keluar
+                </svg> Barang Keluar
               </a>
               <a href="{{ route('pimpinan.lap-stok') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-stok') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-stok') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
-                Stok Barang
+                </svg> Stok Barang
               </a>
               <a href="{{ route('pimpinan.lap-opname') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-opname') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-opname') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                Stock Opname
+                </svg> Stock Opname
               </a>
               <a href="{{ route('pimpinan.lap-order') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-order') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-order') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                Order Sales
+                </svg> Order Sales
               </a>
               <a href="{{ route('pimpinan.lap-supplier') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-supplier') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-supplier') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
-                </svg>
-                Supplier
+                </svg> Supplier
               </a>
               <a href="{{ route('pimpinan.lap-wilayah') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-wilayah') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-wilayah') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Wilayah
+                </svg> Wilayah
               </a>
               <a href="{{ route('pimpinan.lap-inventory') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-inventory') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-inventory') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-                </svg>
-                Inventory
+                </svg> Inventory
               </a>
               <a href="{{ route('pimpinan.lap-stok-kritis') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-stok-kritis') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-stok-kritis') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                5 Stok Kritis
+                </svg> Stok Kritis
               </a>
               <a href="{{ route('pimpinan.lap-terlaris') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-terlaris') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-terlaris') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                5 Barang Terlaris
+                </svg> Barang Terlaris
               </a>
               <a href="{{ route('pimpinan.lap-expired') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                  {{ request()->routeIs('pimpinan.lap-expired') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-expired') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Barang Expired
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg> Barang Expired
               </a>
             </div>
           </div>
 
-          <!-- LAPORAN OMZET -->
+          <!-- OMZET -->
           <a href="{{ route('pimpinan.lap-omzet') }}"
-            class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition
-        {{ request()->routeIs('pimpinan.lap-omzet') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition {{ request()->routeIs('pimpinan.lap-omzet') ? 'menu-active' : 'menu-inactive' }}">
+            @if (request()->routeIs('pimpinan.lap-omzet'))
+              <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
+            @endif
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Omzet Penjualan
           </a>
-
         </nav>
-
         <div class="border-t border-slate-200 p-4">
           <div class="sidebar-card rounded-2xl p-4 text-white shadow-lg">
             <p class="text-sm font-semibold">Sistem Inventory Gudang</p>
@@ -287,12 +256,9 @@
       </div>
     </aside>
 
-    <!-- OVERLAY -->
     <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"
-      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden" x-cloak>
-    </div>
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden" x-cloak></div>
 
-    <!-- MAIN CONTENT -->
     <main class="flex-1 lg:ml-72 p-6 lg:p-8 min-h-screen overflow-x-auto w-full">
       {{ $slot }}
     </main>
