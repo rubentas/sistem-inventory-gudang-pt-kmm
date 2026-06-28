@@ -1,5 +1,4 @@
 <div class="space-y-5">
-
   {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6">
@@ -22,8 +21,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Excel
+            </svg>Excel
           </a>
           <a href="{{ route('laporan.stok.pdf', ['kategori' => $filterKategori, 'status' => $filterStatus, 'search' => $search]) }}"
             target="_blank"
@@ -31,8 +29,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-            PDF
+            </svg>PDF
           </a>
         </div>
       </div>
@@ -58,47 +55,43 @@
   {{-- STATS --}}
   <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
     <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-      <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"><svg
+          class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-        </svg>
-      </div>
+        </svg></div>
       <div>
         <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Stok</p>
         <p class="text-xl font-bold text-blue-600">{{ number_format($ringkasan['total_stok']) }}</p>
       </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-      <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center shrink-0"><svg
+          class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-      </div>
+        </svg></div>
       <div>
         <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Barang</p>
         <p class="text-xl font-bold text-purple-600">{{ $ringkasan['total_barang'] }}</p>
       </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-      <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0"><svg
+          class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
+        </svg></div>
       <div>
         <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Stok Normal</p>
         <p class="text-xl font-bold text-emerald-600">{{ $ringkasan['stok_normal'] }}</p>
       </div>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-      <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0"><svg
+          class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-        </svg>
-      </div>
+        </svg></div>
       <div>
         <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Stok Menipis</p>
         <p class="text-xl font-bold text-red-600">{{ $ringkasan['stok_menipis'] }}</p>
@@ -111,10 +104,14 @@
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
       <h3 class="text-sm font-bold text-gray-900 mb-4">Stok per Kategori</h3>
       <div class="h-72"><canvas id="chartKategori"></canvas></div>
+      <p id="chartKategoriEmpty" class="hidden text-center text-gray-400 text-sm py-20">Tidak ada data untuk ditampilkan
+      </p>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
       <h3 class="text-sm font-bold text-gray-900 mb-4">Top 10 Stok Terbanyak</h3>
       <div class="h-72"><canvas id="chartTopStok"></canvas></div>
+      <p id="chartTopStokEmpty" class="hidden text-center text-gray-400 text-sm py-20">Tidak ada data untuk
+        ditampilkan</p>
     </div>
   </div>
 
@@ -160,20 +157,14 @@
               <td class="px-5 py-3 text-center">
                 @if ($s->status == 'Menipis')
                   <span
-                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold"><svg
+                      class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01" />
-                    </svg>
-                    Menipis
-                  </span>
-                @else
-                  <span
-                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  </svg>Menipis</span>@else<span
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold"><svg
+                      class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Aman
-                  </span>
+                    </svg>Aman</span>
                 @endif
               </td>
             </tr>
@@ -183,27 +174,37 @@
     </div>
     <div class="px-5 py-3 border-t border-gray-100">{{ $tabelStok->links() }}</div>
   </div>
-
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
 <script>
-  (function() {
-    var _charts = {};
+  document.addEventListener('livewire:initialized', () => {
+    let chartKategori = null;
+    let chartTopStok = null;
 
     function renderCharts() {
-      var kategori = @json($perKategori);
-      var top = @json($topStok);
+      const kategori = @json($perKategori);
+      const top = @json($topStok);
+      const c1 = document.getElementById('chartKategori');
+      const c2 = document.getElementById('chartTopStok');
 
-      var c1 = document.getElementById('chartKategori');
-      var c2 = document.getElementById('chartTopStok');
+      // Destroy existing charts
+      if (chartKategori) {
+        chartKategori.destroy();
+        chartKategori = null;
+      }
+      if (chartTopStok) {
+        chartTopStok.destroy();
+        chartTopStok = null;
+      }
 
-      // Pie Chart - Stok per Kategori
+      // Sembunyiin canvas kalau gak ada data
+      if (c1) c1.style.display = kategori.labels.length > 0 ? '' : 'none';
+      if (c2) c2.style.display = top.labels.length > 0 ? '' : 'none';
+
+      // Pie Chart
       if (c1 && kategori.labels.length > 0) {
-        if (_charts.kategori) {
-          _charts.kategori.destroy();
-          _charts.kategori = null;
-        }
-        _charts.kategori = new Chart(c1, {
+        chartKategori = new Chart(c1, {
           type: 'pie',
           data: {
             labels: kategori.labels,
@@ -222,7 +223,6 @@
                 labels: {
                   padding: 12,
                   usePointStyle: true,
-                  pointStyleWidth: 10,
                   font: {
                     size: 11
                   }
@@ -233,25 +233,17 @@
         });
       }
 
-      // Horizontal Bar - Top 10 Stok Terbanyak
+      // Bar Chart
       if (c2 && top.labels.length > 0) {
-        if (_charts.top) {
-          _charts.top.destroy();
-          _charts.top = null;
-        }
-        _charts.top = new Chart(c2, {
+        chartTopStok = new Chart(c2, {
           type: 'bar',
           data: {
             labels: top.labels,
             datasets: [{
-              label: 'Jumlah Stok',
               data: top.values,
-              backgroundColor: top.values.map(function(_, i) {
-                var colors = ['#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A', '#312E81', '#3730A3',
-                  '#4338CA', '#4F46E5', '#6366F1'
-                ];
-                return colors[i] || '#3B82F6';
-              }),
+              backgroundColor: ['#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A', '#312E81', '#3730A3',
+                '#4338CA', '#4F46E5', '#6366F1'
+              ],
               borderRadius: 6,
               borderSkipped: false
             }]
@@ -275,7 +267,6 @@
                   }
                 },
                 grid: {
-                  display: true,
                   color: '#f1f5f9'
                 }
               },
@@ -284,9 +275,9 @@
                   font: {
                     size: 10
                   },
-                  callback: function(value) {
-                    var label = this.getLabelForValue(value);
-                    return label.length > 30 ? label.substr(0, 30) + '...' : label;
+                  callback: function(v) {
+                    var l = this.getLabelForValue(v);
+                    return l.length > 30 ? l.substr(0, 30) + '...' : l;
                   }
                 },
                 grid: {
@@ -297,20 +288,28 @@
           }
         });
       }
+
+      // 🔥 FORCE RESIZE - Ini yang bikin chart muncul setelah filter
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 150);
     }
 
-    // Render pertama kali setelah DOM siap
-    document.addEventListener('DOMContentLoaded', function() {
-      renderCharts();
+    // Render pertama
+    setTimeout(renderCharts, 100);
+
+    // Re-render setiap Livewire update
+    Livewire.hook('morph.updated', ({
+      component
+    }) => {
+      if (component.name === 'App\\Livewire\\Admin\\Laporan\\StokBarang') {
+        setTimeout(renderCharts, 300);
+      }
     });
 
-    // Re-render setiap kali Livewire selesai update (Livewire v3)
-    document.addEventListener('livewire:navigated', function() {
-      setTimeout(renderCharts, 100);
-    });
-
-    document.addEventListener('livewire:update', function() {
+    // Backup: re-render pas window resize (buat jaga-jaga)
+    window.addEventListener('resize', () => {
       setTimeout(renderCharts, 200);
     });
-  })();
+  });
 </script>

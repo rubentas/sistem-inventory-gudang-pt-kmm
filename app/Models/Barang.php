@@ -16,6 +16,10 @@ class Barang extends Model {
     'keterangan',
   ];
 
+  protected $casts = [
+    'harga_jual_default' => 'integer',
+  ];
+
   public function stok() {
     return $this->hasOne(Stok::class, 'id_barang', 'id_barang');
   }

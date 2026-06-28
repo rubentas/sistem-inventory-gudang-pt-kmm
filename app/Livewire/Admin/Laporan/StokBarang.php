@@ -45,7 +45,7 @@ class StokBarang extends Component {
   }
 
   public function getDataPerKategori(): array {
-    $data = Stok::with('barang')
+    $data = $this->query()
       ->get()
       ->groupBy(fn($s) => $s->barang->kategori ?? 'Lainnya');
 
@@ -56,7 +56,7 @@ class StokBarang extends Component {
   }
 
   public function getTopStok(): array {
-    $data = Stok::with('barang')
+    $data = $this->query()
       ->orderByDesc('jumlah_stok')
       ->limit(10)
       ->get();
