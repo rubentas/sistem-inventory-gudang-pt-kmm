@@ -9,7 +9,6 @@ class LaporanStokKritis extends Component {
     $stokKritis = Stok::with('barang')
       ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
       ->orderByRaw('jumlah_stok / stok_minimum ASC')
-      ->limit(5)
       ->get();
 
     $totalStokKritis = Stok::whereColumn('jumlah_stok', '<=', 'stok_minimum')->count();

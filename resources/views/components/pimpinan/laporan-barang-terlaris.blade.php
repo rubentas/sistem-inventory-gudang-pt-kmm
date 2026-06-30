@@ -13,7 +13,7 @@
           </div>
           <div>
             <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Barang Terlaris</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Pantau data 5 barang dengan penjualan terbanyak per bulan</p>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data barang dengan penjualan terbanyak per bulan</p>
           </div>
         </div>
       </div>

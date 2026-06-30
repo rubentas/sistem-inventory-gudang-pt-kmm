@@ -6,41 +6,49 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 class LaporanStockOpname extends Component {
-    use WithPagination;
+  use WithPagination;
 
-    public string $search       = '';
-    public string $tanggalAwal  = '';
-    public string $tanggalAkhir = '';
+  public string $search       = '';
+  public string $tanggalAwal  = '';
+  public string $tanggalAkhir = '';
 
-    public function updatingSearch(): void {
-        $this->resetPage();
-    }
+  public function mount(): void {
+    $this->tanggalAwal  = now()->subMonths(3)->format('Y-m-d');
+    $this->tanggalAkhir = now()->format('Y-m-d');
+  }
 
-    public function resetFilters(): void {
-        $this->search       = '';
-        $this->tanggalAwal  = '';
-        $this->tanggalAkhir = '';
-        $this->resetPage();
-    }
+  public function updatingSearch(): void {
+    $this->resetPage();
+  }
 
-    public function render() {
-        $query = StockOpname::with(['barang', 'user'])
-            ->when($this->search, function ($q) {
-                $q->whereHas('barang', function ($b) {
-                    $b->where('nama_barang', 'like', '%' . $this->search . '%')
-                        ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->tanggalAwal, fn($q) => $q->whereDate('tanggal_opname', '>=', $this->tanggalAwal))
-            ->when($this->tanggalAkhir, fn($q) => $q->whereDate('tanggal_opname', '<=', $this->tanggalAkhir))
-            ->orderByDesc('tanggal_opname');
+  public function resetFilters(): void {
+    $this->search       = '';
+    $this->tanggalAwal  = now()->subMonths(3)->format('Y-m-d');
+    $this->tanggalAkhir = now()->format('Y-m-d');
+    $this->resetPage();
+  }
 
-        $stockOpnames = $query->paginate(10);
+  public function render() {
+    $query = StockOpname::with(['barang', 'user'])
+      ->when($this->search, function ($q) {
+        $q->whereHas('barang', function ($b) {
+          $b->where('nama_barang', 'like', '%' . $this->search . '%')
+            ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
+        });
+      })
+      ->when($this->tanggalAwal, fn($q) => $q->whereDate('tanggal_opname', '>=', $this->tanggalAwal))
+      ->when($this->tanggalAkhir, fn($q) => $q->whereDate('tanggal_opname', '<=', $this->tanggalAkhir))
+      ->orderByDesc('tanggal_opname');
 
-        $totalSelisih = $query->sum('selisih');
-        $totalData    = $query->count();
+    // Clone buat total
+    $totalQuery   = clone $query;
+    $totalSelisih = $totalQuery->sum('selisih');
+    $totalData    = $totalQuery->count();
 
-        return view('components.pimpinan.laporan-stock-opname', compact('stockOpnames', 'totalSelisih', 'totalData'))
-            ->layout('layouts.pimpinan');
-    }
+    // Paginate
+    $stockOpnames = $query->paginate(10);
+
+    return view('components.pimpinan.laporan-stock-opname', compact('stockOpnames', 'totalSelisih', 'totalData'))
+      ->layout('layouts.pimpinan');
+  }
 }

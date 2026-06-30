@@ -120,7 +120,7 @@
 
           <!-- DASHBOARD -->
           <a href="{{ route('pimpinan.dashboard') }}"
-            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 {{ request()->routeIs('pimpinan.dashboard') ? 'menu-active' : 'menu-inactive' }}">
+            class="relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition {{ request()->routeIs('pimpinan.dashboard') ? 'menu-active' : 'menu-inactive' }}">
             @if (request()->routeIs('pimpinan.dashboard'))
               <div class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-white"></div>
             @endif
@@ -133,12 +133,12 @@
 
           <!-- MONITORING -->
           <div x-data="{
-              open: localStorage.getItem('monitoring-menu') === 'true' || {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'true' : 'false' }},
+              open: localStorage.getItem('monitoring-menu') === 'true' || {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-inventory', 'pimpinan.lap-terlaris']) ? 'true' : 'false' }},
               toggle() { this.open = !this.open;
                   localStorage.setItem('monitoring-menu', this.open); }
           }">
             <button @click="toggle()"
-              class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-supplier', 'pimpinan.lap-wilayah', 'pimpinan.lap-inventory', 'pimpinan.lap-stok-kritis', 'pimpinan.lap-terlaris', 'pimpinan.lap-expired']) ? 'menu-active' : 'menu-inactive' }}">
+              class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition {{ request()->routeIs(['pimpinan.lap-masuk', 'pimpinan.lap-keluar', 'pimpinan.lap-stok', 'pimpinan.lap-opname', 'pimpinan.lap-order', 'pimpinan.lap-inventory', 'pimpinan.lap-terlaris']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -155,82 +155,47 @@
             </button>
             <div x-show="open" x-transition x-cloak class="mt-2 pl-4 space-y-1">
               <a href="{{ route('pimpinan.lap-masuk') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-masuk') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-masuk') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M7 16V4m0 0L3 8m4-4l4 4m6 12v-4m0 0l4 4m-4-4l-4 4" />
-                </svg> Barang Masuk
-              </a>
+                </svg> Barang Masuk</a>
               <a href="{{ route('pimpinan.lap-keluar') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-keluar') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-keluar') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M17 16V4m0 0l4 4m-4-4l-4 4M7 16v4m0 0l-4-4m4 4l4-4" />
-                </svg> Barang Keluar
-              </a>
+                </svg> Barang Keluar</a>
               <a href="{{ route('pimpinan.lap-stok') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-stok') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-stok') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg> Stok Barang
-              </a>
+                </svg> Stok Barang</a>
               <a href="{{ route('pimpinan.lap-opname') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-opname') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-opname') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg> Stock Opname
-              </a>
+                </svg> Stock Opname</a>
               <a href="{{ route('pimpinan.lap-order') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-order') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-order') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg> Order Sales
-              </a>
-              <a href="{{ route('pimpinan.lap-supplier') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-supplier') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
-                </svg> Supplier
-              </a>
-              <a href="{{ route('pimpinan.lap-wilayah') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-wilayah') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg> Wilayah
-              </a>
+                </svg> Order Sales</a>
               <a href="{{ route('pimpinan.lap-inventory') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-inventory') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-inventory') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-                </svg> Inventory
-              </a>
-              <a href="{{ route('pimpinan.lap-stok-kritis') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-stok-kritis') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg> Stok Kritis
-              </a>
+                </svg> Inventory</a>
               <a href="{{ route('pimpinan.lap-terlaris') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-terlaris') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-terlaris') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}"><svg
+                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg> Barang Terlaris
-              </a>
-              <a href="{{ route('pimpinan.lap-expired') }}"
-                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('pimpinan.lap-expired') ? 'bg-purple-100 text-purple-700 font-semibold' : 'text-slate-500 hover:bg-slate-100' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg> Barang Expired
-              </a>
+                </svg> Barang Terlaris</a>
             </div>
           </div>
 

@@ -20,7 +20,6 @@ class LaporanBarangTerlaris extends Component {
       ->whereYear('tanggal_order', $this->tahun)
       ->groupBy('id_barang')
       ->orderByDesc('total_terjual')
-      ->limit(5)
       ->get();
 
     return view('components.pimpinan.laporan-barang-terlaris', compact('terlaris'))

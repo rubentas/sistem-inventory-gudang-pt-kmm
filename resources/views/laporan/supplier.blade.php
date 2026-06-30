@@ -104,8 +104,8 @@
 
   <div class="header">
     <div class="company">PT. KUDA MAS MANDIRI</div>
-    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561
-      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
+    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561</div>
+    <div class="address">Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
     <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
   </div>
 
@@ -119,6 +119,7 @@
         <th class="text-left">Kode Supplier</th>
         <th class="text-left">Nama Supplier</th>
         <th>No. Telepon</th>
+        <th>No. Rekening</th>
         <th class="text-left">Email</th>
         <th class="text-left">Alamat</th>
       </tr>
@@ -130,12 +131,13 @@
           <td class="text-left">{{ $supplier->kode_supplier }}</td>
           <td class="text-left">{{ $supplier->nama_supplier }}</td>
           <td>{{ $supplier->no_telp ?? '-' }}</td>
+          <td>{{ $supplier->no_rekening ?? '-' }}</td>
           <td class="text-left">{{ $supplier->email ?? '-' }}</td>
           <td class="text-left">{{ $supplier->alamat ?? '-' }}</td>
         </tr>
       @empty
         <tr>
-          <td colspan="6">Tidak ada data</td>
+          <td colspan="7">Tidak ada data</td>
         </tr>
       @endforelse
     </tbody>
