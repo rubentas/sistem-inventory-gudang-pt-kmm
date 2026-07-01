@@ -144,32 +144,32 @@
       border-bottom: none;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 7.5px;
-      text-align: right;
-      color: #9ca3af;
-      border-top: 1px solid #e5e7eb;
-      padding-top: 10px;
-    }
-
-    .footer .signature {
+    .signature {
       margin-top: 30px;
       text-align: right;
     }
 
-    .footer .signature-line {
-      margin-top: 40px;
+    .signature .line {
       border-top: 1px solid #374151;
       width: 150px;
       display: inline-block;
+      margin-top: 40px;
     }
 
-    .page-number {
-      text-align: center;
-      font-size: 7px;
-      color: #9ca3af;
+    .signature .name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #111827;
       margin-top: 5px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 7.5px;
+      text-align: center;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 10px;
     }
 
     @media print {
@@ -185,8 +185,8 @@
 
   <div class="header">
     <div class="company">PT. KUDA MAS MANDIRI</div>
-    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561
-      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
+    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561</div>
+    <div class="address">Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
     <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
   </div>
 
@@ -232,35 +232,27 @@
         <tr>
           <td>{{ $index + 1 }}</td>
           <td class="text-left">{{ $item->tanggal_masuk->translatedFormat('d/m/Y') }}</td>
-          <td class="text-left">
-            <span style="font-family: 'Courier New', monospace; font-size: 7.5px;">{{ $item->no_nota }}</span>
-          </td>
-          <td class="text-left">
-            <span style="font-size: 7.5px;">{{ $item->no_surat_jalan ?: '-' }}</span>
-          </td>
+          <td class="text-left"><span
+              style="font-family: 'Courier New', monospace; font-size: 7.5px;">{{ $item->no_nota }}</span></td>
+          <td class="text-left"><span style="font-size: 7.5px;">{{ $item->no_surat_jalan ?: '-' }}</span></td>
           <td class="text-left">
             <div style="font-weight: 600;">{{ $item->barang->nama_barang ?? '-' }}</div>
             <div class="text-xs">{{ $item->barang->kode_barang ?? '' }}</div>
           </td>
-          <td class="text-right">
-            <span style="font-weight: 700;">{{ number_format($item->jumlah) }}</span>
-          </td>
+          <td class="text-right"><span style="font-weight: 700;">{{ number_format($item->jumlah) }}</span></td>
           <td class="text-left">{{ $item->supplier->nama_supplier ?? '-' }}</td>
           <td class="text-left">
             @if ($item->sumber === 'Supplier')
               <span
-                style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 3px; font-size: 7px; font-weight: 600;">SUPPLIER</span>
-            @else
-              {{ $item->sumber }}
+                style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 3px; font-size: 7px; font-weight: 600;">SUPPLIER</span>@else{{ $item->sumber }}
             @endif
           </td>
           <td class="text-left">{{ $item->user->nama ?? 'System' }}</td>
         </tr>
       @empty
         <tr>
-          <td colspan="9" style="padding: 30px; text-align: center; color: #9ca3af; font-style: italic;">
-            Tidak ada data barang masuk pada periode ini
-          </td>
+          <td colspan="9" style="padding: 30px; text-align: center; color: #9ca3af;">Tidak ada data barang masuk pada
+            periode ini</td>
         </tr>
       @endforelse
     </tbody>
@@ -275,13 +267,14 @@
     @endif
   </table>
 
+  <div class="signature">
+    <div>Mengetahui,</div>
+    <div class="line"></div>
+    <div class="name">{{ $dicetak_oleh }}</div>
+  </div>
+
   <div class="footer">
-    <div>Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
-    <div class="signature">
-      <div>Mengetahui,</div>
-      <div class="signature-line"></div>
-      <div style="margin-top: 5px; font-weight: 600; color: #374151;">{{ $dicetak_oleh }}</div>
-    </div>
+    Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}
   </div>
 
 </body>

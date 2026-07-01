@@ -113,21 +113,28 @@
       padding: 3px 6px;
     }
 
+    .signature {
+      margin-top: 30px;
+      text-align: right;
+    }
+
+    .signature .line {
+      border-top: 1px solid #374151;
+      width: 150px;
+      display: inline-block;
+      margin-top: 40px;
+    }
+
+    .signature .name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 5px;
+    }
+
     .footer {
       margin-top: 25px;
       font-size: 9px;
-    }
-
-    .footer .signature {
-      float: right;
-      text-align: center;
-      width: 180px;
-    }
-
-    .footer .signature .line {
-      margin-top: 50px;
-      border-top: 1px solid #111827;
-      padding-top: 4px;
     }
 
     .footer .printed {
@@ -236,12 +243,14 @@
     </table>
   </div>
 
+  <div class="signature">
+    <div>Mengetahui,</div>
+    <div class="line"></div>
+    <div class="name">{{ $dicetak_oleh }}</div>
+  </div>
+
   {{-- FOOTER --}}
   <div class="footer">
-    <div class="signature">
-      <div>Tanjung Tabalong, {{ $tanggal_cetak }}</div>
-      <div class="line">Kepala Gudang</div>
-    </div>
     <div class="printed">
       Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}
     </div>

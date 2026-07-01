@@ -73,34 +73,23 @@
       text-align: center;
     }
 
-    .signature-section {
+    .signature {
       margin-top: 30px;
-      display: flex;
-      justify-content: space-between;
+      text-align: right;
     }
 
-    .signature-box {
-      width: 35%;
-      text-align: center;
+    .signature .line {
+      border-top: 1px solid #374151;
+      width: 150px;
+      display: inline-block;
+      margin-top: 40px;
     }
 
-    .signature-box .label {
+    .signature .name {
       font-size: 10px;
-      color: #4b5563;
-      margin-bottom: 40px;
-    }
-
-    .signature-box .name {
-      font-size: 11px;
       font-weight: 700;
       color: #111827;
-      margin-top: 3px;
-    }
-
-    .signature-box .line {
-      border-top: 1px solid #374151;
-      width: 70%;
-      margin: 0 auto;
+      margin-top: 5px;
     }
 
     .footer {
@@ -142,6 +131,12 @@
       @endforeach
     </tbody>
   </table>
+
+  <div class="signature">
+    <div>Mengetahui,</div>
+    <div class="line"></div>
+    <div class="name">{{ $dicetak_oleh }}</div>
+  </div>
 
   <div class="footer">Dicetak: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
 </body>

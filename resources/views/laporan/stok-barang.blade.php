@@ -97,6 +97,25 @@
       font-weight: 700;
     }
 
+    .signature {
+      margin-top: 30px;
+      text-align: right;
+    }
+
+    .signature .line {
+      border-top: 1px solid #374151;
+      width: 150px;
+      display: inline-block;
+      margin-top: 40px;
+    }
+
+    .signature .name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 5px;
+    }
+
     .footer {
       margin-top: 20px;
       font-size: 8px;
@@ -146,7 +165,7 @@
           <td class="text-right text-bold">{{ number_format($stok->jumlah_stok) }}</td>
           <td>
             @if ($stok->status == 'Menipis')
-              <span style="color:#dc2626; font-weight:700;">⚠ Menipis</span>
+              <span style="color:#dc2626; font-weight:700;">Menipis</span>
             @else
               <span style="color:#059669;">Aman</span>
             @endif
@@ -159,6 +178,12 @@
       @endforelse
     </tbody>
   </table>
+
+  <div class="signature">
+    <div>Mengetahui,</div>
+    <div class="line"></div>
+    <div class="name">{{ $dicetak_oleh }}</div>
+  </div>
 
   <div class="footer">
     Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}

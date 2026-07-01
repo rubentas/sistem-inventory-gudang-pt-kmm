@@ -97,6 +97,25 @@
       font-weight: 700;
     }
 
+    .signature {
+      margin-top: 30px;
+      text-align: right;
+    }
+
+    .signature .line {
+      border-top: 1px solid #374151;
+      width: 150px;
+      display: inline-block;
+      margin-top: 40px;
+    }
+
+    .signature .name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 5px;
+    }
+
     .footer {
       margin-top: 20px;
       font-size: 8px;
@@ -157,6 +176,12 @@
       </tr>
     </tfoot>
   </table>
+
+  <div class="signature">
+    <div>Mengetahui,</div>
+    <div class="line"></div>
+    <div class="name">{{ $dicetak_oleh }}</div>
+  </div>
 
   <div class="footer">
     Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}
