@@ -32,7 +32,7 @@ class Wilayah extends Component {
       ->orderBy('nama_wilayah')->get();
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.wilayah', [
-      'data'         => $data, 'total_toko'                               => $data->sum('jumlah_toko'),
+      'data'         => $data,
       'dicetak_oleh' => auth()->user()->nama ?? 'System', 'tanggal_cetak' => now()->translatedFormat('d F Y'),
     ])->setPaper('a4', 'portrait');
     return response()->stream(fn() => print($pdf->output()), 200, ['Content-Type' => 'application/pdf', 'Content-Disposition' => 'inline']);

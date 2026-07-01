@@ -11,10 +11,10 @@ class WilayahExport {
 
     $writer = new Writer();
     $writer->openToBrowser('laporan-wilayah.xlsx');
-    $writer->addRow(Row::fromValues(['NO', 'NAMA WILAYAH', 'JUMLAH TOKO', 'TOTAL BARANG KELUAR']));
+    $writer->addRow(Row::fromValues(['NO', 'NAMA WILAYAH', 'TOTAL BARANG KELUAR']));
     $no = 1;
     foreach ($data as $d) {
-      $writer->addRow(Row::fromValues([$no++, $d->nama_wilayah, $d->jumlah_toko, $d->total_keluar ?? 0]));
+      $writer->addRow(Row::fromValues([$no++, $d->nama_wilayah, $d->total_keluar ?? 0]));
     }
     $writer->close();exit;
   }

@@ -69,7 +69,7 @@
                 </svg>
               </div>
               <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Toko</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Wilayah</p>
                 <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalToko']) }}</p>
               </div>
             </div>
@@ -135,8 +135,6 @@
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Wilayah</span></th>
             <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah Toko</span></th>
-            <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales PJ</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Keterangan</span></th>
@@ -149,10 +147,6 @@
             <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $wilayahs->firstItem() + $index }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $wilayah->nama_wilayah }}</td>
-              <td class="px-5 py-4">
-                <span class="text-sm font-bold text-gray-700">{{ number_format($wilayah->jumlah_toko) }}</span>
-                <span class="text-xs text-gray-400 ml-1">toko</span>
-              </td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $wilayah->sales->nama ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-gray-500 max-w-[200px] truncate">{{ $wilayah->keterangan ?? '-' }}</td>
               <td class="px-5 py-4">
@@ -257,18 +251,7 @@
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Jumlah Toko <span
-                class="text-red-500">*</span></label>
-            <div class="relative">
-              <input type="number" wire:model="jumlah_toko" placeholder="0" min="0"
-                class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none pr-14">
-              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">toko</span>
-            </div>
-            @error('jumlah_toko')
-              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
-            @enderror
-          </div>
+
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Sales Penanggung Jawab</label>
             <select wire:model="id_user"

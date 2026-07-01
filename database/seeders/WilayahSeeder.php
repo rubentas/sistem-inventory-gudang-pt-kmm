@@ -20,31 +20,26 @@ class WilayahSeeder extends Seeder {
     $wilayahs = [
       [
         'nama_wilayah' => 'Tanjung Kota',
-        'jumlah_toko'  => 25,
         'id_user'      => $sales1?->id_user,
         'keterangan'   => 'Area pusat Kota Tanjung dan pasar utama',
       ],
       [
         'nama_wilayah' => 'Murung Pudak',
-        'jumlah_toko'  => 18,
         'id_user'      => $sales2?->id_user,
         'keterangan'   => 'Area Kecamatan Murung Pudak dan sekitarnya',
       ],
       [
         'nama_wilayah' => 'Kelua & Pugaan',
-        'jumlah_toko'  => 20,
         'id_user'      => $sales1?->id_user,
         'keterangan'   => 'Area Kecamatan Kelua dan Pugaan',
       ],
       [
         'nama_wilayah' => 'Muara Uya & Jaro',
-        'jumlah_toko'  => 15,
         'id_user'      => $sales2?->id_user,
         'keterangan'   => 'Area Kecamatan Muara Uya dan Jaro',
       ],
       [
         'nama_wilayah' => 'Haruai & Bintang Ara',
-        'jumlah_toko'  => 17,
         'id_user'      => $sales1?->id_user,
         'keterangan'   => 'Area Kecamatan Haruai dan Bintang Ara',
       ],

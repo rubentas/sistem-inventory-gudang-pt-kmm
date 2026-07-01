@@ -116,7 +116,6 @@
       <tr>
         <th>No</th>
         <th>Nama Wilayah</th>
-        <th>Jumlah Toko</th>
         <th>Total Barang Keluar</th>
       </tr>
     </thead>
@@ -125,7 +124,6 @@
         <tr>
           <td>{{ $i + 1 }}</td>
           <td>{{ $d->nama_wilayah }}</td>
-          <td>{{ $d->jumlah_toko }}</td>
           <td>{{ number_format($d->total_keluar ?? 0) }}</td>
         </tr>
       @endforeach

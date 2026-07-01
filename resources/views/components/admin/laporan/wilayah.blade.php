@@ -69,7 +69,6 @@
           <thead>
             <tr class="bg-gray-50">
               <th class="px-5 py-3 text-left text-xs font-bold text-gray-400">Wilayah</th>
-              <th class="px-5 py-3 text-center text-xs font-bold text-gray-400">Jumlah Toko</th>
               <th class="px-5 py-3 text-right text-xs font-bold text-gray-400">Total Keluar</th>
             </tr>
           </thead>
@@ -77,7 +76,6 @@
             @foreach ($tabelData as $d)
               <tr class="hover:bg-gray-50">
                 <td class="px-5 py-3 text-sm font-semibold">{{ $d->nama_wilayah }}</td>
-                <td class="px-5 py-3 text-sm text-center">{{ $d->jumlah_toko }}</td>
                 <td class="px-5 py-3 text-sm text-right font-bold">{{ number_format($d->total_keluar ?? 0) }}</td>
               </tr>
             @endforeach

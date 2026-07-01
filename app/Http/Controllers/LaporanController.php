@@ -212,7 +212,6 @@ class LaporanController extends Controller {
 
     $pdf = Pdf::loadView('laporan.wilayah', [
       'data'          => $data,
-      'total_toko'    => $data->sum('jumlah_toko'),
       'dicetak_oleh'  => Auth::user()->nama,
       'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
     ])->setPaper('a4', 'portrait');

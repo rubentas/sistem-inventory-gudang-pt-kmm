@@ -13,7 +13,7 @@
           </div>
           <div>
             <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Monitoring Wilayah</h1>
-            <p class="text-sm text-gray-400 mt-0.5">Pantau data wilayah distribusi dan jumlah toko</p>
+            <p class="text-sm text-gray-400 mt-0.5">Pantau data wilayah distribusi secara menyeluruh</p>
           </div>
         </div>
         <a href="{{ route('laporan.wilayah.pdf') }}" target="_blank"
@@ -35,7 +35,7 @@
       <p class="text-2xl font-extrabold text-purple-700">{{ number_format($totalWilayah) }}</p>
     </div>
     <div class="bg-purple-50 border border-purple-200 rounded-2xl px-6 py-4 flex items-center justify-between">
-      <p class="text-sm font-semibold text-purple-700">Total Toko</p>
+      <p class="text-sm font-semibold text-purple-700">Jumlah Data</p>
       <p class="text-2xl font-extrabold text-purple-700">{{ number_format($totalToko) }}</p>
     </div>
   </div>
@@ -67,8 +67,6 @@
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">#</span></th>
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama
                 Wilayah</span></th>
-            <th class="px-5 py-4 text-left"><span
-                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jumlah Toko</span></th>
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales
                 PJ</span></th>
             <th class="px-5 py-4 text-left"><span
@@ -80,10 +78,6 @@
             <tr class="hover:bg-purple-50/30 transition">
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $wilayahs->firstItem() + $index }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $wilayah->nama_wilayah }}</td>
-              <td class="px-5 py-4">
-                <span class="text-sm font-bold text-gray-700">{{ number_format($wilayah->jumlah_toko) }}</span>
-                <span class="text-xs text-gray-400 ml-1">toko</span>
-              </td>
               <td class="px-5 py-4">
                 <p class="text-sm text-gray-700">{{ $wilayah->sales->nama ?? '-' }}</p>
                 @if ($wilayah->sales->username ?? false)

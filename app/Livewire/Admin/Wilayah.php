@@ -17,7 +17,6 @@ class Wilayah extends Component {
   // Form
   public int | null $id_wilayah = null;
   public string $nama_wilayah   = '';
-  public int $jumlah_toko       = 0;
   public int | string $id_user  = '';
   public string $keterangan     = '';
 
@@ -26,15 +25,12 @@ class Wilayah extends Component {
 
   protected $rules = [
     'nama_wilayah' => 'required|string|max:100',
-    'jumlah_toko'  => 'required|integer|min:0',
     'id_user'      => 'nullable|exists:users,id_user',
     'keterangan'   => 'nullable|string',
   ];
 
   protected $messages = [
     'nama_wilayah.required' => 'Nama wilayah wajib diisi.',
-    'jumlah_toko.required'  => 'Jumlah toko wajib diisi.',
-    'jumlah_toko.min'       => 'Jumlah toko minimal 0.',
   ];
 
   public function updatedSearch(): void {$this->resetPage();}
@@ -43,8 +39,7 @@ class Wilayah extends Component {
     $this->resetPage();}
 
   public function resetForm(): void {
-    $this->reset(['id_wilayah', 'nama_wilayah', 'jumlah_toko', 'id_user', 'keterangan', 'isEdit']);
-    $this->jumlah_toko = 0;
+    $this->reset(['id_wilayah', 'nama_wilayah', 'id_user', 'keterangan', 'isEdit']);
     $this->resetErrorBag();
   }
 
@@ -55,7 +50,6 @@ class Wilayah extends Component {
     $wilayah            = WilayahModel::findOrFail($id);
     $this->id_wilayah   = $wilayah->id_wilayah;
     $this->nama_wilayah = $wilayah->nama_wilayah;
-    $this->jumlah_toko  = $wilayah->jumlah_toko;
     $this->id_user      = $wilayah->id_user ?? '';
     $this->keterangan   = $wilayah->keterangan ?? '';
     $this->isEdit       = true;
@@ -68,7 +62,6 @@ class Wilayah extends Component {
 
     $data = [
       'nama_wilayah' => $this->nama_wilayah,
-      'jumlah_toko'  => $this->jumlah_toko,
       'id_user'      => $this->id_user ?: null,
       'keterangan'   => $this->keterangan ?: null,
     ];
@@ -100,7 +93,7 @@ class Wilayah extends Component {
   public function getStats(): array {
     return [
       'totalItems' => WilayahModel::count(),
-      'totalToko'  => WilayahModel::sum('jumlah_toko'),
+      'totalToko'  => WilayahModel::count(),
     ];
   }
 
