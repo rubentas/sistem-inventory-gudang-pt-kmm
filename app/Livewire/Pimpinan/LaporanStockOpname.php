@@ -13,8 +13,8 @@ class LaporanStockOpname extends Component {
   public string $tanggalAkhir = '';
 
   public function mount(): void {
-    $this->tanggalAwal  = now()->subMonths(3)->format('Y-m-d');
-    $this->tanggalAkhir = now()->format('Y-m-d');
+    $this->tanggalAwal  = now()->startOfMonth()->format('Y-m-d');
+    $this->tanggalAkhir = now()->endOfMonth()->format('Y-m-d');
   }
 
   public function updatingSearch(): void {
@@ -23,8 +23,8 @@ class LaporanStockOpname extends Component {
 
   public function resetFilters(): void {
     $this->search       = '';
-    $this->tanggalAwal  = now()->subMonths(3)->format('Y-m-d');
-    $this->tanggalAkhir = now()->format('Y-m-d');
+    $this->tanggalAwal  = now()->startOfMonth()->format('Y-m-d');
+    $this->tanggalAkhir = now()->endOfMonth()->format('Y-m-d');
     $this->resetPage();
   }
 
@@ -40,12 +40,10 @@ class LaporanStockOpname extends Component {
       ->when($this->tanggalAkhir, fn($q) => $q->whereDate('tanggal_opname', '<=', $this->tanggalAkhir))
       ->orderByDesc('tanggal_opname');
 
-    // Clone buat total
-    $totalQuery   = clone $query;
-    $totalSelisih = $totalQuery->sum('selisih');
-    $totalData    = $totalQuery->count();
+    // Clone sebelum paginate
+    $totalSelisih = (clone $query)->sum('selisih');
+    $totalData    = (clone $query)->count();
 
-    // Paginate
     $stockOpnames = $query->paginate(10);
 
     return view('components.pimpinan.laporan-stock-opname', compact('stockOpnames', 'totalSelisih', 'totalData'))

@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <a href="{{ route('laporan.omzet.pdf') }}" target="_blank"
+          <a href="{{ route('laporan.omzet.pdf', ['bulan' => $bulan, 'tahun' => $tahun]) }}" target="_blank"
             class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
