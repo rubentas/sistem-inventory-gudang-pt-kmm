@@ -146,7 +146,7 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
 <script>
   document.addEventListener('livewire:initialized', () => {
     let chartPerHari = null;
@@ -261,8 +261,15 @@
 
     renderCharts();
 
+    // Re-render setelah Livewire update
     Livewire.hook('morph.updated', () => {
       setTimeout(() => renderCharts(), 200);
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+    });
+
+    // Backup: re-render pas window resize
+    window.addEventListener('resize', () => {
+      setTimeout(() => renderCharts(), 100);
     });
   });
 </script>
