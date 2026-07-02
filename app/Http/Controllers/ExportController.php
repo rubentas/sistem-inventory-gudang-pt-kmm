@@ -5,6 +5,7 @@ use App\Exports\BarangExpiredExport;
 use App\Exports\BarangKeluarExport;
 use App\Exports\BarangMasukExport;
 use App\Exports\BarangTerlarisExport;
+use App\Exports\InventoryExport;
 use App\Exports\OmzetExport;
 use App\Exports\OrderSalesExport;
 use App\Exports\StokBarangExport;
@@ -67,5 +68,9 @@ class ExportController extends Controller {
 
   public function wilayahExcel() {
     return (new WilayahExport)->download();
+  }
+
+  public function inventoryExcel(Request $request) {
+    return (new InventoryExport($request->tanggal_awal, $request->tanggal_akhir))->download();
   }
 }

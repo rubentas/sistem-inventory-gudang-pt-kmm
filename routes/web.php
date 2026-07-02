@@ -47,6 +47,8 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/laporan-supplier', \App\Livewire\Admin\Laporan\Supplier::class)->name('laporan.supplier');
   Route::get('/laporan-wilayah', \App\Livewire\Admin\Laporan\Wilayah::class)->name('laporan.wilayah');
   Route::get('/manajemen-pengguna', \App\Livewire\Admin\ManajemenPengguna::class)->name('pengguna');
+  Route::get('/inventory-input', \App\Livewire\Admin\InventoryInput::class)->name('inventory.input');
+  Route::get('/laporan-inventory', \App\Livewire\Admin\Laporan\LaporanInventory::class)->name('laporan.inventory');
 });
 
 // =============================================
@@ -104,4 +106,5 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/barang-expired/excel', [ExportController::class, 'barangExpiredExcel'])->name('expired.excel');
   Route::get('/supplier/excel', [ExportController::class, 'supplierExcel'])->name('supplier.excel');
   Route::get('/wilayah/excel', [ExportController::class, 'wilayahExcel'])->name('wilayah.excel');
+  Route::get('/inventory/excel', [ExportController::class, 'inventoryExcel'])->name('inventory.excel');
 });
