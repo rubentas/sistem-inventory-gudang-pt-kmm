@@ -1,35 +1,5 @@
 <div x-data="orderSalesManager()" x-init="init()" class="space-y-5">
-
-  {{-- TOAST --}}
-  <div x-show="toast.show" x-cloak x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 translate-x-8 scale-95"
-    x-transition:enter-end="opacity-100 translate-x-0 scale-100" x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100 translate-x-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-x-8 scale-95" class="fixed bottom-5 right-5 z-[200]">
-    <div :class="toast.type === 'success' ? 'border-l-[3px] border-emerald-500' : 'border-l-[3px] border-red-500'"
-      class="flex items-start gap-3 w-80 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200 px-4 py-3.5">
-      <div :class="toast.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'"
-        class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
-        <svg x-show="toast.type === 'success'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-        </svg>
-        <svg x-show="toast.type === 'error'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-bold text-gray-900" x-text="toast.title"></p>
-        <p class="text-xs text-gray-500 mt-0.5" x-text="toast.message"></p>
-      </div>
-      <button @click="toast.show = false" class="text-gray-300 hover:text-gray-500 transition shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  {{-- HEADER --}}
+{{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
@@ -309,33 +279,28 @@
   function orderSalesManager() {
     return {
       modalOpen: false,
-      toast: {
-        show: false,
-        type: 'success',
-        title: '',
-        message: ''
-      },
+
       init() {
         window.addEventListener('dataSaved', (e) => {
           this.modalOpen = false;
-          this.showToast(e.detail.type, e.detail.title, e.detail.message);
+          Swal.fire({
+            title: e.detail.title || 'Berhasil!',
+            text: e.detail.message || 'Data berhasil disimpan.',
+            icon: e.detail.type || 'success',
+            confirmButtonColor: '#3B82F6',
+            customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5 py-2.5' },
+            toast: false, position: 'center', showConfirmButton: true,
+          });
         });
+
         window.addEventListener('openModal', () => {
           this.modalOpen = true;
         });
       },
-      showToast(type, title, message) {
-        this.toast = {
-          show: true,
-          type,
-          title,
-          message
-        };
-        setTimeout(() => this.toast.show = false, 4000);
-      },
+
       confirmDelete(id) {
         Swal.fire({
-          title: 'Hapus order ini?',
+          title: 'Hapus data ini?',
           text: 'Tindakan ini tidak dapat dibatalkan.',
           icon: 'warning',
           showCancelButton: true,
@@ -343,15 +308,9 @@
           cancelButtonColor: '#94A3B8',
           confirmButtonText: 'Ya, Hapus',
           cancelButtonText: 'Batal',
-          customClass: {
-            popup: 'rounded-2xl',
-            confirmButton: 'rounded-xl text-sm font-bold px-5',
-            cancelButton: 'rounded-xl text-sm font-bold px-5'
-          },
+          customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5', cancelButton: 'rounded-xl text-sm font-bold px-5' },
         }).then((result) => {
-          if (result.isConfirmed) {
-            this.$wire.call('hapus', id);
-          }
+          if (result.isConfirmed) { this.$wire.call('hapus', id); }
         });
       }
     };
