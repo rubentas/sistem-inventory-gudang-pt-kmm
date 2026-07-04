@@ -1,6 +1,9 @@
 <?php
 namespace App\Livewire\Pimpinan;
 
+use App\Models\BarangKeluar;
+use App\Models\BarangMasuk;
+use App\Models\Stok;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -12,6 +15,7 @@ class LaporanInventory extends Component {
     $this->tanggalAwal  = Carbon::now()->startOfMonth()->format('Y-m-d');
     $this->tanggalAkhir = Carbon::now()->endOfMonth()->format('Y-m-d');
   }
+
   public function resetFilters(): void {
     $this->tanggalAwal  = Carbon::now()->startOfMonth()->format('Y-m-d');
     $this->tanggalAkhir = Carbon::now()->endOfMonth()->format('Y-m-d');
