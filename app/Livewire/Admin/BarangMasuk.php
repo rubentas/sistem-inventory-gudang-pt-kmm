@@ -166,7 +166,6 @@ class BarangMasuk extends Component {
     if ($this->sumber === 'Supplier') {
       $rules['id_supplier'] = 'required|exists:suppliers,id_supplier';
     }
-
     $this->validate($rules);
 
     $item   = BarangMasukModel::findOrFail($this->editId);
@@ -189,12 +188,10 @@ class BarangMasuk extends Component {
       if ($item->bukti_pembayaran) {
         \Storage::disk('public')->delete($item->bukti_pembayaran);
       }
-
       $updateData['bukti_pembayaran'] = $this->bukti_pembayaran->store('dokumen/bukti-masuk', 'public');
     }
 
     $item->update($updateData);
-
     $this->resetForm();
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data barang masuk berhasil diperbarui.');
   }
