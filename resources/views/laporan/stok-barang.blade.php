@@ -164,7 +164,9 @@
           <td class="text-right">{{ number_format($stok->stok_minimum) }}</td>
           <td class="text-right text-bold">{{ number_format($stok->jumlah_stok) }}</td>
           <td>
-            @if ($stok->status == 'Menipis')
+            @if ($stok->status == 'Habis')
+              <span style="color:#374151; font-weight:700;">Habis</span>
+            @elseif ($stok->status == 'Menipis')
               <span style="color:#dc2626; font-weight:700;">Menipis</span>
             @else
               <span style="color:#059669;">Aman</span>

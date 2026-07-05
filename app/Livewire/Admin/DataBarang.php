@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 use App\Models\Barang;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,33 +12,47 @@ use Livewire\WithPagination;
 class DataBarang extends Component {
   use WithPagination;
 
-  // Filter
-  public string $search         = '';
+  // Filter - pakai URL binding biar state ga hilang
+  #[Url]
+  public string $search = '';
+
+  #[Url]
   public string $filterKategori = '';
-  public string $filterStok     = '';
+
+  #[Url]
+  public string $filterStok = '';
 
   // Form
-  public int | null $id_barang            = null;
-  public string $kode_barang              = '';
-  public string $nama_barang              = '';
-  public string $kategori                 = '';
-  public string $satuan                   = 'Pcs';
-  public int $stok_minimum                = 0;
+  public ?int $id_barang = null;
+  public string $kode_barang = '';
+  public string $nama_barang = '';
+  public string $kategori = '';
+  public string $satuan = 'Pcs';
+  public int $stok_minimum = 0;
   public int | string $harga_jual_default = '';
-  public string $keterangan               = '';
+  public string $keterangan = '';
 
   // UI state
   public bool $isEdit = false;
 
-  protected $rules = [
-    'kode_barang'        => 'required|string|max:50',
-    'nama_barang'        => 'required|string|max:255',
-    'kategori'           => 'required|string|max:100',
-    'satuan'             => 'required|string|max:20',
-    'stok_minimum'       => 'required|integer|min:0',
-    'harga_jual_default' => 'nullable|integer|min:0',
-    'keterangan'         => 'nullable|string',
-  ];
+  protected function rules() {
+    $rules = [
+      'nama_barang'        => 'required|string|max:255',
+      'kategori'           => 'required|string|max:100',
+      'satuan'             => 'required|string|max:20',
+      'stok_minimum'       => 'required|integer|min:0',
+      'harga_jual_default' => 'nullable|integer|min:0',
+      'keterangan'         => 'nullable|string',
+    ];
+
+    if ($this->isEdit) {
+      $rules['kode_barang'] = 'required|string|max:50|unique:barangs,kode_barang,' . $this->id_barang . ',id_barang';
+    } else {
+      $rules['kode_barang'] = 'required|string|max:50|unique:barangs,kode_barang';
+    }
+
+    return $rules;
+  }
 
   protected $messages = [
     'kode_barang.required'  => 'Kode barang wajib diisi.',
@@ -49,9 +64,11 @@ class DataBarang extends Component {
     'stok_minimum.min'      => 'Stok minimum minimal 0.',
   ];
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterKategori(): void {$this->resetPage();}
-  public function updatedFilterStok(): void {$this->resetPage();}
+  public function updated($property): void {
+    if (in_array($property, ['search', 'filterKategori', 'filterStok'])) {
+      $this->resetPage();
+    }
+  }
 
   public function resetFilters(): void {
     $this->search         = '';
@@ -70,8 +87,10 @@ class DataBarang extends Component {
     $this->resetErrorBag();
   }
 
-  public function openAddModal(): void {$this->resetForm();
-    $this->dispatch('openModal');}
+  public function openAddModal(): void {
+    $this->resetForm();
+    $this->dispatch('openModal');
+  }
 
   public function edit(int $id): void {
     $barang                   = Barang::findOrFail($id);
@@ -89,13 +108,7 @@ class DataBarang extends Component {
   }
 
   public function simpan(): void {
-    $rules = $this->rules;
-    if ($this->isEdit) {
-      $rules['kode_barang'] = 'required|string|max:50|unique:barangs,kode_barang,' . $this->id_barang . ',id_barang';
-    } else {
-      $rules['kode_barang'] = 'required|string|max:50|unique:barangs,kode_barang';
-    }
-    $this->validate($rules);
+    $this->validate();
 
     $data = [
       'kode_barang'        => $this->kode_barang,
@@ -119,7 +132,9 @@ class DataBarang extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
   }
 
-  public function update(): void {$this->simpan();}
+  public function update(): void {
+    $this->simpan();
+  }
 
   public function hapus(int $id): void {
     $barang = Barang::findOrFail($id);
@@ -135,22 +150,31 @@ class DataBarang extends Component {
     return [
       'totalItems' => Barang::count(),
       'kategori'   => Barang::distinct('kategori')->count('kategori'),
-      'menipis'    => Barang::whereHas('stok', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))->count(),
+      'habis'      => Barang::whereHas('stok', fn($q) => $q->where('jumlah_stok', '<=', 0))->count(),
+      'menipis'    => Barang::whereHas('stok', fn($q) => $q
+          ->where('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))->count(),
       'aman'       => Barang::whereHas('stok', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))->count(),
     ];
   }
 
   public function exportPdf() {
     $barangs = Barang::with('stok')
-      ->when($this->search, fn($q) => $q->where('nama_barang', 'like', '%' . $this->search . '%')
-          ->orWhere('kode_barang', 'like', '%' . $this->search . '%'))
+      ->when($this->search, fn($q) => $q->where(function ($q) {
+        $q->where('nama_barang', 'like', '%' . $this->search . '%')
+          ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
+      }))
       ->when($this->filterKategori, fn($q) => $q->where('kategori', $this->filterKategori))
-      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
+      ->when($this->filterStok === 'habis', fn($q) => $q->whereHas('stok', fn($s) => $s->where('jumlah_stok', '<=', 0)))
+      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s
+          ->where('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
       ->when($this->filterStok === 'aman', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '>', 'stok_minimum')))
       ->orderBy('kode_barang')
       ->get();
 
     $filterLabel = match ($this->filterStok) {
+      'habis'   => 'Stok Habis',
       'menipis' => 'Stok Menipis',
       'aman'    => 'Stok Aman',
       default   => 'Semua Stok'
@@ -171,10 +195,15 @@ class DataBarang extends Component {
 
   public function render() {
     $barangs = Barang::with('stok')
-      ->when($this->search, fn($q) => $q->where('nama_barang', 'like', '%' . $this->search . '%')
-          ->orWhere('kode_barang', 'like', '%' . $this->search . '%'))
+      ->when($this->search, fn($q) => $q->where(function ($q) {
+        $q->where('nama_barang', 'like', '%' . $this->search . '%')
+          ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
+      }))
       ->when($this->filterKategori, fn($q) => $q->where('kategori', $this->filterKategori))
-      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
+      ->when($this->filterStok === 'habis', fn($q) => $q->whereHas('stok', fn($s) => $s->where('jumlah_stok', '<=', 0)))
+      ->when($this->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s
+          ->where('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
       ->when($this->filterStok === 'aman', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '>', 'stok_minimum')))
       ->orderBy('kode_barang')
       ->paginate(15);

@@ -1,5 +1,5 @@
 <div x-data="barangKeluarManager()" x-init="init()" class="space-y-5">
-{{-- HEADER --}}
+  {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
@@ -101,8 +101,7 @@
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <input type="text" wire:model.live.debounce.300ms="search"
-            placeholder="Cari barang, wilayah, atau sales…"
+          <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari barang, wilayah, atau sales…"
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
 
@@ -444,8 +443,13 @@
             text: e.detail.message || 'Data berhasil disimpan.',
             icon: e.detail.type || 'success',
             confirmButtonColor: '#3B82F6',
-            customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5 py-2.5' },
-            toast: false, position: 'center', showConfirmButton: true,
+            customClass: {
+              popup: 'rounded-2xl',
+              confirmButton: 'rounded-xl text-sm font-bold px-5 py-2.5'
+            },
+            toast: false,
+            position: 'center',
+            showConfirmButton: true,
           });
         });
 
@@ -464,9 +468,15 @@
           cancelButtonColor: '#94A3B8',
           confirmButtonText: 'Ya, Hapus',
           cancelButtonText: 'Batal',
-          customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5', cancelButton: 'rounded-xl text-sm font-bold px-5' },
+          customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-xl text-sm font-bold px-5',
+            cancelButton: 'rounded-xl text-sm font-bold px-5'
+          },
         }).then((result) => {
-          if (result.isConfirmed) { this.$wire.call('hapus', id); }
+          if (result.isConfirmed) {
+            this.$wire.call('hapus', id);
+          }
         });
       }
     };

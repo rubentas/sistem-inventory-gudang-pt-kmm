@@ -20,8 +20,12 @@ class Stok extends Model {
         return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
     }
 
-    // Accessor: status stok (Aman / Menipis)
+    // Accessor: status stok (Habis / Menipis / Aman)
     public function getStatusAttribute(): string {
+        if ($this->jumlah_stok <= 0) {
+            return 'Habis';
+        }
+
         return $this->jumlah_stok <= $this->stok_minimum ? 'Menipis' : 'Aman';
     }
 }

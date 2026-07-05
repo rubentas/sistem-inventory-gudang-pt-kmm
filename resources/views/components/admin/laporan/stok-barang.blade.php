@@ -36,6 +36,21 @@
     </div>
   </div>
 
+  {{-- WARNING STOK HABIS --}}
+  @if ($ringkasan['stok_habis'] > 0)
+    <div class="bg-gray-100 border border-gray-300 rounded-2xl p-5 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center shrink-0">
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-gray-800">{{ $ringkasan['stok_habis'] }} Barang Stok Habis!</p>
+        <p class="text-xs text-gray-600 mt-0.5">Stok kosong, segera lakukan pembelian ulang.</p>
+      </div>
+    </div>
+  @endif
+
   {{-- WARNING STOK MENIPIS --}}
   @if ($ringkasan['stok_menipis'] > 0)
     <div class="bg-red-50 border border-red-200 rounded-2xl p-5 flex items-center gap-4">
@@ -53,8 +68,8 @@
   @endif
 
   {{-- STATS --}}
-  <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-    <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+  <div class="flex gap-4">
+    <div class="flex-1 bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
       <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"><svg
           class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -65,7 +80,7 @@
         <p class="text-xl font-bold text-blue-600">{{ number_format($ringkasan['total_stok']) }}</p>
       </div>
     </div>
-    <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+    <div class="flex-1 bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
       <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center shrink-0"><svg
           class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -76,7 +91,7 @@
         <p class="text-xl font-bold text-purple-600">{{ $ringkasan['total_barang'] }}</p>
       </div>
     </div>
-    <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+    <div class="flex-1 bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
       <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0"><svg
           class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
@@ -86,7 +101,7 @@
         <p class="text-xl font-bold text-emerald-600">{{ $ringkasan['stok_normal'] }}</p>
       </div>
     </div>
-    <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+    <div class="flex-1 bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
       <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0"><svg
           class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,6 +112,16 @@
         <p class="text-xl font-bold text-red-600">{{ $ringkasan['stok_menipis'] }}</p>
       </div>
     </div>
+    <div class="flex-1 bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center shrink-0"><svg
+          class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></div>
+      <div>
+        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Stok Habis</p>
+        <p class="text-xl font-bold text-gray-700">{{ $ringkasan['stok_habis'] }}</p>
+      </div>
+    </div>
   </div>
 
   {{-- CHARTS --}}
@@ -104,7 +129,8 @@
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
       <h3 class="text-sm font-bold text-gray-900 mb-4">Stok per Kategori</h3>
       <div class="h-72"><canvas id="chartKategori"></canvas></div>
-      <p id="chartKategoriEmpty" class="hidden text-center text-gray-400 text-sm py-20">Tidak ada data untuk ditampilkan
+      <p id="chartKategoriEmpty" class="hidden text-center text-gray-400 text-sm py-20">Tidak ada data untuk
+        ditampilkan
       </p>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
@@ -128,8 +154,9 @@
       </select>
       <select wire:model.live="filterStatus" class="text-xs border border-gray-200 rounded-lg px-3 py-2">
         <option value="">Semua Status</option>
-        <option value="aman">Aman</option>
+        <option value="habis">Habis</option>
         <option value="menipis">Menipis</option>
+        <option value="aman">Aman</option>
       </select>
     </div>
     <div class="overflow-x-auto">
@@ -145,6 +172,14 @@
         </thead>
         <tbody class="divide-y divide-gray-50">
           @foreach ($tabelStok as $s)
+            @php
+              $status = 'Aman';
+              if ($s->jumlah_stok <= 0) {
+                  $status = 'Habis';
+              } elseif ($s->jumlah_stok <= $s->stok_minimum) {
+                  $status = 'Menipis';
+              }
+            @endphp
             <tr class="hover:bg-gray-50">
               <td class="px-5 py-3">
                 <p class="text-sm font-semibold text-gray-900">{{ $s->barang->nama_barang ?? '-' }}</p>
@@ -155,14 +190,23 @@
               </td>
               <td class="px-5 py-3 text-sm text-right text-gray-500">{{ $s->stok_minimum }}</td>
               <td class="px-5 py-3 text-center">
-                @if ($s->status == 'Menipis')
+                @if ($status == 'Habis')
                   <span
-                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold"><svg
-                      class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                    </svg>Habis</span>
+                @elseif ($status == 'Menipis')
+                  <span
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01" />
-                  </svg>Menipis</span>@else<span
-                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold"><svg
-                      class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </svg>Menipis</span>
+                @else
+                  <span
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-xs font-semibold">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                     </svg>Aman</span>
                 @endif
@@ -188,7 +232,6 @@
       const c1 = document.getElementById('chartKategori');
       const c2 = document.getElementById('chartTopStok');
 
-      // Destroy existing charts
       if (chartKategori) {
         chartKategori.destroy();
         chartKategori = null;
@@ -198,11 +241,9 @@
         chartTopStok = null;
       }
 
-      // Sembunyiin canvas kalau gak ada data
       if (c1) c1.style.display = kategori.labels.length > 0 ? '' : 'none';
       if (c2) c2.style.display = top.labels.length > 0 ? '' : 'none';
 
-      // Pie Chart
       if (c1 && kategori.labels.length > 0) {
         chartKategori = new Chart(c1, {
           type: 'pie',
@@ -233,7 +274,6 @@
         });
       }
 
-      // Bar Chart
       if (c2 && top.labels.length > 0) {
         chartTopStok = new Chart(c2, {
           type: 'bar',
@@ -289,16 +329,13 @@
         });
       }
 
-      // 🔥 FORCE RESIZE - Ini yang bikin chart muncul setelah filter
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, 150);
     }
 
-    // Render pertama
     setTimeout(renderCharts, 100);
 
-    // Re-render setiap Livewire update
     Livewire.hook('morph.updated', ({
       component
     }) => {
@@ -307,7 +344,6 @@
       }
     });
 
-    // Backup: re-render pas window resize (buat jaga-jaga)
     window.addEventListener('resize', () => {
       setTimeout(renderCharts, 200);
     });

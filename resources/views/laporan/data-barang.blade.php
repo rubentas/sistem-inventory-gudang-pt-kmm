@@ -158,8 +158,10 @@
           <td class="text-right">{{ number_format($barang->stok_minimum) }}</td>
           <td class="text-right text-bold">{{ number_format($stokSekarang) }}</td>
           <td>
-            @if ($stokSekarang <= $barang->stok_minimum)
-              <span style="color: #dc2626; font-weight: 700;">⚠ Menipis</span>
+            @if ($stokSekarang <= 0)
+              <span style="color: #374151; font-weight: 700;">Habis</span>
+            @elseif ($stokSekarang <= $barang->stok_minimum)
+              <span style="color: #dc2626; font-weight: 700;">Menipis</span>
             @else
               <span style="color: #059669;">Aman</span>
             @endif

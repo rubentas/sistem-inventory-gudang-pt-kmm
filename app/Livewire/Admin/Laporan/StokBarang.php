@@ -14,13 +14,30 @@ class StokBarang extends Component {
   public string $filterStatus   = '';
   public string $search         = '';
 
+  public function updated($property): void {
+    if (in_array($property, ['search', 'filterKategori', 'filterStatus'])) {
+      $this->resetPage();
+    }
+  }
+
+  public function resetFilters(): void {
+    $this->search         = '';
+    $this->filterKategori = '';
+    $this->filterStatus   = '';
+    $this->resetPage();
+  }
+
   protected function query() {
     return Stok::with('barang')
       ->when($this->filterKategori, function ($q) {
         $q->whereHas('barang', fn($b) => $b->where('kategori', $this->filterKategori));
       })
+      ->when($this->filterStatus === 'habis', function ($q) {
+        $q->where('jumlah_stok', '<=', 0);
+      })
       ->when($this->filterStatus === 'menipis', function ($q) {
-        $q->whereColumn('jumlah_stok', '<=', 'stok_minimum');
+        $q->where('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum');
       })
       ->when($this->filterStatus === 'aman', function ($q) {
         $q->whereColumn('jumlah_stok', '>', 'stok_minimum');
@@ -33,12 +50,16 @@ class StokBarang extends Component {
   public function getRingkasan(): array {
     $totalStok   = Stok::sum('jumlah_stok');
     $totalBarang = Stok::count();
-    $stokMenipis = Stok::whereColumn('jumlah_stok', '<=', 'stok_minimum')->count();
-    $stokNormal  = $totalBarang - $stokMenipis;
+    $stokHabis   = Stok::where('jumlah_stok', '<=', 0)->count();
+    $stokMenipis = Stok::where('jumlah_stok', '>', 0)
+      ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
+      ->count();
+    $stokNormal = Stok::whereColumn('jumlah_stok', '>', 'stok_minimum')->count();
 
     return [
       'total_stok'   => $totalStok,
       'total_barang' => $totalBarang,
+      'stok_habis'   => $stokHabis,
       'stok_menipis' => $stokMenipis,
       'stok_normal'  => $stokNormal,
     ];

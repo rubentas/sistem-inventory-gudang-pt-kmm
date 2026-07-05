@@ -171,7 +171,15 @@
           <td class="text-right">{{ number_format($stok->total_masuk) }}</td>
           <td class="text-right">{{ number_format($stok->total_keluar) }}</td>
           <td class="text-right text-bold">{{ number_format($stok->jumlah_stok) }}</td>
-          <td>{{ $stok->status == 'Menipis' ? '⚠ Menipis' : '✓ Aman' }}</td>
+          <td>
+            @if ($stok->status == 'Habis')
+              Habis
+            @elseif ($stok->status == 'Menipis')
+              Menipis
+            @else
+              Aman
+            @endif
+          </td>
         </tr>
       @empty
         <tr>

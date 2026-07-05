@@ -27,12 +27,15 @@ class LaporanStok extends Component {
         $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+                                                              ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
       ->get();
 
     $filterLabel = match ($this->filterStatus) {
+      'habis'   => 'Stok Habis',
       'menipis' => 'Stok Menipis',
       'aman'    => 'Stok Aman',
       default   => 'Semua Stok'
@@ -59,13 +62,17 @@ class LaporanStok extends Component {
         $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
       ->paginate(15);
 
     $totalStok    = Stok::sum('jumlah_stok');
-    $totalMenipis = Stok::whereColumn('jumlah_stok', '<=', 'stok_minimum')->count();
+    $totalMenipis = Stok::whereColumn('jumlah_stok', '>', 0)
+                       ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
+                       ->count();
     $totalAman    = Stok::whereColumn('jumlah_stok', '>', 'stok_minimum')->count();
 
     return view('components.pimpinan.laporan-stok', compact('stoks', 'totalStok', 'totalMenipis', 'totalAman'))

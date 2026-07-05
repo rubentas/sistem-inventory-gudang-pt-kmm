@@ -33,8 +33,12 @@ class StokBarang extends Component {
                         ->orWhere('kode_barang', 'like', '%' . $this->search . '%');
                 });
             })
+            ->when($this->filterStatus === 'habis', function ($q) {
+                $q->where('jumlah_stok', '<=', 0);
+            })
             ->when($this->filterStatus === 'menipis', function ($q) {
-                $q->whereColumn('jumlah_stok', '<=', 'stok_minimum');
+                $q->whereColumn('jumlah_stok', '>', 0)
+                  ->whereColumn('jumlah_stok', '<=', 'stok_minimum');
             })
             ->when($this->filterStatus === 'aman', function ($q) {
                 $q->whereColumn('jumlah_stok', '>', 'stok_minimum');
@@ -43,7 +47,9 @@ class StokBarang extends Component {
             ->paginate(15);
 
         $totalStok    = Stok::sum('jumlah_stok');
-        $totalMenipis = Stok::whereColumn('jumlah_stok', '<=', 'stok_minimum')->count();
+        $totalMenipis = Stok::whereColumn('jumlah_stok', '>', 0)
+                           ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
+                           ->count();
         $totalAman    = Stok::whereColumn('jumlah_stok', '>', 'stok_minimum')->count();
 
         return view('components.sales.stok-barang', compact('stoks', 'totalStok', 'totalMenipis', 'totalAman'))

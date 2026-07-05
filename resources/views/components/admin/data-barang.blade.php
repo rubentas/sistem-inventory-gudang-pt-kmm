@@ -82,7 +82,7 @@
             class="flex-1 h-11 px-3 text-sm bg-transparent focus:outline-none placeholder-gray-400 text-gray-900">
         </div>
 
-        <select wire:model.live="filterKategori"
+        <select wire:model="filterKategori" wire:change="$refresh"
           class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
           <option value="">Semua Kategori</option>
           @foreach ($kategoriList as $kat)
@@ -90,9 +90,10 @@
           @endforeach
         </select>
 
-        <select wire:model.live="filterStok"
+        <select wire:model="filterStok" wire:change="$refresh"
           class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
           <option value="">Semua Stok</option>
+          <option value="habis">Stok Habis</option>
           <option value="aman">Stok Aman</option>
           <option value="menipis">Stok Menipis</option>
         </select>
@@ -159,9 +160,17 @@
                 <div class="flex items-center gap-1.5">
                   <span
                     class="text-sm font-bold {{ $stokSekarang <= $barang->stok_minimum ? 'text-red-600' : 'text-gray-900' }}">{{ number_format($stokSekarang) }}</span>
-                  @if ($stokSekarang <= $barang->stok_minimum)
+                </div>
+                <div class="mt-1">
+                  @if ($stokSekarang <= 0)
+                    <span
+                      class="px-1.5 py-0.5 bg-gray-50 text-gray-700 border border-gray-100 rounded-md text-[10px] font-bold uppercase">Habis</span>
+                  @elseif ($stokSekarang <= $barang->stok_minimum)
                     <span
                       class="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 rounded-md text-[10px] font-bold uppercase">Menipis</span>
+                  @else
+                    <span
+                      class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md text-[10px] font-bold uppercase">Aman</span>
                   @endif
                 </div>
               </td>

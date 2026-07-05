@@ -96,8 +96,9 @@
         <select wire:model.live="filterStatus"
           class="h-11 px-4 border-2 border-gray-200 rounded-xl text-sm font-semibold bg-white text-gray-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition outline-none cursor-pointer">
           <option value="">Semua Status</option>
-          <option value="aman">Stok Aman</option>
+          <option value="habis">Stok Habis</option>
           <option value="menipis">Stok Menipis</option>
+          <option value="aman">Stok Aman</option>
         </select>
       </div>
     </div>
@@ -155,13 +156,17 @@
               </td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $stok->barang->satuan ?? 'Pcs' }}</td>
               <td class="px-5 py-4">
-                <span class="text-sm font-bold {{ $stok->status == 'Menipis' ? 'text-red-600' : 'text-gray-900' }}">
+                <span class="text-sm font-bold {{ in_array($stok->status, ['Menipis', 'Habis']) ? 'text-red-600' : 'text-gray-900' }}">
                   {{ number_format($stok->jumlah_stok) }}
                 </span>
               </td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ number_format($stok->stok_minimum) }}</td>
               <td class="px-5 py-4">
-                @if ($stok->status == 'Menipis')
+                @if ($stok->status == 'Habis')
+                  <span
+                    class="px-2.5 py-1 bg-gray-50 text-gray-700 border border-gray-100 rounded-lg text-xs font-semibold">❌
+                    Habis</span>
+                @elseif ($stok->status == 'Menipis')
                   <span
                     class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
                     Menipis</span>

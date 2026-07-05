@@ -26,7 +26,10 @@ class StokBarang extends Component {
   public function getStats(): array {
     return [
       'total'   => Stok::sum('jumlah_stok'),
-      'menipis' => Stok::whereColumn('jumlah_stok', '<=', 'stok_minimum')->count(),
+      'habis'   => Stok::where('jumlah_stok', '<=', 0)->count(),
+      'menipis' => Stok::whereColumn('jumlah_stok', '>', 0)
+                        ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
+                        ->count(),
       'aman'    => Stok::whereColumn('jumlah_stok', '>', 'stok_minimum')->count(),
     ];
   }
@@ -38,12 +41,15 @@ class StokBarang extends Component {
         $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
       ->get();
 
     $filterLabel = match ($this->filterStatus) {
+      'habis'   => 'Stok Habis',
       'menipis' => 'Stok Menipis',
       'aman'    => 'Stok Aman',
       default   => 'Semua Stok'
@@ -70,7 +76,9 @@ class StokBarang extends Component {
         $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
       ->paginate(15);

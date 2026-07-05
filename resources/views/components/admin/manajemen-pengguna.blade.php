@@ -1,5 +1,5 @@
 <div x-data="manajemenPenggunaManager()" x-init="init()" class="space-y-5">
-{{-- HEADER --}}
+  {{-- HEADER --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
@@ -278,8 +278,13 @@
             text: e.detail.message || 'Data berhasil disimpan.',
             icon: e.detail.type || 'success',
             confirmButtonColor: '#3B82F6',
-            customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5 py-2.5' },
-            toast: false, position: 'center', showConfirmButton: true,
+            customClass: {
+              popup: 'rounded-2xl',
+              confirmButton: 'rounded-xl text-sm font-bold px-5 py-2.5'
+            },
+            toast: false,
+            position: 'center',
+            showConfirmButton: true,
           });
         });
 
@@ -298,9 +303,15 @@
           cancelButtonColor: '#94A3B8',
           confirmButtonText: 'Ya, Hapus',
           cancelButtonText: 'Batal',
-          customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl text-sm font-bold px-5', cancelButton: 'rounded-xl text-sm font-bold px-5' },
+          customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-xl text-sm font-bold px-5',
+            cancelButton: 'rounded-xl text-sm font-bold px-5'
+          },
         }).then((result) => {
-          if (result.isConfirmed) { this.$wire.call('hapus', id); }
+          if (result.isConfirmed) {
+            this.$wire.call('hapus', id);
+          }
         });
       }
     };

@@ -131,7 +131,10 @@
               <td class="px-5 py-4 text-sm font-bold text-red-600">{{ number_format($stok->total_keluar) }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ number_format($stok->jumlah_stok) }}</td>
               <td class="px-5 py-4">
-                @if ($stok->status == 'Menipis')
+                @if ($stok->status == 'Habis')
+                  <span class="px-2.5 py-1 bg-gray-50 text-gray-700 border border-gray-100 rounded-lg text-xs font-semibold">❌
+                    Habis</span>
+                @elseif ($stok->status == 'Menipis')
                   <span class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-100 rounded-lg text-xs font-semibold">⚠
                     Menipis</span>
                 @else
