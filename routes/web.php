@@ -37,6 +37,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/stok-barang', \App\Livewire\Admin\StokBarang::class)->name('stok-barang');
   Route::get('/invoice', \App\Livewire\Admin\Invoice::class)->name('invoice');
   Route::get('/data-sales', \App\Livewire\Admin\DataSales::class)->name('data-sales');
+  Route::get('/retur-barang', \App\Livewire\Admin\ReturBarang::class)->name('retur-barang');
   Route::get('/laporan-barang-masuk', \App\Livewire\Admin\Laporan\BarangMasuk::class)->name('laporan.masuk');
   Route::get('/laporan-barang-keluar', \App\Livewire\Admin\Laporan\BarangKeluar::class)->name('laporan.keluar');
   Route::get('/laporan-stok', \App\Livewire\Admin\Laporan\StokBarang::class)->name('laporan.stok');
@@ -59,7 +60,7 @@ Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->grou
   Route::get('/order-sales', \App\Livewire\Sales\OrderSales::class)->name('order-sales');
   Route::get('/stok-barang', \App\Livewire\Sales\StokBarang::class)->name('stok-barang');
   Route::get('/profile', \App\Livewire\Sales\Profile::class)->name('profile');
-  Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.'); Route::get('/history-order', \App\Livewire\Sales\HistoryOrder::class)->name('history.order');
+  Route::get('/history-order', \App\Livewire\Sales\HistoryOrder::class)->name('history.order');
 });
 
 // =============================================
@@ -90,21 +91,21 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
   Route::get('/barang-keluar/pdf', [LaporanController::class, 'barangKeluarPdf'])->name('keluar.pdf');
   Route::get('/barang-keluar/excel', [ExportController::class, 'barangKeluarExcel'])->name('keluar.excel');
   Route::get('/stok/pdf', [LaporanController::class, 'stokPdf'])->name('stok.pdf');
+  Route::get('/stok/excel', [ExportController::class, 'stokBarangExcel'])->name('stok.excel');
   Route::get('/stock-opname/pdf', [LaporanController::class, 'stockOpnamePdf'])->name('opname.pdf');
   Route::get('/order-sales/pdf', [LaporanController::class, 'orderSalesPdf'])->name('order.pdf');
-  Route::get('/supplier/pdf', [LaporanController::class, 'supplierPdf'])->name('supplier.pdf');
-  Route::get('/wilayah/pdf', [LaporanController::class, 'wilayahPdf'])->name('wilayah.pdf');
-  Route::get('/inventory/pdf', [LaporanController::class, 'inventoryPdf'])->name('inventory.pdf');
-  Route::get('/data-barang/pdf', [LaporanController::class, 'dataBarangPdf'])->name('data-barang.pdf');
-  Route::get('/omzet/pdf', [LaporanController::class, 'omzetPdf'])->name('omzet.pdf');
-  Route::get('/stok/excel', [ExportController::class, 'stokBarangExcel'])->name('stok.excel');
   Route::get('/order-sales/excel', [ExportController::class, 'orderSalesExcel'])->name('order.excel');
+  Route::get('/omzet/pdf', [LaporanController::class, 'omzetPdf'])->name('omzet.pdf');
   Route::get('/omzet/excel', [ExportController::class, 'omzetExcel'])->name('omzet.excel');
   Route::get('/barang-terlaris/pdf', [LaporanController::class, 'barangTerlarisPdf'])->name('terlaris.pdf');
   Route::get('/barang-terlaris/excel', [ExportController::class, 'barangTerlarisExcel'])->name('terlaris.excel');
   Route::get('/barang-expired/pdf', [LaporanController::class, 'barangExpiredPdf'])->name('expired.pdf');
   Route::get('/barang-expired/excel', [ExportController::class, 'barangExpiredExcel'])->name('expired.excel');
+  Route::get('/supplier/pdf', [LaporanController::class, 'supplierPdf'])->name('supplier.pdf');
   Route::get('/supplier/excel', [ExportController::class, 'supplierExcel'])->name('supplier.excel');
+  Route::get('/wilayah/pdf', [LaporanController::class, 'wilayahPdf'])->name('wilayah.pdf');
   Route::get('/wilayah/excel', [ExportController::class, 'wilayahExcel'])->name('wilayah.excel');
+  Route::get('/inventory/pdf', [LaporanController::class, 'inventoryPdf'])->name('inventory.pdf');
   Route::get('/inventory/excel', [ExportController::class, 'inventoryExcel'])->name('inventory.excel');
+  Route::get('/data-barang/pdf', [LaporanController::class, 'dataBarangPdf'])->name('data-barang.pdf');
 });

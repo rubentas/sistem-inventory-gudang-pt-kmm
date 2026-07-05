@@ -203,7 +203,7 @@
 
           <!-- ========== TRANSAKSI ========== -->
           <div x-data="{
-              open: localStorage.getItem('transaksi-menu') === 'true' || {{ request()->routeIs(['admin.barang-masuk', 'admin.barang-keluar', 'admin.order-sales', 'admin.invoice']) ? 'true' : 'false' }},
+              open: localStorage.getItem('transaksi-menu') === 'true' || {{ request()->routeIs(['admin.barang-masuk', 'admin.barang-keluar', 'admin.order-sales', 'admin.invoice', 'admin.retur-barang']) ? 'true' : 'false' }},
               toggle() {
                   this.open = !this.open;
                   localStorage.setItem('transaksi-menu', this.open);
@@ -211,7 +211,7 @@
           }">
             <button @click="toggle()"
               class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                {{ request()->routeIs(['admin.barang-masuk', 'admin.barang-keluar', 'admin.order-sales', 'admin.invoice']) ? 'menu-active' : 'menu-inactive' }}">
+                {{ request()->routeIs(['admin.barang-masuk', 'admin.barang-keluar', 'admin.order-sales', 'admin.invoice', 'admin.retur-barang']) ? 'menu-active' : 'menu-inactive' }}">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -258,6 +258,14 @@
                   </path>
                 </svg>
                 Invoice
+              </a>
+              <a href="{{ route('admin.retur-barang') }}"
+                class="flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition {{ request()->routeIs('admin.retur-barang') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                </svg>
+                Retur Barang
               </a>
             </div>
           </div>
