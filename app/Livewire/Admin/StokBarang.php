@@ -14,8 +14,12 @@ class StokBarang extends Component {
   public string $search       = '';
   public string $filterStatus = '';
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterStatus(): void {$this->resetPage();}
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
+  public function updatedFilterStatus(): void {
+    $this->resetPage();
+  }
 
   public function resetFilters(): void {
     $this->search       = '';
@@ -27,14 +31,13 @@ class StokBarang extends Component {
     return [
       'total'   => Stok::sum('jumlah_stok'),
       'habis'   => Stok::where('jumlah_stok', '<=', 0)->count(),
-      'menipis' => Stok::whereColumn('jumlah_stok', '>', 0)
-                        ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
-                        ->count(),
+      'menipis' => Stok::where('jumlah_stok', '>', 0)
+        ->whereColumn('jumlah_stok', '<=', 'stok_minimum')
+        ->count(),
       'aman'    => Stok::whereColumn('jumlah_stok', '>', 'stok_minimum')->count(),
     ];
   }
 
-  // Export PDF sesuai filter
   public function exportPdf() {
     $stoks = Stok::with('barang')
       ->when($this->search, function ($q) {
@@ -42,7 +45,7 @@ class StokBarang extends Component {
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
       ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->where('jumlah_stok', '>', 0)
           ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
@@ -77,7 +80,7 @@ class StokBarang extends Component {
             ->orWhere('kode_barang', 'like', '%' . $this->search . '%'));
       })
       ->when($this->filterStatus === 'habis', fn($q) => $q->where('jumlah_stok', '<=', 0))
-      ->when($this->filterStatus === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '>', 0)
+      ->when($this->filterStatus === 'menipis', fn($q) => $q->where('jumlah_stok', '>', 0)
           ->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
       ->when($this->filterStatus === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
       ->orderBy('id_barang')
