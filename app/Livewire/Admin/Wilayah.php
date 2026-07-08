@@ -99,6 +99,7 @@ class Wilayah extends Component {
 
   public function render() {
     $wilayahs = WilayahModel::with('sales')
+      ->withSum('barangKeluar', 'jumlah')
       ->when($this->search, function ($q) {
         $q->where('nama_wilayah', 'like', '%' . $this->search . '%');
       })

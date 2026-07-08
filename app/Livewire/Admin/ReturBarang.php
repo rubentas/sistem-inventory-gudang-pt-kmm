@@ -41,8 +41,12 @@ class ReturBarang extends Component {
     $this->tanggal_retur = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterStatus(): void {$this->resetPage();}
+  public function updatedSearch(): void {
+    $this->resetPage();
+  }
+  public function updatedFilterStatus(): void {
+    $this->resetPage();
+  }
 
   public function resetFilters(): void {
     $this->search       = '';
@@ -55,13 +59,13 @@ class ReturBarang extends Component {
       $order           = OrderSales::with('sales', 'barang')->find($value);
       $this->nama_toko = $order->nama_toko ?? '-';
       $this->id_sales  = $order->id_sales;
-      // Pre-fill detail dengan barang dari order
+      // Pre-fill detail dengan barang dari order yang dipilih (1 order = 1 barang)
       $this->detail = [[
         'id_barang'      => $order->id_barang,
         'nama_barang'    => $order->barang->nama_barang ?? '',
         'jumlah_order'   => $order->jumlah,
         'jumlah_retur'   => 0,
-        'harga_satuan'   => $order->harga_satuan ?? $order->harga_jual,
+        'harga_satuan'   => $order->harga_satuan ?? $order->harga_jual ?? 0,
         'subtotal_retur' => 0,
         'alasan'         => '',
         'kondisi_barang' => 'Bagus',
@@ -75,7 +79,6 @@ class ReturBarang extends Component {
   }
 
   public function updatedDetail($value, $key): void {
-    // Hitung subtotal otomatis
     $parts = explode('.', $key);
     $index = $parts[0] ?? 0;
     $field = $parts[1] ?? '';
@@ -85,25 +88,6 @@ class ReturBarang extends Component {
       $hrg                                    = (float) ($this->detail[$index]['harga_satuan'] ?? 0);
       $this->detail[$index]['subtotal_retur'] = $jml * $hrg;
     }
-  }
-
-  public function addDetail(): void {
-    $this->detail[] = [
-      'id_barang'      => '',
-      'nama_barang'    => '',
-      'jumlah_order'   => 0,
-      'jumlah_retur'   => 0,
-      'harga_satuan'   => 0,
-      'subtotal_retur' => 0,
-      'alasan'         => '',
-      'kondisi_barang' => 'Bagus',
-      'keterangan'     => '',
-    ];
-  }
-
-  public function removeDetail(int $index): void {
-    unset($this->detail[$index]);
-    $this->detail = array_values($this->detail);
   }
 
   public function generateNoRetur(): string {
@@ -131,7 +115,6 @@ class ReturBarang extends Component {
 
     DB::beginTransaction();
     try {
-      // Simpan header
       $retur = ReturPenjualan::create([
         'no_retur'      => $this->generateNoRetur(),
         'id_order'      => $this->id_order,
@@ -140,7 +123,6 @@ class ReturBarang extends Component {
         'status'        => 'Menunggu',
       ]);
 
-      // Simpan detail
       foreach ($this->detail as $d) {
         DetailReturPenjualan::create([
           'id_retur'       => $retur->id_retur,
@@ -222,6 +204,13 @@ class ReturBarang extends Component {
 
     return view('components.admin.retur-barang', [
       'returs' => $returs,
+    ]);
+  }
+
+  public function cetakPdf() {
+    return redirect()->route('admin.retur-barang.pdf', [
+      'search'       => $this->search,
+      'filterStatus' => $this->filterStatus,
     ]);
   }
 }

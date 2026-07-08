@@ -5,6 +5,7 @@ use App\Exports\BarangExpiredExport;
 use App\Exports\BarangKeluarExport;
 use App\Exports\BarangMasukExport;
 use App\Exports\BarangTerlarisExport;
+use App\Exports\DataBarangExport;
 use App\Exports\InventoryExport;
 use App\Exports\OmzetExport;
 use App\Exports\OrderSalesExport;
@@ -62,6 +63,14 @@ class ExportController extends Controller {
     return (new BarangExpiredExport($request->input('status', '')))->download();
   }
 
+  public function dataBarangExcel(Request $request) {
+    return (new DataBarangExport(
+      $request->input('search', ''),
+      $request->input('filterKategori', ''),
+      $request->input('filterStok', '')
+    ))->download();
+  }
+
   public function supplierExcel() {
     return (new SupplierExport)->download();
   }
@@ -72,5 +81,11 @@ class ExportController extends Controller {
 
   public function inventoryExcel(Request $request) {
     return (new InventoryExport($request->tanggal_awal, $request->tanggal_akhir))->download();
+  }
+  public function returBarangExcel(Request $request) {
+    return (new \App\Exports\ReturBarangExport(
+      $request->input('tanggal_awal', now()->startOfMonth()->format('Y-m-d')),
+      $request->input('tanggal_akhir', now()->format('Y-m-d'))
+    ))->download();
   }
 }

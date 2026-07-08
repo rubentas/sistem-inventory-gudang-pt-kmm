@@ -1,10 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
 use App\Models\Laporan;
 use App\Models\OrderSales;
+use App\Models\ReturPenjualan;
 use App\Models\StockOpname;
 use App\Models\Stok;
 use App\Models\Supplier;
@@ -33,7 +35,7 @@ class LaporanController extends Controller {
     return Carbon::parse($tanggal)->translatedFormat('d F Y');
   }
 
-  // Barang Masuk
+  // ========== BARANG MASUK ==========
   public function barangMasukPdf(Request $request) {
     $awal       = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
     $akhir      = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
@@ -43,19 +45,15 @@ class LaporanController extends Controller {
     $query = BarangMasuk::with(['barang', 'supplier', 'user'])
       ->whereBetween('tanggal_masuk', [$awal, $akhir]);
 
-    // Filter supplier
     if ($idSupplier) {
       $query->where('id_supplier', $idSupplier);
     }
 
-    // Filter sumber
     if ($sumber) {
       $query->where('sumber', $sumber);
     }
 
-    $data = $query->orderByDesc('tanggal_masuk')
-      ->orderByDesc('id_masuk')
-      ->get();
+    $data = $query->orderByDesc('tanggal_masuk')->orderByDesc('id_masuk')->get();
 
     $namaSupplier = null;
     if ($idSupplier) {
@@ -78,7 +76,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-barang-masuk-' . $awal . '-sd-' . $akhir . '.pdf');
   }
 
-  // Barang Keluar
+  // ========== BARANG KELUAR ==========
   public function barangKeluarPdf(Request $request) {
     $awal    = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
     $akhir   = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
@@ -107,25 +105,17 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-barang-keluar-' . $awal . '-sd-' . $akhir . '.pdf');
   }
 
-  // Stok Barang
+  // ========== STOK BARANG ==========
   public function stokPdf(Request $request) {
     $kategori = $request->input('kategori', '');
     $status   = $request->input('status', '');
     $search   = $request->input('search', '');
 
     $data = Stok::with('barang')
-      ->when($kategori, function ($q) use ($kategori) {
-        $q->whereHas('barang', fn($b) => $b->where('kategori', $kategori));
-      })
-      ->when($status === 'menipis', function ($q) {
-        $q->whereColumn('jumlah_stok', '<=', 'stok_minimum');
-      })
-      ->when($status === 'aman', function ($q) {
-        $q->whereColumn('jumlah_stok', '>', 'stok_minimum');
-      })
-      ->when($search, function ($q) use ($search) {
-        $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $search . '%'));
-      })
+      ->when($kategori, fn($q) => $q->whereHas('barang', fn($b) => $b->where('kategori', $kategori)))
+      ->when($status === 'menipis', fn($q) => $q->whereColumn('jumlah_stok', '<=', 'stok_minimum'))
+      ->when($status === 'aman', fn($q) => $q->whereColumn('jumlah_stok', '>', 'stok_minimum'))
+      ->when($search, fn($q) => $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $search . '%')))
       ->orderBy('jumlah_stok', 'asc')
       ->get();
 
@@ -142,7 +132,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-stok-barang-' . Carbon::today()->format('Y-m-d') . '.pdf');
   }
 
-  // Stock Opname
+  // ========== STOCK OPNAME ==========
   public function stockOpnamePdf(Request $request) {
     $awal  = $request->input('tanggal_awal', Carbon::now()->subMonths(3)->format('Y-m-d'));
     $akhir = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
@@ -169,7 +159,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-stock-opname-' . $awal . '-sd-' . $akhir . '.pdf');
   }
 
-  // Order Sales
+  // ========== ORDER SALES ==========
   public function orderSalesPdf(Request $request) {
     $awal   = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
     $akhir  = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
@@ -198,7 +188,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-order-sales-' . $awal . '-sd-' . $akhir . '.pdf');
   }
 
-  // Supplier
+  // ========== SUPPLIER ==========
   public function supplierPdf() {
     $data = Supplier::orderBy('kode_supplier')->get();
 
@@ -214,7 +204,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-supplier-' . Carbon::today()->format('Y-m-d') . '.pdf');
   }
 
-  // Wilayah
+  // ========== WILAYAH ==========
   public function wilayahPdf() {
     $data = Wilayah::with('sales')->orderBy('nama_wilayah')->get();
 
@@ -229,7 +219,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-wilayah-' . Carbon::today()->format('Y-m-d') . '.pdf');
   }
 
-  // Inventory
+  // ========== INVENTORY ==========
   public function inventoryPdf(Request $request) {
     $awal  = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
     $akhir = $request->input('tanggal_akhir', Carbon::now()->endOfMonth()->format('Y-m-d'));
@@ -258,7 +248,7 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-inventory-' . $awal . '-sd-' . $akhir . '.pdf');
   }
 
-// Barang Terlaris
+  // ========== BARANG TERLARIS ==========
   public function barangTerlarisPdf(Request $request) {
     $awal     = $request->input('tanggal_awal', Carbon::now()->startOfMonth()->format('Y-m-d'));
     $akhir    = $request->input('tanggal_akhir', Carbon::today()->format('Y-m-d'));
@@ -288,17 +278,24 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-barang-terlaris-' . $awal . '.pdf');
   }
 
+  // ========== BARANG EXPIRED ==========
   public function barangExpiredPdf(Request $request) {
-    $data = BarangMasuk::with(['barang', 'supplier'])->whereNotNull('tanggal_expired')
+    $data = BarangMasuk::with(['barang', 'supplier'])
+      ->whereNotNull('tanggal_expired')
       ->when($request->status, fn($q) => $q->where('status_expired', $request->status))
-      ->orderBy('tanggal_expired')->get();
+      ->orderBy('tanggal_expired')
+      ->get();
 
     $pdf = Pdf::loadView('laporan.barang-expired', [
-      'data' => $data, 'dicetak_oleh' => Auth::user()->nama, 'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
+      'data'          => $data,
+      'dicetak_oleh'  => Auth::user()->nama,
+      'tanggal_cetak' => $this->formatTanggal(Carbon::now()),
     ])->setPaper('a4', 'portrait');
+
     return $pdf->stream('laporan-barang-expired.pdf');
   }
 
+  // ========== OMZET ==========
   public function omzetPdf(Request $request) {
     $bulan = $request->input('bulan', date('m'));
     $tahun = $request->input('tahun', date('Y'));
@@ -322,6 +319,61 @@ class LaporanController extends Controller {
     ];
 
     $pdf = Pdf::loadView('laporan.omzet', $data)->setPaper('a4', 'portrait');
+
     return $pdf->stream('laporan-omzet-' . $tahun . '-' . $bulan . '.pdf');
+  }
+
+  // ========== DATA BARANG ==========
+  public function dataBarangPdf(Request $request) {
+    set_time_limit(120);
+
+    $data = Barang::with('stok')
+      ->when($request->search, fn($q) => $q->where(function ($q) use ($request) {
+        $q->where('nama_barang', 'like', '%' . $request->search . '%')
+          ->orWhere('kode_barang', 'like', '%' . $request->search . '%');
+      }))
+      ->when($request->filterKategori, fn($q) => $q->where('kategori', $request->filterKategori))
+      ->when($request->filterStok === 'habis', fn($q) => $q->whereHas('stok', fn($s) => $s->where('jumlah_stok', '<=', 0)))
+      ->when($request->filterStok === 'menipis', fn($q) => $q->whereHas('stok', fn($s) => $s
+          ->where('jumlah_stok', '>', 0)
+          ->whereColumn('jumlah_stok', '<=', 'stok_minimum')))
+      ->when($request->filterStok === 'aman', fn($q) => $q->whereHas('stok', fn($s) => $s->whereColumn('jumlah_stok', '>', 'stok_minimum')))
+      ->orderBy('kode_barang')
+      ->get();
+
+    $filterLabel = match ($request->filterStok) {
+      'habis'   => 'Stok Habis',
+      'menipis' => 'Stok Menipis',
+      'aman'    => 'Stok Aman',
+      default   => 'Semua Stok',
+    };
+
+    $pdf = Pdf::loadView('laporan.data-barang', [
+      'data'          => $data,
+      'dicetak_oleh'  => auth()->user()->nama ?? 'System',
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'filter_label'  => $filterLabel,
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->stream('laporan-data-barang-' . now()->format('Ymd') . '.pdf');
+  }
+
+  // ========== RETUR BARANG ==========
+  public function returBarangPdf(Request $request) {
+    set_time_limit(120);
+
+    $data = ReturPenjualan::with(['detailRetur.barang', 'order'])
+      ->whereBetween('tanggal_retur', [$request->tanggal_awal, $request->tanggal_akhir])
+      ->orderByDesc('tanggal_retur')
+      ->get();
+
+    $pdf = Pdf::loadView('laporan.retur-barang', [
+      'data'          => $data,
+      'dicetak_oleh'  => auth()->user()->nama ?? 'System',
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'total_retur'   => $data->count(),
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->stream('laporan-retur-barang-' . $request->tanggal_awal . '-sd-' . $request->tanggal_akhir . '.pdf');
   }
 }

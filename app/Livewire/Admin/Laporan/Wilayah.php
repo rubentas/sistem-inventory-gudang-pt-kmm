@@ -10,8 +10,8 @@ use Livewire\Component;
 class Wilayah extends Component {
   public function getRingkasan(): array {
     return [
-      'total_wilayah'   => WilayahModel::count(),
-      'total_transaksi' => BarangKeluar::count(),
+      'total_wilayah' => WilayahModel::count(),
+      'total_keluar'  => BarangKeluar::sum('jumlah'),
     ];
   }
 
@@ -28,14 +28,21 @@ class Wilayah extends Component {
   }
 
   public function cetakPdf() {
-    $data = WilayahModel::withCount(['barangKeluar as total_keluar' => fn($q) => $q->selectRaw('SUM(jumlah)')])
-      ->orderBy('nama_wilayah')->get();
+    $data = WilayahModel::withSum('barangKeluar', 'jumlah')
+      ->orderBy('nama_wilayah')
+      ->get();
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.wilayah', [
-      'data'         => $data,
-      'dicetak_oleh' => auth()->user()->nama ?? 'System', 'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'data'          => $data,
+      'dicetak_oleh'  => auth()->user()->nama ?? 'System',
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
     ])->setPaper('a4', 'portrait');
-    return response()->stream(fn() => print($pdf->output()), 200, ['Content-Type' => 'application/pdf', 'Content-Disposition' => 'inline']);
+
+    return response()->stream(
+      fn() => print($pdf->output()),
+      200,
+      ['Content-Type' => 'application/pdf', 'Content-Disposition' => 'inline']
+    );
   }
 
   public function exportExcel() {
@@ -46,7 +53,9 @@ class Wilayah extends Component {
     return view('components.admin.laporan.wilayah', [
       'ringkasan'  => $this->getRingkasan(),
       'perWilayah' => $this->getPerWilayah(),
-      'tabelData'  => WilayahModel::withCount(['barangKeluar as total_keluar' => fn($q) => $q->selectRaw('SUM(jumlah)')])->orderBy('nama_wilayah')->get(),
+      'tabelData'  => WilayahModel::withSum('barangKeluar', 'jumlah')
+        ->orderBy('nama_wilayah')
+        ->get(),
     ]);
   }
 }

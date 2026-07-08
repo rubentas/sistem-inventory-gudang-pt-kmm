@@ -49,8 +49,8 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg></div>
       <div>
-        <p class="text-xs text-gray-400 uppercase font-semibold">Total Transaksi</p>
-        <p class="text-xl font-bold text-blue-600">{{ $ringkasan['total_transaksi'] }}</p>
+        <p class="text-xs text-gray-400 uppercase font-semibold">Total Keluar</p>
+        <p class="text-xl font-bold text-blue-600">{{ number_format($ringkasan['total_keluar']) }}</p>
       </div>
     </div>
   </div>
@@ -76,7 +76,8 @@
             @foreach ($tabelData as $d)
               <tr class="hover:bg-gray-50">
                 <td class="px-5 py-3 text-sm font-semibold">{{ $d->nama_wilayah }}</td>
-                <td class="px-5 py-3 text-sm text-right font-bold">{{ number_format($d->total_keluar ?? 0) }}</td>
+                <td class="px-5 py-3 text-sm text-right font-bold">
+                  {{ number_format($d->barang_keluar_sum_jumlah ?? 0) }}</td>
               </tr>
             @endforeach
           </tbody>

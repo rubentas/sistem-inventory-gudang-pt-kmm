@@ -14,13 +14,23 @@
           <p class="text-sm text-gray-400 mt-0.5">Input & kelola retur penjualan</p>
         </div>
       </div>
-      <button @click="modalOpen = true"
-        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-blue-600/25">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-        </svg>
-        Tambah Retur
-      </button>
+      <div class="flex items-center gap-2">
+        <a href="{{ route('admin.retur-barang.pdf', ['search' => $search, 'filterStatus' => $filterStatus]) }}"
+          target="_blank"
+          class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-red-600/25">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>PDF
+        </a>
+        <button @click="modalOpen = true"
+          class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-blue-600/25">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          Tambah Retur
+        </button>
+      </div>
     </div>
   </div>
 
@@ -136,7 +146,7 @@
       @keydown.escape.window="modalOpen = false">
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
       <div @click.stop
-        class="relative z-50 w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        class="relative z-50 w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
 
         {{-- Modal Header --}}
         <div class="bg-blue-600 px-6 py-5 flex items-center justify-between">
@@ -189,47 +199,16 @@
             </div>
           </div>
 
-          {{-- Detail Barang --}}
-          <div class="border-t border-gray-100 pt-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-gray-900">Detail Barang Retur</h3>
-              <button wire:click="addDetail"
-                class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-semibold px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                </svg>
-                Tambah Barang
-              </button>
-            </div>
-
-            @foreach ($detail as $i => $d)
-              <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-3 space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2.5 py-1 rounded-lg">Barang
-                    #{{ $i + 1 }}</span>
-                  @if (count($detail) > 1)
-                    <button wire:click="removeDetail({{ $i }})"
-                      class="text-xs text-red-500 hover:text-red-700 font-semibold px-2 py-1 rounded-lg hover:bg-red-50 transition">
-                      Hapus
-                    </button>
-                  @endif
-                </div>
-
+          {{-- Detail Barang (1 barang, readonly dari order) --}}
+          @if (!empty($detail))
+            @php $d = $detail[0]; @endphp
+            <div class="border-t border-gray-100 pt-4">
+              <h3 class="text-sm font-bold text-gray-900 mb-3">Detail Barang Retur</h3>
+              <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 space-y-3">
+                {{-- Nama Barang (readonly) --}}
                 <div>
-                  <label class="block text-xs font-bold text-gray-500 mb-1">Barang <span
-                      class="text-red-500">*</span></label>
-                  <select wire:model.live="detail.{{ $i }}.id_barang"
-                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                    <option value="">-- Pilih --</option>
-                    @foreach ($orderList as $o)
-                      <option value="{{ $o['id_barang'] }}">
-                        {{ $o['barang']['nama_barang'] ?? 'Barang #' . $o['id_barang'] }}
-                      </option>
-                    @endforeach
-                  </select>
-                  @error("detail.{$i}.id_barang")
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                  @enderror
+                  <label class="block text-xs font-bold text-gray-500 mb-1">Barang</label>
+                  <p class="text-sm font-bold text-gray-900">{{ $d['nama_barang'] }}</p>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
@@ -240,16 +219,16 @@
                   <div>
                     <label class="text-xs font-bold text-gray-500 mb-1 block">Jumlah Retur <span
                         class="text-red-500">*</span></label>
-                    <input type="number" wire:model.live="detail.{{ $i }}.jumlah_retur" min="1"
+                    <input type="number" wire:model.live="detail.0.jumlah_retur" min="1"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                    @error("detail.{$i}.jumlah_retur")
+                    @error('detail.0.jumlah_retur')
                       <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                   </div>
                   <div>
                     <label class="text-xs font-bold text-gray-500 mb-1 block">Kondisi <span
                         class="text-red-500">*</span></label>
-                    <select wire:model.live="detail.{{ $i }}.kondisi_barang"
+                    <select wire:model.live="detail.0.kondisi_barang"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                       <option value="Bagus">Bagus</option>
                       <option value="Rusak">Rusak</option>
@@ -260,7 +239,7 @@
                 <div class="grid grid-cols-2 gap-2">
                   <div>
                     <label class="text-xs font-bold text-gray-500 mb-1 block">Harga Satuan</label>
-                    <input type="number" wire:model.live="detail.{{ $i }}.harga_satuan"
+                    <input type="number" wire:model.live="detail.0.harga_satuan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                   </div>
                   <div class="bg-white rounded-lg p-2.5 border border-gray-100">
@@ -274,7 +253,7 @@
                   <div>
                     <label class="text-xs font-bold text-gray-500 mb-1 block">Alasan <span
                         class="text-red-500">*</span></label>
-                    <select wire:model.live="detail.{{ $i }}.alasan"
+                    <select wire:model.live="detail.0.alasan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                       <option value="">-- Pilih --</option>
                       <option value="Rusak">Rusak</option>
@@ -283,20 +262,20 @@
                       <option value="Batal Beli">Batal Beli</option>
                       <option value="Lainnya">Lainnya</option>
                     </select>
-                    @error("detail.{$i}.alasan")
+                    @error('detail.0.alasan')
                       <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                   </div>
                   <div>
                     <label class="text-xs font-bold text-gray-500 mb-1 block">Keterangan</label>
-                    <input type="text" wire:model.live="detail.{{ $i }}.keterangan"
+                    <input type="text" wire:model.live="detail.0.keterangan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       placeholder="Opsional">
                   </div>
                 </div>
               </div>
-            @endforeach
-          </div>
+            </div>
+          @endif
         </div>
 
         {{-- Modal Footer --}}

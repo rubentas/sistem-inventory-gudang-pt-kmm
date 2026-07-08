@@ -106,6 +106,8 @@
                 Wilayah</span></th>
             <th class="px-5 py-4 text-left"><span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sales
                 PJ</span></th>
+            <th class="px-5 py-4 text-right"><span
+                class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Barang Keluar</span></th>
             <th class="px-5 py-4 text-left"><span
                 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Keterangan</span></th>
             <th class="px-5 py-4 text-center w-32"><span
@@ -118,6 +120,8 @@
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $wilayahs->firstItem() + $index }}</td>
               <td class="px-5 py-4 text-sm font-bold text-gray-900">{{ $wilayah->nama_wilayah }}</td>
               <td class="px-5 py-4 text-sm text-gray-600">{{ $wilayah->sales->nama ?? '-' }}</td>
+              <td class="px-5 py-4 text-sm text-right font-bold text-gray-700">
+                {{ number_format($wilayah->barang_keluar_sum_jumlah ?? 0) }}</td>
               <td class="px-5 py-4 text-sm text-gray-500 max-w-[200px] truncate">{{ $wilayah->keterangan ?? '-' }}</td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-center gap-0.5">

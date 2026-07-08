@@ -47,9 +47,16 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/laporan-barang-expired', \App\Livewire\Admin\Laporan\BarangExpired::class)->name('laporan.expired');
   Route::get('/laporan-supplier', \App\Livewire\Admin\Laporan\Supplier::class)->name('laporan.supplier');
   Route::get('/laporan-wilayah', \App\Livewire\Admin\Laporan\Wilayah::class)->name('laporan.wilayah');
+  Route::get('/laporan-inventory', \App\Livewire\Admin\Laporan\LaporanInventory::class)->name('laporan.inventory');
+  Route::get('/laporan-data-barang', \App\Livewire\Admin\Laporan\DataBarang::class)->name('laporan.data-barang');
+  Route::get('/laporan-data-barang/pdf', [LaporanController::class, 'dataBarangPdf'])->name('laporan.data-barang.pdf');
+  Route::get('/laporan-data-barang/excel', [ExportController::class, 'dataBarangExcel'])->name('laporan.data-barang.excel');
   Route::get('/manajemen-pengguna', \App\Livewire\Admin\ManajemenPengguna::class)->name('pengguna');
   Route::get('/inventory-input', \App\Livewire\Admin\InventoryInput::class)->name('inventory.input');
-  Route::get('/laporan-inventory', \App\Livewire\Admin\Laporan\LaporanInventory::class)->name('laporan.inventory');
+  Route::get('/retur-barang/pdf', [LaporanController::class, 'returBarangPdf'])->name('retur-barang.pdf');
+  Route::get('/laporan-retur-barang', \App\Livewire\Admin\Laporan\ReturBarang::class)->name('laporan.retur-barang');
+  Route::get('/laporan-retur-barang/pdf', [LaporanController::class, 'returBarangPdf'])->name('laporan.retur-barang.pdf');
+  Route::get('/laporan-retur-barang/excel', [ExportController::class, 'returBarangExcel'])->name('laporan.retur-barang.excel');
 });
 
 // =============================================
