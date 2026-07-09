@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire\Admin\Laporan;
 
+use App\Models\DetailReturPenjualan;
 use App\Models\Inventory;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -31,10 +32,13 @@ class LaporanInventory extends Component {
 
   public function getRingkasan(): array {
     $query = $this->query();
+    $retur = $this->getTotalRetur();
+
     return [
       'total_data'    => $query->count(),
       'total_selisih' => $query->sum('selisih'),
       'rata_selisih'  => $query->count() > 0 ? round($query->sum('selisih') / $query->count(), 2) : 0,
+      'total_retur'   => $retur,
     ];
   }
 
@@ -49,14 +53,26 @@ class LaporanInventory extends Component {
     ];
   }
 
+  // Total retur penjualan yang masuk stok utama (kondisi Bagus, tujuan Stok Utama)
+  public function getTotalRetur(): int {
+    return DetailReturPenjualan::whereHas('retur', function ($q) {
+      $q->where('status', 'Selesai')
+        ->whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir]);
+    })
+      ->where('kondisi_barang', 'Bagus')
+      ->where('tujuan', 'Stok Utama')
+      ->sum('jumlah_retur');
+  }
+
   public function cetakPdf() {
-    $data = $this->query()->orderByDesc('tanggal')->get();
+    $data  = $this->query()->orderByDesc('tanggal')->get();
+    $retur = $this->getTotalRetur();
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.inventory', [
       'stoks'                    => $data,
       'tanggal_awal'             => \Carbon\Carbon::parse($this->tanggalAwal)->translatedFormat('d F Y'),
       'tanggal_akhir'            => \Carbon\Carbon::parse($this->tanggalAkhir)->translatedFormat('d F Y'),
-      'total_masuk_keseluruhan'  => $data->sum('barang_masuk'),
+      'total_masuk_keseluruhan'  => $data->sum('barang_masuk') + $retur,
       'total_keluar_keseluruhan' => $data->sum('barang_keluar'),
       'total_stok_akhir'         => $data->sum('stok_fisik'),
       'dicetak_oleh'             => auth()->user()->nama ?? 'System',

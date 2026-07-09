@@ -14,6 +14,7 @@ class DetailReturPenjualan extends Model {
     'subtotal_retur',
     'alasan',
     'kondisi_barang',
+    'tujuan',
     'keterangan',
   ];
 

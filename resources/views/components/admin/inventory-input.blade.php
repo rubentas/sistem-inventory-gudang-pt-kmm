@@ -28,8 +28,8 @@
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-teal-100 flex items-center justify-center">
-          <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
           </svg>
@@ -40,7 +40,7 @@
         </div>
       </div>
       <button @click="openModal()"
-        class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-md">
+        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-md">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
         </svg>Tambah Inventory
@@ -53,7 +53,7 @@
     <div class="p-4 sm:p-5 flex items-center gap-3 flex-wrap">
       <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Filter:</span>
       <div
-        class="flex-1 flex items-center bg-gray-50 border border-gray-200 rounded-xl focus-within:border-teal-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-teal-100 transition max-w-xs">
+        class="flex-1 flex items-center bg-gray-50 border border-gray-200 rounded-xl focus-within:border-blue-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition max-w-xs">
         <div class="pl-3.5 text-gray-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -62,7 +62,7 @@
           class="flex-1 h-10 px-3 text-sm bg-transparent focus:outline-none text-gray-900">
       </div>
       <input type="date" wire:model.live="filterTanggal"
-        class="text-sm border border-gray-200 rounded-xl px-4 py-2.5 font-semibold bg-white focus:border-teal-500 transition outline-none cursor-pointer">
+        class="text-sm border border-gray-200 rounded-xl px-4 py-2.5 font-semibold bg-white focus:border-blue-500 transition outline-none cursor-pointer">
       @if ($search || $filterTanggal)
         <button wire:click="$set('search', ''); $set('filterTanggal', '')"
           class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition">Reset</button>
@@ -89,7 +89,7 @@
         </thead>
         <tbody class="divide-y divide-gray-50">
           @forelse($inventories as $inv)
-            <tr class="hover:bg-teal-50/30 transition">
+            <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-sm">{{ $inv->tanggal->format('d/m/Y') }}</td>
               <td class="px-5 py-4 text-sm font-semibold">{{ $inv->barang->nama_barang ?? '-' }}</td>
               <td class="px-5 py-4 text-sm text-right">{{ number_format($inv->stok_awal) }}</td>
@@ -127,7 +127,7 @@
     <div x-show="modalOpen" x-cloak x-transition class="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div @click="modalOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-md z-40"></div>
       <div @click.stop class="relative z-50 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <div class="bg-teal-600 px-6 py-5">
+        <div class="bg-blue-600 px-6 py-5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3 text-white">
               <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center"><svg class="w-5 h-5"
@@ -136,7 +136,7 @@
                 </svg></div>
               <div>
                 <h2 class="text-lg font-bold">Tambah Inventory</h2>
-                <p class="text-teal-100 text-xs">Catat stok fisik barang</p>
+                <p class="text-blue-100 text-xs">Catat stok fisik barang</p>
               </div>
             </div>
             <button @click="modalOpen = false"
@@ -151,7 +151,7 @@
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
                 class="text-red-500">*</span></label>
             <select wire:model.live="id_barang"
-              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition outline-none">
+              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
               <option value="">-- Pilih Barang --</option>
               @foreach ($barangs as $b)
                 <option value="{{ $b->id_barang }}">{{ $b->kode_barang }} - {{ $b->nama_barang }}</option>
@@ -165,7 +165,7 @@
             </div>
             <div><label class="block text-xs font-bold text-gray-700 mb-1">Barang Masuk</label><input type="text"
                 value="+{{ number_format($barang_masuk) }}" readonly disabled
-                class="w-full rounded-xl border-2 border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-600 outline-none">
+                class="w-full rounded-xl border-2 border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-600 outline-none">
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
@@ -182,7 +182,7 @@
             <div><label class="block text-sm font-bold text-gray-900 mb-1.5">Stok Fisik <span
                   class="text-red-500">*</span></label><input type="number" wire:model.live="stok_fisik"
                 placeholder="Hasil hitung fisik"
-                class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition outline-none">
+                class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             </div>
             <div><label class="block text-sm font-bold text-gray-900 mb-1.5">Selisih</label><input type="text"
                 value="{{ $selisih >= 0 ? '+' . $selisih : $selisih }}" readonly disabled
@@ -193,20 +193,20 @@
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span
                 class="text-red-500">*</span></label>
             <input type="date" wire:model="tanggal"
-              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-teal-500 transition outline-none">
+              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 transition outline-none">
           </div>
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
                 class="text-gray-400 font-normal">(opsional)</span></label>
             <textarea wire:model="keterangan" rows="2" placeholder="Catatan..."
-              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-teal-500 transition outline-none resize-none"></textarea>
+              class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 transition outline-none resize-none"></textarea>
           </div>
         </div>
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-3">
           <button @click="modalOpen = false"
             class="px-5 py-2.5 rounded-xl bg-white border-2 border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-700 transition">Batal</button>
           <button @click="$wire.simpan()"
-            class="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold transition shadow-lg">Simpan</button>
+            class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition shadow-lg">Simpan</button>
         </div>
       </div>
     </div>

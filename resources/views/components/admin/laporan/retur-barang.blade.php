@@ -12,7 +12,7 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Retur Barang</h1>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Laporan Retur Penjualan</h1>
             <p class="text-sm text-gray-400 mt-0.5">Visualisasi & ringkasan data retur penjualan</p>
           </div>
         </div>
@@ -72,8 +72,8 @@
       <p class="text-xs text-gray-400 mt-1">transaksi</p>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-      <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Menunggu</p>
-      <p class="text-2xl font-bold text-yellow-600 mt-1">{{ $ringkasan['total_menunggu'] }}</p>
+      <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Pengajuan</p>
+      <p class="text-2xl font-bold text-yellow-600 mt-1">{{ $ringkasan['total_pengajuan'] }}</p>
       <p class="text-xs text-gray-400 mt-1">transaksi</p>
     </div>
     <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">

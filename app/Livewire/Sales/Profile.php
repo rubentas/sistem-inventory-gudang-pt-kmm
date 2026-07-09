@@ -1,7 +1,9 @@
 <?php
 namespace App\Livewire\Sales;
 
+use App\Models\Sales;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -72,17 +74,34 @@ class Profile extends Component {
       $data['foto_profil'] = $this->foto_profil->store('dokumen/foto', 'public');
     }
 
-    $user->update($data);
+    DB::beginTransaction();
+    try {
+      // Update User
+      $user->update($data);
 
-    // Refresh data yang ditampilkan setelah update
-    $this->existing_ktp   = $user->fresh()->foto_ktp;
-    $this->existing_surat = $user->fresh()->surat_kerja;
-    $this->existing_foto  = $user->fresh()->foto_profil;
+      // Update Sales (sinkron nama & no_hp)
+      $sales = Sales::where('id_user', $user->id_user)->first();
+      if ($sales) {
+        $sales->update([
+          'nama_sales' => $this->nama,
+          'no_hp'      => $this->no_telp,
+        ]);
+      }
 
-    // Reset file input biar kosong
-    $this->reset(['foto_ktp', 'surat_kerja', 'foto_profil']);
+      DB::commit();
 
-    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Profile berhasil diperbarui.');
+      // Refresh data
+      $this->existing_ktp   = $user->fresh()->foto_ktp;
+      $this->existing_surat = $user->fresh()->surat_kerja;
+      $this->existing_foto  = $user->fresh()->foto_profil;
+
+      $this->reset(['foto_ktp', 'surat_kerja', 'foto_profil']);
+
+      $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Profile berhasil diperbarui.');
+    } catch (\Throwable $e) {
+      DB::rollBack();
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Error: ' . $e->getMessage());
+    }
   }
 
   public function render() {

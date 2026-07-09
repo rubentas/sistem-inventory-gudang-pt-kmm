@@ -358,12 +358,13 @@ class LaporanController extends Controller {
     return $pdf->stream('laporan-data-barang-' . now()->format('Ymd') . '.pdf');
   }
 
-  // ========== RETUR BARANG ==========
+// ========== RETUR PENJUALAN ==========
   public function returBarangPdf(Request $request) {
     set_time_limit(120);
 
-    $data = ReturPenjualan::with(['detailRetur.barang', 'order'])
-      ->whereBetween('tanggal_retur', [$request->tanggal_awal, $request->tanggal_akhir])
+    $data = ReturPenjualan::with(['detailRetur.barang', 'order', 'user'])
+      ->when($request->search, fn($q) => $q->where('no_retur', 'like', '%' . $request->search . '%'))
+      ->when($request->filterStatus, fn($q) => $q->where('status', $request->filterStatus))
       ->orderByDesc('tanggal_retur')
       ->get();
 
@@ -374,6 +375,6 @@ class LaporanController extends Controller {
       'total_retur'   => $data->count(),
     ])->setPaper('a4', 'landscape');
 
-    return $pdf->stream('laporan-retur-barang-' . $request->tanggal_awal . '-sd-' . $request->tanggal_akhir . '.pdf');
+    return $pdf->stream('laporan-retur-barang-' . now()->format('Ymd') . '.pdf');
   }
 }

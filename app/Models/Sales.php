@@ -14,9 +14,9 @@ class Sales extends Model {
     'wilayah_tugas',
     'status',
     'keterangan',
+    'id_user',
   ];
 
-  // Auto generate kode_sales
   public static function boot() {
     parent::boot();
     static::creating(function ($model) {
@@ -24,5 +24,13 @@ class Sales extends Model {
       $num               = $last ? (int) substr($last->kode_sales, 3) + 1 : 1;
       $model->kode_sales = 'SLS' . str_pad($num, 3, '0', STR_PAD_LEFT);
     });
+  }
+
+  public function user() {
+    return $this->belongsTo(User::class, 'id_user', 'id_user');
+  }
+
+  public function wilayah() {
+    return $this->belongsTo(Wilayah::class, 'id_wilayah', 'id_wilayah');
   }
 }

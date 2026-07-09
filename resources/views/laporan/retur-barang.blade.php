@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Laporan Retur Barang</title>
+  <title>Laporan Retur Penjualan</title>
   <style>
     * {
       margin: 0;
@@ -136,7 +136,7 @@
     <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
   </div>
 
-  <div class="title">LAPORAN RETUR BARANG</div>
+  <div class="title">LAPORAN RETUR PENJUALAN</div>
   <div class="subtitle">Total Retur: {{ $total_retur }} | Tanggal Cetak: {{ $tanggal_cetak }}</div>
 
   <table>
@@ -149,7 +149,9 @@
         <th>Barang</th>
         <th>Jumlah</th>
         <th>Kondisi</th>
+        <th>Tujuan</th>
         <th>Alasan</th>
+        <th>Diinput Oleh</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -161,15 +163,17 @@
           <td class="text-left">{{ $r->no_retur }}</td>
           <td class="text-left">{{ $r->order->no_invoice ?? $r->id_order }}</td>
           <td>{{ $r->tanggal_retur->format('d/m/Y') }}</td>
-          <td>{{ $detail->barang->nama_barang ?? '-' }}</td>
-          <td>{{ $detail->jumlah_retur ?? 0 }}</td>
-          <td>{{ $detail->kondisi_barang ?? '-' }}</td>
-          <td>{{ $detail->alasan ?? '-' }}</td>
+          <td>{{ $detail?->barang?->nama_barang ?? '-' }}</td>
+          <td>{{ $detail?->jumlah_retur ?? 0 }}</td>
+          <td>{{ $detail?->kondisi_barang ?? '-' }}</td>
+          <td>{{ $detail?->tujuan ?? '-' }}</td>
+          <td>{{ $detail?->alasan ?? '-' }}</td>
+          <td>{{ $r->user->nama ?? 'Admin' }}</td>
           <td>{{ $r->status }}</td>
         </tr>
       @empty
         <tr>
-          <td colspan="9">Tidak ada data</td>
+          <td colspan="11">Tidak ada data</td>
         </tr>
       @endforelse
     </tbody>

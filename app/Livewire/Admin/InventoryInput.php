@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 use App\Models\Barang;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
+use App\Models\DetailReturPenjualan;
 use App\Models\Inventory;
 use App\Models\Stok;
 use Illuminate\Support\Facades\Auth;
@@ -53,6 +54,16 @@ class InventoryInput extends Component {
         ->whereMonth('tanggal_masuk', $bulanIni)
         ->whereYear('tanggal_masuk', $tahunIni)
         ->sum('jumlah');
+
+      // Tambah retur penjualan yang masuk stok
+      $retur  = DetailReturPenjualan::where('id_barang', $value)
+        ->whereHas('retur', fn($q) => $q->where('status', 'Selesai')
+            ->whereMonth('tanggal_retur', $bulanIni)
+            ->whereYear('tanggal_retur', $tahunIni))
+        ->where('kondisi_barang', 'Bagus')
+        ->where('tujuan', 'Stok Utama')
+        ->sum('jumlah_retur');
+      $this->barang_masuk += $retur;
 
       $this->barang_keluar = BarangKeluar::where('id_barang', $value)
         ->whereMonth('tanggal_keluar', $bulanIni)

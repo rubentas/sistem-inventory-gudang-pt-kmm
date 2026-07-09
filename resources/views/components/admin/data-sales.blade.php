@@ -97,7 +97,6 @@
         </thead>
         <tbody class="divide-y divide-gray-50">
           @forelse($sales as $index => $s)
-            @php $user = $users[$s->nama_sales] ?? null; @endphp
             <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-xs font-semibold text-gray-300">{{ $sales->firstItem() + $index }}</td>
               <td class="px-5 py-4">
@@ -118,8 +117,8 @@
               </td>
               <td class="px-5 py-4">
                 <div class="flex items-center justify-center gap-2">
-                  @if ($user?->foto_ktp)
-                    <a href="{{ Storage::url($user->foto_ktp) }}" target="_blank"
+                  @if ($s->user?->foto_ktp)
+                    <a href="{{ Storage::url($s->user->foto_ktp) }}" target="_blank"
                       class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition"
                       title="KTP">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,8 +135,8 @@
                       </svg>
                     </span>
                   @endif
-                  @if ($user?->surat_kerja)
-                    <a href="{{ Storage::url($user->surat_kerja) }}" target="_blank"
+                  @if ($s->user?->surat_kerja)
+                    <a href="{{ Storage::url($s->user->surat_kerja) }}" target="_blank"
                       class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center hover:bg-amber-100 transition"
                       title="Surat Kerja">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,6 +254,25 @@
             <input type="text" wire:model="nama_sales" placeholder="Masukkan nama sales"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             @error('nama_sales')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Username <span
+                class="text-red-500">*</span></label>
+            <input type="text" wire:model="username" placeholder="Username untuk login"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
+            @error('username')
+              <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+            @enderror
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Password <span
+                class="text-red-500">*</span></label>
+            <input type="password" wire:model="password"
+              placeholder="{{ $isEdit ? 'Kosongkan jika tidak ingin mengubah' : 'Minimal 6 karakter' }}"
+              class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
+            @error('password')
               <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
             @enderror
           </div>

@@ -68,6 +68,7 @@ Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->grou
   Route::get('/stok-barang', \App\Livewire\Sales\StokBarang::class)->name('stok-barang');
   Route::get('/profile', \App\Livewire\Sales\Profile::class)->name('profile');
   Route::get('/history-order', \App\Livewire\Sales\HistoryOrder::class)->name('history.order');
+  Route::get('/retur-barang', \App\Livewire\Sales\ReturBarang::class)->name('retur-barang');
 });
 
 // =============================================

@@ -64,14 +64,14 @@ class ReturBarang extends Component {
   }
 
   public function getRingkasan(): array {
-    $totalRetur    = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->count();
-    $totalMenunggu = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->where('status', 'Menunggu')->count();
-    $totalSelesai  = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->where('status', 'Selesai')->count();
+    $totalRetur     = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->count();
+    $totalPengajuan = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->whereIn('status', ['Pengajuan', 'Cek Gudang', 'Cek Kasir', 'Disetujui'])->count();
+    $totalSelesai   = ReturPenjualan::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])->where('status', 'Selesai')->count();
 
     return [
-      'total_retur'    => $totalRetur,
-      'total_menunggu' => $totalMenunggu,
-      'total_selesai'  => $totalSelesai,
+      'total_retur'     => $totalRetur,
+      'total_pengajuan' => $totalPengajuan,
+      'total_selesai'   => $totalSelesai,
     ];
   }
 
