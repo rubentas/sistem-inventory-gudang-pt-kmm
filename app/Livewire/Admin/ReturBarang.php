@@ -35,18 +35,19 @@ class ReturBarang extends Component {
 
   // UI
   public bool $isEdit   = false;
-  public bool $editMode = false; // Mode edit retur yang sudah ada
+  public bool $editMode = false;
+
+  // Tolak
+  public bool $tolakMode              = false;
+  public string $alasan_tolak         = '';
+  public string $alasan_tolak_lainnya = '';
 
   public function mount(): void {
     $this->tanggal_retur = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {
-    $this->resetPage();
-  }
-  public function updatedFilterStatus(): void {
-    $this->resetPage();
-  }
+  public function updatedSearch(): void {$this->resetPage();}
+  public function updatedFilterStatus(): void {$this->resetPage();}
 
   public function resetFilters(): void {
     $this->search       = '';
@@ -65,6 +66,7 @@ class ReturBarang extends Component {
       if ($excludeReturId) {
         $q->where('id_retur', '!=', $excludeReturId);
       }
+
     })->sum('jumlah_retur');
 
     return max(0, $order->jumlah - $totalRetur);
@@ -107,7 +109,6 @@ class ReturBarang extends Component {
     }
   }
 
-  // Buka modal edit retur yang sudah ada
   public function editRetur(int $id): void {
     $retur = ReturPenjualan::with('detailRetur.barang', 'order.sales')->findOrFail($id);
 
@@ -150,12 +151,8 @@ class ReturBarang extends Component {
   }
 
   public function simpan(): void {
-    if ($this->editMode) {
-      $this->updateRetur();
-      return;
-    }
+    if ($this->editMode) {$this->updateRetur();return;}
 
-    // Validasi sisa retur
     $order = OrderSales::find($this->id_order);
     if ($order) {
       foreach ($this->detail as $index => $d) {
@@ -208,7 +205,6 @@ class ReturBarang extends Component {
       }
 
       DB::commit();
-
       $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Retur penjualan berhasil disimpan.');
       $this->resetForm();
     } catch (\Throwable $e) {
@@ -218,8 +214,6 @@ class ReturBarang extends Component {
   }
 
   public function updateRetur(): void {
-    $retur = ReturPenjualan::findOrFail($this->id_retur);
-
     $this->validate([
       'detail'                  => 'required|array|min:1',
       'detail.*.jumlah_retur'   => 'required|integer|min:1',
@@ -245,9 +239,7 @@ class ReturBarang extends Component {
             'keterangan'     => $d['keterangan'] ?? null,
           ]);
       }
-
       DB::commit();
-
       $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Retur penjualan berhasil diperbarui.');
       $this->resetForm();
     } catch (\Throwable $e) {
@@ -288,12 +280,51 @@ class ReturBarang extends Component {
 
     $retur->status = $nextStatus;
     $retur->save();
-
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Status retur: ' . $nextStatus);
   }
 
+  public function konfirmasiTolak(int $id): void {
+    $retur = ReturPenjualan::findOrFail($id);
+    if (in_array($retur->status, ['Selesai', 'Ditolak'])) {
+      $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Retur sudah selesai/ditolak.');
+      return;
+    }
+    $this->id_retur             = $id;
+    $this->tolakMode            = true;
+    $this->alasan_tolak         = '';
+    $this->alasan_tolak_lainnya = '';
+    $this->dispatch('openTolakModal');
+  }
+
+  public function tolak(): void {
+    $this->validate([
+      'alasan_tolak'         => 'required|string',
+      'alasan_tolak_lainnya' => 'nullable|string|max:255',
+    ], [
+      'alasan_tolak.required' => 'Alasan penolakan wajib dipilih.',
+    ]);
+
+    $retur       = ReturPenjualan::findOrFail($this->id_retur);
+    $alasanFinal = $this->alasan_tolak;
+    if ($this->alasan_tolak === 'Lainnya' && $this->alasan_tolak_lainnya) {
+      $alasanFinal = $this->alasan_tolak_lainnya;
+    }
+
+    $retur->status           = 'Ditolak';
+    $retur->keterangan_tolak = $alasanFinal;
+    $retur->save();
+
+    $this->tolakMode            = false;
+    $this->id_retur             = null;
+    $this->alasan_tolak         = '';
+    $this->alasan_tolak_lainnya = '';
+
+    $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Retur berhasil ditolak.');
+    $this->dispatch('closeTolakModal');
+  }
+
   public function resetForm(): void {
-    $this->reset(['id_retur', 'id_order', 'detail', 'nama_toko', 'id_sales', 'isEdit', 'editMode']);
+    $this->reset(['id_retur', 'id_order', 'detail', 'nama_toko', 'id_sales', 'isEdit', 'editMode', 'tolakMode', 'alasan_tolak', 'alasan_tolak_lainnya']);
     $this->tanggal_retur = now()->format('Y-m-d');
     $this->status        = 'Menunggu';
     $this->resetErrorBag();
@@ -313,9 +344,7 @@ class ReturBarang extends Component {
       ->orderByDesc('created_at')
       ->paginate(15);
 
-    return view('components.admin.retur-barang', [
-      'returs' => $returs,
-    ]);
+    return view('components.admin.retur-barang', ['returs' => $returs]);
   }
 
   public function cetakPdf() {

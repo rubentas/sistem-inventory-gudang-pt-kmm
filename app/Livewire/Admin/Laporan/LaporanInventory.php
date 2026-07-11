@@ -3,6 +3,7 @@ namespace App\Livewire\Admin\Laporan;
 
 use App\Models\DetailReturPenjualan;
 use App\Models\Inventory;
+use App\Models\ReturPembelian;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -31,14 +32,16 @@ class LaporanInventory extends Component {
   }
 
   public function getRingkasan(): array {
-    $query = $this->query();
-    $retur = $this->getTotalRetur();
+    $query     = $this->query();
+    $returJual = $this->getTotalReturPenjualan();
+    $returBeli = $this->getTotalReturPembelian();
 
     return [
-      'total_data'    => $query->count(),
-      'total_selisih' => $query->sum('selisih'),
-      'rata_selisih'  => $query->count() > 0 ? round($query->sum('selisih') / $query->count(), 2) : 0,
-      'total_retur'   => $retur,
+      'total_data'       => $query->count(),
+      'total_selisih'    => $query->sum('selisih'),
+      'rata_selisih'     => $query->count() > 0 ? round($query->sum('selisih') / $query->count(), 2) : 0,
+      'total_retur_jual' => $returJual,
+      'total_retur_beli' => $returBeli,
     ];
   }
 
@@ -53,8 +56,8 @@ class LaporanInventory extends Component {
     ];
   }
 
-  // Total retur penjualan yang masuk stok utama (kondisi Bagus, tujuan Stok Utama)
-  public function getTotalRetur(): int {
+  // Retur Penjualan yang masuk stok utama
+  public function getTotalReturPenjualan(): int {
     return DetailReturPenjualan::whereHas('retur', function ($q) {
       $q->where('status', 'Selesai')
         ->whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir]);
@@ -64,16 +67,23 @@ class LaporanInventory extends Component {
       ->sum('jumlah_retur');
   }
 
+  // Retur Pembelian (barang keluar ke supplier)
+  public function getTotalReturPembelian(): int {
+    return ReturPembelian::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])
+      ->sum('jumlah');
+  }
+
   public function cetakPdf() {
-    $data  = $this->query()->orderByDesc('tanggal')->get();
-    $retur = $this->getTotalRetur();
+    $data      = $this->query()->orderByDesc('tanggal')->get();
+    $returJual = $this->getTotalReturPenjualan();
+    $returBeli = $this->getTotalReturPembelian();
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.inventory', [
       'stoks'                    => $data,
       'tanggal_awal'             => \Carbon\Carbon::parse($this->tanggalAwal)->translatedFormat('d F Y'),
       'tanggal_akhir'            => \Carbon\Carbon::parse($this->tanggalAkhir)->translatedFormat('d F Y'),
-      'total_masuk_keseluruhan'  => $data->sum('barang_masuk') + $retur,
-      'total_keluar_keseluruhan' => $data->sum('barang_keluar'),
+      'total_masuk_keseluruhan'  => $data->sum('barang_masuk') + $returJual,
+      'total_keluar_keseluruhan' => $data->sum('barang_keluar') + $returBeli,
       'total_stok_akhir'         => $data->sum('stok_fisik'),
       'dicetak_oleh'             => auth()->user()->nama ?? 'System',
       'tanggal_cetak'            => now()->translatedFormat('d F Y'),

@@ -88,4 +88,11 @@ class ExportController extends Controller {
       $request->input('tanggal_akhir', now()->format('Y-m-d'))
     ))->download();
   }
+
+  public function returPembelianExcel(Request $request) {
+    return (new \App\Exports\ReturPembelianExport(
+      $request->input('tanggal_awal', now()->startOfMonth()->format('Y-m-d')),
+      $request->input('tanggal_akhir', now()->format('Y-m-d'))
+    ))->download();
+  }
 }

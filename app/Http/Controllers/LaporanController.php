@@ -377,4 +377,24 @@ class LaporanController extends Controller {
 
     return $pdf->stream('laporan-retur-barang-' . now()->format('Ymd') . '.pdf');
   }
+
+  // ========== RETUR PEMBELIAN ==========
+  public function returPembelianPdf(Request $request) {
+    set_time_limit(120);
+
+    $data = \App\Models\ReturPembelian::with(['supplier', 'barang', 'user'])
+      ->when($request->search, fn($q) => $q->where('no_retur', 'like', '%' . $request->search . '%'))
+      ->when($request->filterSupplier, fn($q) => $q->where('id_supplier', $request->filterSupplier))
+      ->orderByDesc('tanggal_retur')
+      ->get();
+
+    $pdf = Pdf::loadView('laporan.retur-pembelian', [
+      'data'          => $data,
+      'dicetak_oleh'  => auth()->user()->nama ?? 'System',
+      'tanggal_cetak' => now()->translatedFormat('d F Y'),
+      'total_retur'   => $data->sum('jumlah'),
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->stream('laporan-retur-pembelian-' . now()->format('Ymd') . '.pdf');
+  }
 }
