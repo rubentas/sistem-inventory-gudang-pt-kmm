@@ -12,6 +12,9 @@ class ReturPenjualan extends Model {
     'id_user',
     'tanggal_retur',
     'status',
+    'keterangan_tolak',
+    'bukti_invoice',
+    'nama_file_asli',
   ];
 
   protected $casts = [

@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.admin')]
-class ReturPembelian extends Component {
+class LaporanReturPembelian extends Component {
   public string $filterType   = 'month';
   public string $tanggalAwal  = '';
   public string $tanggalAkhir = '';
@@ -20,7 +20,6 @@ class ReturPembelian extends Component {
 
   public function setFilter(string $type): void {
     $this->filterType = $type;
-
     switch ($type) {
     case 'today':
       $this->tanggalAwal  = now()->format('Y-m-d');
@@ -40,9 +39,7 @@ class ReturPembelian extends Component {
   public function getDataPerHari(): array {
     $data = ReturPembelianModel::whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])
       ->selectRaw('DATE(tanggal_retur) as tanggal, SUM(jumlah) as total')
-      ->groupBy('tanggal')
-      ->orderBy('tanggal')
-      ->get();
+      ->groupBy('tanggal')->orderBy('tanggal')->get();
 
     return [
       'labels' => $data->pluck('tanggal')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray(),
@@ -54,8 +51,7 @@ class ReturPembelian extends Component {
     $data = ReturPembelianModel::with('supplier')
       ->whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])
       ->selectRaw('id_supplier, SUM(jumlah) as total')
-      ->groupBy('id_supplier')
-      ->get();
+      ->groupBy('id_supplier')->get();
 
     return [
       'labels' => $data->map(fn($d) => $d->supplier->nama_supplier ?? '-')->toArray(),
@@ -78,18 +74,14 @@ class ReturPembelian extends Component {
   public function getTabelRingkas() {
     return ReturPembelianModel::with(['supplier', 'barang'])
       ->whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])
-      ->orderByDesc('tanggal_retur')
-      ->limit(5)
-      ->get();
+      ->orderByDesc('tanggal_retur')->limit(5)->get();
   }
 
   public function cetakPdf() {
     set_time_limit(120);
-
     $data = ReturPembelianModel::with(['supplier', 'barang', 'user'])
       ->whereBetween('tanggal_retur', [$this->tanggalAwal, $this->tanggalAkhir])
-      ->orderByDesc('tanggal_retur')
-      ->get();
+      ->orderByDesc('tanggal_retur')->get();
 
     $pdf = Pdf::loadView('laporan.retur-pembelian', [
       'data'          => $data,
@@ -98,14 +90,10 @@ class ReturPembelian extends Component {
       'total_retur'   => $data->sum('jumlah'),
     ])->setPaper('a4', 'landscape');
 
-    return response()->stream(
-      fn() => print($pdf->output()),
-      200,
-      [
-        'Content-Type'        => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="laporan-retur-pembelian-' . $this->tanggalAwal . '-sd-' . $this->tanggalAkhir . '.pdf"',
-      ]
-    );
+    return response()->stream(fn() => print($pdf->output()), 200, [
+      'Content-Type'        => 'application/pdf',
+      'Content-Disposition' => 'inline; filename="laporan-retur-pembelian-' . $this->tanggalAwal . '-sd-' . $this->tanggalAkhir . '.pdf"',
+    ]);
   }
 
   public function exportExcel() {

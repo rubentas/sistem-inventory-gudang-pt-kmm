@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Admin;
 
 use App\Models\Barang;
@@ -6,13 +7,16 @@ use App\Models\ReturPembelian as ReturPembelianModel;
 use App\Models\Stok;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
-class ReturPembelian extends Component {
-  use WithPagination;
+class ReturPembelian extends Component
+{
+  use WithPagination, WithFileUploads;
 
   public string $search         = '';
   public string $filterSupplier = '';
@@ -22,30 +26,43 @@ class ReturPembelian extends Component {
   public int $jumlah           = 0;
   public string $tujuan        = 'Supplier';
   public string $keterangan    = '';
+  public string $no_invoice    = '';
   public string $tanggal_retur = '';
 
-  public function mount(): void {
+  public $bukti_invoice = null;
+
+  public function mount(): void
+  {
     $this->tanggal_retur = now()->format('Y-m-d');
   }
 
-  public function updatedSearch(): void {$this->resetPage();}
-  public function updatedFilterSupplier(): void {$this->resetPage();}
+  public function updatedSearch(): void
+  {
+    $this->resetPage();
+  }
+  public function updatedFilterSupplier(): void
+  {
+    $this->resetPage();
+  }
 
-  public function resetForm(): void {
-    $this->reset(['id_supplier', 'id_barang', 'jumlah', 'tujuan', 'keterangan']);
+  public function resetForm(): void
+  {
+    $this->reset(['id_supplier', 'id_barang', 'jumlah', 'tujuan', 'keterangan', 'no_invoice', 'bukti_invoice']);
     $this->tanggal_retur = now()->format('Y-m-d');
     $this->tujuan        = 'Supplier';
     $this->resetErrorBag();
   }
 
-  public function generateNoRetur(): string {
+  public function generateNoRetur(): string
+  {
     $prefix = 'RET-PMB/' . now()->format('Ymd') . '/';
     $last   = ReturPembelianModel::where('no_retur', 'like', $prefix . '%')->latest('id_retur_pembelian')->first();
     $num    = $last ? (int) substr($last->no_retur, -5) + 1 : 1;
     return $prefix . str_pad($num, 5, '0', STR_PAD_LEFT);
   }
 
-  public function simpan(): void {
+  public function simpan(): void
+  {
     $this->validate([
       'id_supplier'   => 'required|exists:suppliers,id_supplier',
       'id_barang'     => 'required|exists:barangs,id_barang',
@@ -53,16 +70,20 @@ class ReturPembelian extends Component {
       'tujuan'        => 'required|in:Gudang Banjarmasin,Supplier',
       'tanggal_retur' => 'required|date',
       'keterangan'    => 'nullable|string|max:255',
+      'no_invoice'    => 'nullable|string|max:100',
+      'bukti_invoice' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ], [
-      'id_supplier.required' => 'Supplier wajib dipilih.',
-      'id_barang.required'   => 'Barang wajib dipilih.',
-      'jumlah.min'           => 'Jumlah minimal 1.',
+      'id_supplier.required'   => 'Supplier wajib dipilih.',
+      'id_barang.required'     => 'Barang wajib dipilih.',
+      'jumlah.min'             => 'Jumlah minimal 1.',
+      'bukti_invoice.required' => 'Bukti invoice wajib diupload.',
     ]);
 
     DB::beginTransaction();
     try {
-      ReturPembelianModel::create([
+      $retur = ReturPembelianModel::create([
         'no_retur'      => $this->generateNoRetur(),
+        'no_invoice'    => $this->no_invoice ?: null,
         'id_supplier'   => $this->id_supplier,
         'id_barang'     => $this->id_barang,
         'id_user'       => auth()->id(),
@@ -79,6 +100,19 @@ class ReturPembelian extends Component {
       }
 
       DB::commit();
+
+      // Upload file setelah transaksi berhasil
+      if ($this->bukti_invoice) {
+        $file     = $this->bukti_invoice;
+        $filename = 'RET-PMB-' . now()->format('Ymd') . '-' . $retur->id_retur_pembelian . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+        $path     = $file->storeAs('bukti-retur', $filename, 'public');
+
+        $retur->update([
+          'bukti_invoice'  => $path,
+          'nama_file_asli' => $file->getClientOriginalName(),
+        ]);
+      }
+
       $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Retur pembelian berhasil disimpan.');
       $this->resetForm();
     } catch (\Throwable $e) {
@@ -87,7 +121,8 @@ class ReturPembelian extends Component {
     }
   }
 
-  public function render() {
+  public function render()
+  {
     $returs = ReturPembelianModel::with(['supplier', 'barang', 'user'])
       ->when($this->search, fn($q) => $q->where('no_retur', 'like', '%' . $this->search . '%'))
       ->when($this->filterSupplier, fn($q) => $q->where('id_supplier', $this->filterSupplier))

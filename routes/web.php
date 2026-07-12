@@ -59,7 +59,7 @@ Route::middleware(['auth', 'role:admin_fakturis'])->prefix('admin')->name('admin
   Route::get('/laporan-retur-barang/excel', [ExportController::class, 'returBarangExcel'])->name('laporan.retur-barang.excel');
   Route::get('/retur-pembelian', \App\Livewire\Admin\ReturPembelian::class)->name('retur-pembelian');
   Route::get('/retur-pembelian/pdf', [LaporanController::class, 'returPembelianPdf'])->name('retur-pembelian.pdf');
-  Route::get('/laporan-retur-pembelian', \App\Livewire\Admin\Laporan\ReturPembelian::class)->name('laporan.retur-pembelian');
+  Route::get('/laporan-retur-pembelian', \App\Livewire\Admin\Laporan\LaporanReturPembelian::class)->name('laporan.retur-pembelian');
   Route::get('/laporan-retur-pembelian/pdf', [LaporanController::class, 'returPembelianPdf'])->name('laporan.retur-pembelian.pdf');
   Route::get('/laporan-retur-pembelian/excel', [ExportController::class, 'returPembelianExcel'])->name('laporan.retur-pembelian.excel');
 });

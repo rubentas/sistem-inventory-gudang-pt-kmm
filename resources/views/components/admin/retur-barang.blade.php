@@ -79,7 +79,7 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[1000px]">
+      <table class="w-full min-w-[1100px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">No Retur</th>
@@ -90,6 +90,7 @@
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kondisi</th>
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Alasan</th>
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Diinput Oleh</th>
+            <th class="px-4 py-4 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">Bukti</th>
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
             <th class="px-4 py-4 text-center text-xs font-bold text-gray-400 uppercase tracking-wider w-36">Aksi</th>
           </tr>
@@ -114,6 +115,14 @@
               </td>
               <td class="px-4 py-4 text-xs text-gray-600">{{ $det?->alasan ?? '-' }}</td>
               <td class="px-4 py-4 text-xs text-gray-600">{{ $r->user->nama ?? 'Admin' }}</td>
+              <td class="px-4 py-4 text-center">
+                @if ($r->bukti_invoice)
+                  <a href="{{ Storage::url($r->bukti_invoice) }}" target="_blank"
+                    class="text-blue-600 hover:text-blue-700 text-xs font-semibold">Lihat</a>
+                @else
+                  <span class="text-xs text-gray-400">Belum ada</span>
+                @endif
+              </td>
               <td class="px-4 py-4">
                 @if ($r->status === 'Selesai')
                   <span
@@ -163,7 +172,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="10" class="px-6 py-20 text-center">
+              <td colspan="11" class="px-6 py-20 text-center">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,8 +188,7 @@
                     class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Sekarang
+                    </svg>Tambah Sekarang
                   </button>
                 </div>
               </td>
@@ -230,7 +238,6 @@
         </div>
 
         <div class="px-6 py-5 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 250px);">
-          {{-- Order Asal --}}
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">Order Asal <span
                 class="text-red-500">*</span></label>
@@ -241,18 +248,16 @@
                 class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none cursor-pointer">
                 <option value="">-- Pilih Order --</option>
                 @foreach ($orderList as $o)
-                  <option value="{{ $o['id_order'] }}">
-                    {{ $o['no_invoice'] ?? 'ORDER-' . $o['id_order'] }} | {{ $o['barang']['nama_barang'] ?? '' }}
-                    ({{ $o['jumlah'] }})
-                  </option>
+                  <option value="{{ $o['id_order'] }}">{{ $o['no_invoice'] ?? 'ORDER-' . $o['id_order'] }} |
+                    {{ $o['barang']['nama_barang'] ?? '' }} ({{ $o['jumlah'] }})</option>
                 @endforeach
               </select>
             @endif
           </div>
 
           <div class="grid grid-cols-2 gap-3">
-            <div class="bg-gray-50 rounded-xl p-3">
-              <label class="block text-xs font-bold text-gray-400 mb-1">Customer / Toko</label>
+            <div class="bg-gray-50 rounded-xl p-3"><label class="block text-xs font-bold text-gray-400 mb-1">Customer
+                / Toko</label>
               <p class="text-sm font-semibold text-gray-900">{{ $nama_toko ?? '-' }}</p>
             </div>
             <div>
@@ -260,67 +265,54 @@
                   class="text-red-500">*</span></label>
               @if ($editMode)
                 <p class="text-sm font-semibold text-gray-900 py-2.5">{{ $tanggal_retur }}</p>
-              @else
-                <input type="date" wire:model="tanggal_retur"
+              @else<input type="date" wire:model="tanggal_retur"
                   class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
               @endif
             </div>
           </div>
 
-          {{-- Detail Barang --}}
           @if (count($detail) > 0)
             @php $d = $detail[0]; @endphp
             <div class="border-t border-gray-100 pt-4">
               <h3 class="text-sm font-bold text-gray-900 mb-3">Detail Barang Retur</h3>
               <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 space-y-3">
-                <div>
-                  <label class="block text-xs font-bold text-gray-500 mb-1">Barang</label>
+                <div><label class="block text-xs font-bold text-gray-500 mb-1">Barang</label>
                   <p class="text-sm font-bold text-gray-900">{{ $d['nama_barang'] }}</p>
                 </div>
-
                 <div class="grid grid-cols-3 gap-2">
-                  <div class="bg-white rounded-lg p-2.5 border border-gray-100">
-                    <label class="text-xs text-gray-400 font-medium">Jumlah Order</label>
+                  <div class="bg-white rounded-lg p-2.5 border border-gray-100"><label
+                      class="text-xs text-gray-400 font-medium">Jumlah Order</label>
                     <p class="text-sm font-bold text-gray-900 mt-0.5">{{ $d['jumlah_order'] ?? 0 }}</p>
                   </div>
-                  <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">Jumlah Retur <span
-                        class="text-red-500">*</span></label>
-                    <input type="number" wire:model.live="detail.0.jumlah_retur" min="1"
+                  <div><label class="text-xs font-bold text-gray-500 mb-1 block">Jumlah Retur <span
+                        class="text-red-500">*</span></label><input type="number"
+                      wire:model.live="detail.0.jumlah_retur" min="1"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     @error('detail.0.jumlah_retur')
                       <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                   </div>
-                  <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">Kondisi <span
-                        class="text-red-500">*</span></label>
-                    <select wire:model.live="detail.0.kondisi_barang"
+                  <div><label class="text-xs font-bold text-gray-500 mb-1 block">Kondisi <span
+                        class="text-red-500">*</span></label><select wire:model.live="detail.0.kondisi_barang"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                       <option value="Bagus">Bagus</option>
                       <option value="Rusak">Rusak</option>
-                    </select>
-                  </div>
+                    </select></div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">Harga Satuan</label>
-                    <input type="number" wire:model.live="detail.0.harga_satuan"
+                  <div><label class="text-xs font-bold text-gray-500 mb-1 block">Harga Satuan</label><input
+                      type="number" wire:model.live="detail.0.harga_satuan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                   </div>
-                  <div class="bg-white rounded-lg p-2.5 border border-gray-100">
-                    <label class="text-xs text-gray-400 font-medium">Subtotal</label>
+                  <div class="bg-white rounded-lg p-2.5 border border-gray-100"><label
+                      class="text-xs text-gray-400 font-medium">Subtotal</label>
                     <p class="text-sm font-bold text-blue-600 mt-0.5">Rp
                       {{ number_format($d['subtotal_retur'] ?? 0, 0, ',', '.') }}</p>
                   </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">Alasan <span
-                        class="text-red-500">*</span></label>
-                    <select wire:model.live="detail.0.alasan"
+                  <div><label class="text-xs font-bold text-gray-500 mb-1 block">Alasan <span
+                        class="text-red-500">*</span></label><select wire:model.live="detail.0.alasan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                       <option value="">-- Pilih --</option>
                       <option value="Rusak">Rusak</option>
@@ -333,24 +325,27 @@
                       <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                   </div>
-                  <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">Tujuan <span
-                        class="text-red-500">*</span></label>
-                    <select wire:model.live="detail.0.tujuan"
+                  <div><label class="text-xs font-bold text-gray-500 mb-1 block">Tujuan <span
+                        class="text-red-500">*</span></label><select wire:model.live="detail.0.tujuan"
                       class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                       <option value="Stok Utama">Stok Utama</option>
                       <option value="Dimusnahkan">Dimusnahkan</option>
                       <option value="Gudang Pusat">Gudang Pusat</option>
                       <option value="Supplier">Supplier</option>
-                    </select>
-                  </div>
+                    </select></div>
                 </div>
-
-                <div>
-                  <label class="text-xs font-bold text-gray-500 mb-1 block">Keterangan</label>
-                  <input type="text" wire:model.live="detail.0.keterangan"
+                <div><label class="text-xs font-bold text-gray-500 mb-1 block">Keterangan</label><input type="text"
+                    wire:model.live="detail.0.keterangan"
                     class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                    placeholder="Opsional">
+                    placeholder="Opsional"></div>
+                <div>
+                  <label class="text-xs font-bold text-gray-500 mb-1 block">Upload Bukti Invoice</label>
+                  <input type="file" wire:model="bukti_invoice" accept=".jpg,.jpeg,.png,.pdf"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                  <p class="text-xs text-gray-400 mt-1">Maksimal 2MB (JPG, PNG, PDF)</p>
+                  @error('bukti_invoice')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                  @enderror
                 </div>
               </div>
             </div>

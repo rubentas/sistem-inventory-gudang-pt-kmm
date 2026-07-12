@@ -8,6 +8,7 @@ class ReturPembelian extends Model {
 
   protected $fillable = [
     'no_retur',
+    'no_invoice',
     'id_supplier',
     'id_barang',
     'id_user',
@@ -15,6 +16,8 @@ class ReturPembelian extends Model {
     'tujuan',
     'keterangan',
     'tanggal_retur',
+    'bukti_invoice',
+    'nama_file_asli',
   ];
 
   protected $casts = [
