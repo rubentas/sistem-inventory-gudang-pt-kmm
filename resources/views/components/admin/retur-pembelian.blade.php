@@ -87,6 +87,7 @@
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Diinput Oleh</th>
             <th class="px-4 py-4 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">Bukti</th>
             <th class="px-4 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
+            <th class="px-4 py-4 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
@@ -110,10 +111,19 @@
                 @endif
               </td>
               <td class="px-4 py-4 text-sm text-gray-600">{{ $r->tanggal_retur->format('d/m/Y') }}</td>
+              <td class="px-4 py-4 text-center">
+                <button onclick="alert('Tombol edit diklik untuk ID: {{ $r->id_retur_pembelian }}'); @this.call('edit', {{ $r->id_retur_pembelian }})" type="button"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+              </td>
             </tr>
           @empty
             <tr>
-              <td colspan="11" class="px-6 py-20 text-center">
+              <td colspan="12" class="px-6 py-20 text-center">
                 <div class="flex flex-col items-center text-center gap-5 max-w-sm mx-auto">
                   <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center"><svg
                       class="w-9 h-9 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +168,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                 </svg></div>
               <div class="text-white">
-                <h2 class="text-lg font-bold">Form Retur Pembelian</h2>
+                <h2 class="text-lg font-bold">{{ $editMode ? 'Edit' : 'Form' }} Retur Pembelian</h2>
                 <p class="text-blue-100 text-xs">Lengkapi field wajib <span class="text-white">*</span></p>
               </div>
             </div>
@@ -226,7 +236,7 @@
           </div>
           <div>
             <label class="block text-sm font-bold text-gray-900 mb-1.5">No Invoice <span
-                class="text-gray-400 font-normal">(opsional)</span></label>
+                class="text-red-500">*</span></label>
             <input type="text" wire:model="no_invoice" placeholder="Nomor invoice supplier..."
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
             @error('no_invoice')
@@ -240,7 +250,13 @@
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none resize-none"></textarea>
           </div>
           <div>
-            <label class="text-xs font-bold text-gray-500 mb-1 block">Upload Bukti Invoice <span class="text-red-500">*</span></label>
+            <label class="text-xs font-bold text-gray-500 mb-1 block">Upload Bukti Invoice 
+              @if (!$editMode)
+                <span class="text-red-500">*</span>
+              @else
+                <span class="text-gray-400 font-normal">(opsional - kosongkan jika tidak diganti)</span>
+              @endif
+            </label>
             <input type="file" wire:model="bukti_invoice" accept=".jpg,.jpeg,.png,.pdf"
               class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
             <p class="text-xs text-gray-400 mt-1">Maksimal 2MB (JPG, PNG, PDF)</p>
@@ -258,7 +274,7 @@
               class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition shadow-lg shadow-blue-600/25 flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-              </svg>Simpan Data
+              </svg>{{ $editMode ? 'Simpan Perubahan' : 'Simpan Data' }}
             </button>
           </div>
         </div>
