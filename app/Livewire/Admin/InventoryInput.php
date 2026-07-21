@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Admin;
 
 use App\Models\Barang;
@@ -13,15 +14,15 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
-class InventoryInput extends Component {
+class InventoryInput extends Component
+{
   use WithPagination;
 
   // Form
   public $id_barang;
-  public $stok_awal     = 0;
+  public $stok_tercatat = 0;
   public $barang_masuk  = 0;
   public $barang_keluar = 0;
-  public $stok_sistem   = 0;
   public $stok_fisik;
   public $selisih = 0;
   public $tanggal;
@@ -38,17 +39,19 @@ class InventoryInput extends Component {
     'keterangan' => 'nullable|string|max:255',
   ];
 
-  public function mount(): void {
+  public function mount(): void
+  {
     $this->tanggal = now()->format('Y-m-d');
   }
 
-  public function updatedIdBarang($value): void {
+  public function updatedIdBarang($value): void
+  {
     if ($value) {
       $bulanIni = now()->month;
       $tahunIni = now()->year;
 
-      $stok            = Stok::where('id_barang', $value)->first();
-      $this->stok_awal = $stok?->jumlah_stok ?? 0;
+      $stok = Stok::where('id_barang', $value)->first();
+      $stokAwal = $stok?->jumlah_stok ?? 0;
 
       $this->barang_masuk = BarangMasuk::where('id_barang', $value)
         ->whereMonth('tanggal_masuk', $bulanIni)
@@ -56,10 +59,10 @@ class InventoryInput extends Component {
         ->sum('jumlah');
 
       // Tambah retur penjualan yang masuk stok
-      $retur  = DetailReturPenjualan::where('id_barang', $value)
+      $retur = DetailReturPenjualan::where('id_barang', $value)
         ->whereHas('retur', fn($q) => $q->where('status', 'Selesai')
-            ->whereMonth('tanggal_retur', $bulanIni)
-            ->whereYear('tanggal_retur', $tahunIni))
+          ->whereMonth('tanggal_retur', $bulanIni)
+          ->whereYear('tanggal_retur', $tahunIni))
         ->where('kondisi_barang', 'Bagus')
         ->where('tujuan', 'Stok Utama')
         ->sum('jumlah_retur');
@@ -70,44 +73,46 @@ class InventoryInput extends Component {
         ->whereYear('tanggal_keluar', $tahunIni)
         ->sum('jumlah');
 
-      $this->hitungSistem();
+      // Stok Tercatat = Stok Awal + Masuk - Keluar
+      $this->stok_tercatat = $stokAwal + $this->barang_masuk - $this->barang_keluar;
+      $this->hitungSelisih();
     }
   }
 
-  public function updatedStokFisik(): void {
+  public function updatedStokFisik(): void
+  {
     $this->hitungSelisih();
   }
 
-  public function hitungSistem(): void {
-    $this->stok_sistem = $this->stok_awal + $this->barang_masuk - $this->barang_keluar;
-    $this->hitungSelisih();
+  public function hitungSelisih(): void
+  {
+    $this->selisih = (int) $this->stok_fisik - (int) $this->stok_tercatat;
   }
 
-  public function hitungSelisih(): void {
-    $this->selisih = (int) $this->stok_fisik - (int) $this->stok_sistem;
-  }
-
-  public function resetForm(): void {
-    $this->reset(['id_barang', 'stok_awal', 'barang_masuk', 'barang_keluar', 'stok_sistem', 'stok_fisik', 'selisih', 'keterangan']);
+  public function resetForm(): void
+  {
+    $this->reset(['id_barang', 'stok_tercatat', 'barang_masuk', 'barang_keluar', 'stok_fisik', 'selisih', 'keterangan']);
     $this->tanggal = now()->format('Y-m-d');
     $this->resetErrorBag();
   }
 
-  public function openModal(): void {
+  public function openModal(): void
+  {
     $this->resetForm();
     $this->dispatch('openModal');
   }
 
-  public function simpan(): void {
+  public function simpan(): void
+  {
     $this->validate();
 
     Inventory::create([
       'id_barang'     => $this->id_barang,
       'id_user'       => Auth::id(),
-      'stok_awal'     => $this->stok_awal,
+      'stok_awal'     => $this->stok_tercatat - $this->barang_masuk + $this->barang_keluar,
       'barang_masuk'  => $this->barang_masuk,
       'barang_keluar' => $this->barang_keluar,
-      'stok_sistem'   => $this->stok_sistem,
+      'stok_sistem'   => $this->stok_tercatat,
       'stok_fisik'    => $this->stok_fisik,
       'selisih'       => $this->selisih,
       'tanggal'       => $this->tanggal,
@@ -118,12 +123,14 @@ class InventoryInput extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data inventory berhasil disimpan.');
   }
 
-  public function hapus(int $id): void {
+  public function hapus(int $id): void
+  {
     Inventory::findOrFail($id)->delete();
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data inventory berhasil dihapus.');
   }
 
-  public function render() {
+  public function render()
+  {
     $inventories = Inventory::with(['barang', 'user'])
       ->when($this->search, fn($q) => $q->whereHas('barang', fn($b) => $b->where('nama_barang', 'like', '%' . $this->search . '%')))
       ->when($this->filterTanggal, fn($q) => $q->whereDate('tanggal', $this->filterTanggal))

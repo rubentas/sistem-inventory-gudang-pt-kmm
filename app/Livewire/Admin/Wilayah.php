@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Admin;
 
 use App\Models\User;
@@ -8,7 +9,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
-class Wilayah extends Component {
+class Wilayah extends Component
+{
   use WithPagination;
 
   // Filter
@@ -33,20 +35,31 @@ class Wilayah extends Component {
     'nama_wilayah.required' => 'Nama wilayah wajib diisi.',
   ];
 
-  public function updatedSearch(): void {$this->resetPage();}
+  public function updatedSearch(): void
+  {
+    $this->resetPage();
+  }
 
-  public function resetFilters(): void {$this->search = '';
-    $this->resetPage();}
+  public function resetFilters(): void
+  {
+    $this->search = '';
+    $this->resetPage();
+  }
 
-  public function resetForm(): void {
+  public function resetForm(): void
+  {
     $this->reset(['id_wilayah', 'nama_wilayah', 'id_user', 'keterangan', 'isEdit']);
     $this->resetErrorBag();
   }
 
-  public function openAddModal(): void {$this->resetForm();
-    $this->dispatch('openModal');}
+  public function openAddModal(): void
+  {
+    $this->resetForm();
+    $this->dispatch('openModal');
+  }
 
-  public function edit(int $id): void {
+  public function edit(int $id): void
+  {
     $wilayah            = WilayahModel::findOrFail($id);
     $this->id_wilayah   = $wilayah->id_wilayah;
     $this->nama_wilayah = $wilayah->nama_wilayah;
@@ -57,7 +70,8 @@ class Wilayah extends Component {
     $this->dispatch('openModal');
   }
 
-  public function simpan(): void {
+  public function simpan(): void
+  {
     $this->validate();
 
     $data = [
@@ -78,9 +92,13 @@ class Wilayah extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: $message);
   }
 
-  public function update(): void {$this->simpan();}
+  public function update(): void
+  {
+    $this->simpan();
+  }
 
-  public function hapus(int $id): void {
+  public function hapus(int $id): void
+  {
     $wilayah = WilayahModel::findOrFail($id);
     if ($wilayah->orderSales()->count() > 0 || $wilayah->barangKeluar()->count() > 0) {
       $this->dispatch('dataSaved', type: 'error', title: 'Gagal!', message: 'Wilayah tidak bisa dihapus karena sudah memiliki transaksi.');
@@ -90,14 +108,16 @@ class Wilayah extends Component {
     $this->dispatch('dataSaved', type: 'success', title: 'Berhasil!', message: 'Data wilayah berhasil dihapus.');
   }
 
-  public function getStats(): array {
+  public function getStats(): array
+  {
     return [
-      'totalItems' => WilayahModel::count(),
-      'totalToko'  => WilayahModel::count(),
+      'totalWilayah'       => WilayahModel::count(),
+      'totalBarangKeluar'  => WilayahModel::withSum('barangKeluar', 'jumlah')->get()->sum('barang_keluar_sum_jumlah'),
     ];
   }
 
-  public function render() {
+  public function render()
+  {
     $wilayahs = WilayahModel::with('sales')
       ->withSum('barangKeluar', 'jumlah')
       ->when($this->search, function ($q) {

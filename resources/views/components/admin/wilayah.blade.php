@@ -4,8 +4,8 @@
     <div class="px-6 py-5 sm:px-8 sm:py-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -19,28 +19,27 @@
         <div class="flex flex-wrap items-center gap-3">
           <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Wilayah</p>
-                <p class="text-xl font-bold text-gray-900">{{ $stats['totalItems'] }}</p>
-              </div>
-            </div>
-            <div class="w-px h-10 bg-gray-200"></div>
-            <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Wilayah</p>
-                <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalToko']) }}</p>
+                <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalWilayah']) }}</p>
+              </div>
+            </div>
+            <div class="w-px h-10 bg-gray-200"></div>
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Barang Keluar</p>
+                <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalBarangKeluar']) }}</p>
               </div>
             </div>
           </div>
@@ -65,7 +64,7 @@
       </div>
     </div>
   </div>
-
+  
   {{-- SEARCH --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm">
     <div class="p-4 sm:p-5">

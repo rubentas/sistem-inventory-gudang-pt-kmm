@@ -82,15 +82,14 @@
   {{-- TABLE --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[900px]">
+      <table class="w-full min-w-[800px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100">
             <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Tanggal</th>
             <th class="px-5 py-4 text-left text-xs font-bold text-gray-400 uppercase">Barang</th>
-            <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Stok Awal</th>
+            <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Stok Tercatat</th>
             <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Masuk</th>
             <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Keluar</th>
-            <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Sistem</th>
             <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Fisik</th>
             <th class="px-5 py-4 text-right text-xs font-bold text-gray-400 uppercase">Selisih</th>
             <th class="px-5 py-4 text-center text-xs font-bold text-gray-400 uppercase w-24">Aksi</th>
@@ -101,14 +100,12 @@
             <tr class="hover:bg-blue-50/30 transition">
               <td class="px-5 py-4 text-sm">{{ $inv->tanggal->format('d/m/Y') }}</td>
               <td class="px-5 py-4 text-sm font-semibold">{{ $inv->barang->nama_barang ?? '-' }}</td>
-              <td class="px-5 py-4 text-sm text-right">{{ number_format($inv->stok_awal) }}</td>
-              <td class="px-5 py-4 text-sm text-right text-emerald-600">+{{ number_format($inv->barang_masuk) }}</td>
-              <td class="px-5 py-4 text-sm text-right text-red-500">-{{ number_format($inv->barang_keluar) }}</td>
               <td class="px-5 py-4 text-sm text-right font-semibold">{{ number_format($inv->stok_sistem) }}</td>
+              <td class="px-5 py-4 text-sm text-right text-emerald-600">{{ number_format($inv->barang_masuk) }}</td>
+              <td class="px-5 py-4 text-sm text-right text-red-500">{{ number_format($inv->barang_keluar) }}</td>
               <td class="px-5 py-4 text-sm text-right font-bold">{{ number_format($inv->stok_fisik) }}</td>
-              <td
-                class="px-5 py-4 text-sm text-right font-bold {{ $inv->selisih != 0 ? 'text-red-600' : 'text-gray-600' }}">
-                {{ $inv->selisih >= 0 ? '+' . $inv->selisih : $inv->selisih }}</td>
+              <td class="px-5 py-4 text-sm text-right font-bold {{ $inv->selisih != 0 ? 'text-red-600' : 'text-gray-600' }}">
+                {{ $inv->selisih }}</td>
               <td class="px-5 py-4 text-center">
                 <button @click="confirmDelete({{ $inv->id_inventory }})"
                   class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition"><svg
@@ -120,7 +117,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9" class="px-6 py-20 text-center text-gray-400">Belum ada data inventory</td>
+              <td colspan="8" class="px-6 py-20 text-center text-gray-400">Belum ada data inventory</td>
             </tr>
           @endforelse
         </tbody>
@@ -157,8 +154,7 @@
         </div>
         <div class="px-6 py-5 space-y-4">
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span
-                class="text-red-500">*</span></label>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Barang <span class="text-red-500">*</span></label>
             <select wire:model.live="id_barang"
               class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
               <option value="">-- Pilih Barang --</option>
@@ -168,45 +164,41 @@
             </select>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-xs font-bold text-gray-700 mb-1">Stok Awal</label><input type="text"
-                value="{{ number_format($stok_awal) }}" readonly disabled
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Stok Tercatat (Sistem)</label>
+              <input type="text" value="{{ number_format($stok_tercatat) }}" readonly disabled
                 class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-500 outline-none">
             </div>
-            <div><label class="block text-xs font-bold text-gray-700 mb-1">Barang Masuk</label><input type="text"
-                value="+{{ number_format($barang_masuk) }}" readonly disabled
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Barang Masuk</label>
+              <input type="text" value="{{ number_format($barang_masuk) }}" readonly disabled
                 class="w-full rounded-xl border-2 border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-600 outline-none">
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-xs font-bold text-gray-700 mb-1">Barang Keluar</label><input type="text"
-                value="-{{ number_format($barang_keluar) }}" readonly disabled
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Barang Keluar</label>
+              <input type="text" value="{{ number_format($barang_keluar) }}" readonly disabled
                 class="w-full rounded-xl border-2 border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-500 outline-none">
             </div>
-            <div><label class="block text-xs font-bold text-gray-700 mb-1">Stok Sistem</label><input type="text"
-                value="{{ number_format($stok_sistem) }}" readonly disabled
-                class="w-full rounded-xl border-2 border-gray-200 bg-gray-100 px-4 py-3 text-sm font-medium text-gray-500 outline-none">
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-sm font-bold text-gray-900 mb-1.5">Stok Fisik <span
-                  class="text-red-500">*</span></label><input type="number" wire:model.live="stok_fisik"
-                placeholder="Hasil hitung fisik"
+            <div>
+              <label class="block text-sm font-bold text-gray-900 mb-1.5">Stok Fisik <span class="text-red-500">*</span></label>
+              <input type="number" wire:model.live="stok_fisik" placeholder="Hasil hitung fisik"
                 class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none">
-            </div>
-            <div><label class="block text-sm font-bold text-gray-900 mb-1.5">Selisih</label><input type="text"
-                value="{{ $selisih >= 0 ? '+' . $selisih : $selisih }}" readonly disabled
-                class="w-full rounded-xl border-2 {{ $selisih != 0 ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 bg-gray-100 text-gray-500' }} px-4 py-3 text-sm font-bold outline-none">
             </div>
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span
-                class="text-red-500">*</span></label>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Selisih</label>
+            <input type="text" value="{{ $selisih }}" readonly disabled
+              class="w-full rounded-xl border-2 {{ $selisih != 0 ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 bg-gray-100 text-gray-500' }} px-4 py-3 text-sm font-bold outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Tanggal <span class="text-red-500">*</span></label>
             <input type="date" wire:model="tanggal"
               class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 transition outline-none">
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span
-                class="text-gray-400 font-normal">(opsional)</span></label>
+            <label class="block text-sm font-bold text-gray-900 mb-1.5">Keterangan <span class="text-gray-400 font-normal">(opsional)</span></label>
             <textarea wire:model="keterangan" rows="2" placeholder="Catatan..."
               class="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-medium focus:border-blue-500 transition outline-none resize-none"></textarea>
           </div>
@@ -227,49 +219,25 @@
   function inventoryManager() {
     return {
       modalOpen: false,
-      toast: {
-        show: false,
-        type: 'success',
-        title: '',
-        message: ''
-      },
+      toast: { show: false, type: 'success', title: '', message: '' },
       init() {
         window.addEventListener('dataSaved', (e) => {
           this.modalOpen = false;
           this.showToast(e.detail.type, e.detail.title, e.detail.message);
         });
-        window.addEventListener('openModal', () => {
-          this.modalOpen = true;
-        });
+        window.addEventListener('openModal', () => { this.modalOpen = true; });
       },
-      openModal() {
-        this.modalOpen = true;
-      },
+      openModal() { this.modalOpen = true; },
       showToast(type, title, message) {
-        this.toast = {
-          show: true,
-          type,
-          title,
-          message
-        };
+        this.toast = { show: true, type, title, message };
         setTimeout(() => this.toast.show = false, 4000);
       },
       confirmDelete(id) {
         Swal.fire({
-            title: 'Hapus data ini?',
-            text: 'Tindakan ini tidak dapat dibatalkan.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#EF4444',
-            cancelButtonColor: '#94A3B8',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-          })
-          .then((result) => {
-            if (result.isConfirmed) {
-              this.$wire.call('hapus', id);
-            }
-          });
+          title: 'Hapus data ini?', text: 'Tindakan ini tidak dapat dibatalkan.', icon: 'warning',
+          showCancelButton: true, confirmButtonColor: '#EF4444', cancelButtonColor: '#94A3B8',
+          confirmButtonText: 'Ya, Hapus', cancelButtonText: 'Batal'
+        }).then((result) => { if (result.isConfirmed) { this.$wire.call('hapus', id); } });
       }
     };
   }
