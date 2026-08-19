@@ -1,69 +1,67 @@
 <div x-data="wilayahManager()" x-init="init()" class="space-y-5">
   {{-- HEADER --}}
-  <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="px-6 py-5 sm:px-8 sm:py-6">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+    <!-- Kiri: Icon + Title -->
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-          </div>
-          <div>
+        </div>
+        <div>
             <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Data Wilayah</h1>
             <p class="text-sm text-gray-400 mt-0.5">Mengelola master data wilayah distribusi</p>
-          </div>
         </div>
+    </div>
 
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
+    <!-- Kanan: Statistik + Tombol -->
+    <div class="flex flex-wrap items-center gap-3">
+        <!-- Statistik -->
+        <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm">
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Wilayah</p>
-                <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalWilayah']) }}</p>
-              </div>
+                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Wilayah</p>
+                    <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalWilayah']) }}</p>
+                </div>
             </div>
             <div class="w-px h-10 bg-gray-200"></div>
             <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Barang Keluar</p>
-                <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalBarangKeluar']) }}</p>
-              </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Barang Keluar</p>
+                    <p class="text-xl font-bold text-gray-900">{{ number_format($stats['totalBarangKeluar']) }}</p>
+                </div>
             </div>
-          </div>
+        </div>
 
-          <a href="{{ route('laporan.wilayah.pdf') }}" target="_blank"
+        <!-- Tombol PDF -->
+        <a href="{{ route('laporan.wilayah.pdf') }}" target="_blank"
             class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-red-200 hover:bg-red-50 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
             PDF
-          </a>
+        </a>
 
-          <button wire:click="openAddModal"
+        <!-- Tombol Tambah Wilayah -->
+        <button wire:click="openAddModal"
             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
             </svg>
             Tambah Wilayah
-          </button>
-        </div>
-      </div>
+        </button>
     </div>
-  </div>
+</div>
   
   {{-- SEARCH --}}
   <div class="bg-white border border-gray-200 rounded-2xl shadow-sm">

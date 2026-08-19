@@ -31,12 +31,12 @@ class ExportController extends Controller {
   }
 
   public function stokBarangExcel(Request $request) {
-    return (new StokBarangExport(
-      $request->input('kategori', ''),
-      $request->input('status', ''),
-      $request->input('search', '')
-    ))->download();
-  }
+  return (new StokBarangExport(
+    urldecode($request->input('kategori', '')),
+    urldecode($request->input('status', '')),
+    urldecode($request->input('search', ''))
+  ))->download();
+}
 
   public function orderSalesExcel(Request $request) {
     return (new OrderSalesExport(

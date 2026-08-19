@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Models;
 
 use App\Models\BarangMasuk;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model {
+class Supplier extends Model
+{
   protected $primaryKey = 'id_supplier';
 
   protected $fillable = [
     'kode_supplier',
     'nama_supplier',
+    'nama_pemilik',
     'alamat',
     'no_telp',
     'email',
@@ -17,7 +20,8 @@ class Supplier extends Model {
     'keterangan',
   ];
 
-  public function barangMasuk() {
+  public function barangMasuk()
+  {
     return $this->hasMany(BarangMasuk::class, 'id_supplier', 'id_supplier');
   }
 }

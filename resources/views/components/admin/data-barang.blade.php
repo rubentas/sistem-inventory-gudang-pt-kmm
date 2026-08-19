@@ -349,6 +349,12 @@
             <textarea wire:model="keterangan" rows="3" placeholder="Catatan tambahan…"
               class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition outline-none resize-none"></textarea>
           </div>
+
+          {{-- <div>
+  <label class="block text-sm font-bold text-gray-900 mb-1.5">Contoh Tambahan</label>
+  <input type="text" wire:model="contoh_tambahan" placeholder="Contoh isi..."
+    class="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm">
+</div> --}}
         </div>
 
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-3">

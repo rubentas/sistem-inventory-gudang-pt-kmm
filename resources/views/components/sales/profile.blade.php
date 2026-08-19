@@ -42,6 +42,10 @@
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Email</label>
             <input type="email" wire:model="email"
               class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-medium bg-gray-50 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition outline-none">
+            
+            @error('email')
+              <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+            @enderror
           </div>
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">No. HP</label>

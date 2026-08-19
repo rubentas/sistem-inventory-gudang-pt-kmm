@@ -42,6 +42,14 @@ class Profile extends Component {
   public function updateProfile() {
     $user = Auth::user();
 
+    $this->validate(
+    [
+      'email' => 'required|email|unique:users,email,' . $user->id_user . ',id_user',
+    ],
+    [
+      'email.unique' => 'Email sudah digunakan oleh pengguna lain.',
+    ]
+);
     $data = [
       'nama'    => $this->nama,
       'email'   => $this->email,

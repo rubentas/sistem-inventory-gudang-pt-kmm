@@ -341,7 +341,7 @@
                     d="M9 17v-2a3 3 0 013-3h0a3 3 0 013 3v2m-9 0H5a2 2 0 01-2-2v-2a9 9 0 0118 0v2a2 2 0 01-2 2h-4m-6 0h6">
                   </path>
                 </svg>
-                Laporan
+                Laporan & Grafik  
               </div>
               <svg class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none"
                 stroke="currentColor" viewBox="0 0 24 24">

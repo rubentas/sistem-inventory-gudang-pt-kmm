@@ -97,6 +97,7 @@ class DataSales extends Component {
         'nama'     => $this->nama_sales,
         'username' => $this->username,
         'role'     => 'sales',
+        'no_telp'  => $this->no_hp,
       ];
 
       if ($this->password) {

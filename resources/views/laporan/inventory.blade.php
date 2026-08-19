@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Laporan Inventory - {{ $tanggal_awal }} s/d {{ $tanggal_akhir }}</title>
+
   <style>
     * {
       margin: 0;
@@ -25,19 +26,18 @@
       padding-bottom: 10px;
     }
 
-    .header .company {
+    .company {
       font-size: 14px;
       font-weight: 800;
-      color: #111827;
     }
 
-    .header .address {
+    .address {
       font-size: 7px;
       color: #4b5563;
       margin-top: 2px;
     }
 
-    .header .contact {
+    .contact {
       font-size: 7px;
       color: #6b7280;
     }
@@ -48,7 +48,6 @@
       font-weight: 700;
       margin: 8px 0;
       letter-spacing: 1px;
-      text-transform: uppercase;
     }
 
     .periode {
@@ -74,7 +73,7 @@
     }
 
     td {
-      padding: 4px 4px;
+      padding: 4px;
       border-bottom: 1px solid #d1d5db;
       font-size: 7px;
       text-align: center;
@@ -92,7 +91,15 @@
       text-align: right;
     }
 
-    .text-bold {
+    .bold {
+      font-weight: 700;
+    }
+
+    .negative {
+      font-weight: 700;
+    }
+
+    .positive {
       font-weight: 700;
     }
 
@@ -122,7 +129,6 @@
     .signature .name {
       font-size: 9px;
       font-weight: 700;
-      color: #111827;
       margin-top: 4px;
     }
 
@@ -138,73 +144,163 @@
 </head>
 
 <body>
+
   <div class="header">
     <div class="company">PT. KUDA MAS MANDIRI</div>
-    <div class="address">Jl. A. Yani RT 01, Laburan, Padang Panjang, Kec. Tanta, Kab. Tabalong, Kalsel 71561</div>
-    <div class="address">Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC</div>
-    <div class="contact">Telp: 0511-123456 | Email: kmm@kmm.com</div>
+
+    <div class="address">
+      Jl. A. Yani RT 01, Laburan, Padang Panjang,
+      Kec. Tanta, Kab. Tabalong, Kalsel 71561
+    </div>
+
+    <div class="address">
+      Ruko Putih Hijau | Seberang Kantor SBM / Samping BMC
+    </div>
+
+    <div class="contact">
+      Telp: 0511-123456 | Email: kmm@kmm.com
+    </div>
   </div>
-  <div class="title">LAPORAN INVENTORY</div>
-  <div class="periode">Periode: {{ $tanggal_awal }} — {{ $tanggal_akhir }}</div>
+
+  <div class="title">
+    LAPORAN INVENTORY
+  </div>
+
+  <div class="periode">
+    Periode: {{ $tanggal_awal }} — {{ $tanggal_akhir }}
+  </div>
 
   <table>
+
     <thead>
       <tr>
         <th>No</th>
-        <th class="text-left">Kode</th>
-        <th class="text-left">Nama Barang</th>
-        <th class="text-right">Stok Awal</th>
-        <th class="text-right">Masuk</th>
-        <th class="text-right">Keluar</th>
-        <th class="text-right">Stok Akhir</th>
-        <th>Status</th>
+        <th class="text-left">Tanggal</th>
+        <th class="text-left">Barang</th>
+        <th>Awal</th>
+        <th>Masuk</th>
+        <th>Keluar</th>
+        <th>Sistem</th>
+        <th>Fisik</th>
+        <th>Selisih</th>
+        <th>Input Oleh</th>
       </tr>
     </thead>
+
     <tbody>
+
       @forelse($stoks as $index => $stok)
-        @php $stokAwal = $stok->jumlah_stok - $stok->total_masuk + $stok->total_keluar; @endphp
+
         <tr>
-          <td>{{ $index + 1 }}</td>
-          <td class="text-left">{{ $stok->barang->kode_barang ?? '-' }}</td>
-          <td class="text-left">{{ $stok->barang->nama_barang ?? '-' }}</td>
-          <td class="text-right">{{ number_format($stokAwal) }}</td>
-          <td class="text-right">{{ number_format($stok->total_masuk) }}</td>
-          <td class="text-right">{{ number_format($stok->total_keluar) }}</td>
-          <td class="text-right text-bold">{{ number_format($stok->jumlah_stok) }}</td>
+
           <td>
-            @if ($stok->status == 'Habis')
-              Habis
-            @elseif ($stok->status == 'Menipis')
-              Menipis
-            @else
-              Aman
-            @endif
+            {{ $index + 1 }}
+          </td>
+
+          <td class="text-left">
+            {{ \Carbon\Carbon::parse($stok->tanggal)->format('d/m/Y') }}
+          </td>
+
+          <td class="text-left">
+            {{ $stok->barang->nama_barang ?? '-' }}
+          </td>
+
+          <td class="text-right">
+            {{ number_format($stok->stok_awal ?? 0) }}
+          </td>
+
+          <td class="text-right">
+            +{{ number_format($stok->barang_masuk ?? 0) }}
+          </td>
+
+          <td class="text-right">
+            -{{ number_format($stok->barang_keluar ?? 0) }}
+          </td>
+
+          <td class="text-right bold">
+            {{ number_format($stok->stok_sistem ?? 0) }}
+          </td>
+
+          <td class="text-right">
+            {{ number_format($stok->stok_fisik ?? 0) }}
+          </td>
+
+          <td class="text-right bold">
+            {{ $stok->selisih > 0 ? '+' : '' }}{{ number_format($stok->selisih ?? 0) }}
+          </td>
+
+          <td>
+            {{ $stok->user->nama ?? '-' }}
+          </td>
+
+        </tr>
+
+      @empty
+
+        <tr>
+          <td colspan="10">
+            Tidak ada data inventory
           </td>
         </tr>
-      @empty
-        <tr>
-          <td colspan="8">Tidak ada data</td>
-        </tr>
+
       @endforelse
+
     </tbody>
+
     <tfoot>
+
       <tr>
-        <td colspan="3" class="text-left">TOTAL</td>
-        <td class="text-right">-</td>
-        <td class="text-right">{{ number_format($total_masuk_keseluruhan) }}</td>
-        <td class="text-right">{{ number_format($total_keluar_keseluruhan) }}</td>
-        <td class="text-right">{{ number_format($total_stok_akhir) }}</td>
+
+        <td colspan="3" class="text-left">
+          TOTAL
+        </td>
+
+        <td class="text-right">
+          -
+        </td>
+
+        <td class="text-right">
+          +{{ number_format($total_masuk_keseluruhan ?? 0) }}
+        </td>
+
+        <td class="text-right">
+          -{{ number_format($total_keluar_keseluruhan ?? 0) }}
+        </td>
+
+        <td class="text-right">
+          {{ number_format($total_stok_akhir ?? 0) }}
+        </td>
+
+        <td class="text-right">
+          -
+        </td>
+
+        <td class="text-right">
+          -
+        </td>
+
         <td></td>
+
       </tr>
+
     </tfoot>
+
   </table>
 
   <div class="signature">
     <div>Mengetahui,</div>
     <div class="line"></div>
-    <div class="name">{{ $dicetak_oleh }}</div>
+
+    <div class="name">
+      {{ $dicetak_oleh }}
+    </div>
   </div>
-  <div class="footer">Dicetak oleh: {{ $dicetak_oleh }} | {{ $tanggal_cetak }}</div>
+
+  <div class="footer">
+    Dicetak oleh: {{ $dicetak_oleh }} |
+    {{ $tanggal_cetak }}
+  </div>
+
 </body>
 
 </html>
